@@ -1,8 +1,8 @@
-"homepage": "https://thedhruv077.github.io/toooooolvaults/",
 {
   "name": "vite_react_shadcn_ts",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://thedhruv077.github.io/toooooolvaults/",
   "type": "module",
   "scripts": {
     "dev": "vite",
