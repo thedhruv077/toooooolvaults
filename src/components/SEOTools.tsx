@@ -1,14 +1,25 @@
 
 import React, { useState } from "react";
 import { Search, FileText, Copy, CheckCircle2 } from "lucide-react";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const SEOTools = () => {
   const [activeTab, setActiveTab] = useState<"meta" | "keyword">("meta");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [keywords, setKeywords] = useState("");
+  const [title, setTitle] = useState("My Awesome Blog Post");
+  const [description, setDescription] = useState("Engaging content about blogging and digital marketing strategies.");
+  const [keywords, setKeywords] = useState("blogging, content marketing, SEO, digital marketing");
   const [generatedCode, setGeneratedCode] = useState("");
   const [copied, setCopied] = useState(false);
+
+  // Generate meta tags on component mount
+  React.useEffect(() => {
+    if (activeTab === "meta") {
+      generateMetaTags();
+    } else {
+      analyzeKeywords();
+    }
+  }, [activeTab]);
 
   const generateMetaTags = () => {
     if (!title.trim()) return;
@@ -21,13 +32,13 @@ const SEOTools = () => {
       ? `<meta name="keywords" content="${keywords}">`
       : "";
 
-    const code = `<!-- Primary Meta Tags -->
+    const code = `<!-- Primary Meta Tags for Blog -->
 ${metaTitle}
 ${metaDescription}
 ${metaKeywords}
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
 <meta property="og:title" content="${title}">
 ${
   description.trim()
@@ -55,7 +66,7 @@ ${
       .map((k) => k.trim())
       .filter((k) => k);
 
-    let analysisText = `# Keyword Analysis\n\n`;
+    let analysisText = `# Keyword Analysis for Your Blog\n\n`;
     analysisText += `Total Keywords: ${keywordList.length}\n\n`;
 
     if (keywordList.length > 0) {
@@ -81,6 +92,12 @@ ${
         .forEach(([keyword, count]) => {
           analysisText += `- "${keyword}" (${count} word${count > 1 ? "s" : ""})\n`;
         });
+
+      analysisText += `\n## How to Use These Keywords\n\n`;
+      analysisText += `1. Include these keywords in your blog post title, headings, and first paragraph\n`;
+      analysisText += `2. Aim for a keyword density of 1-2% in your content\n`;
+      analysisText += `3. Use variations of these keywords throughout your content\n`;
+      analysisText += `4. Include these keywords in your meta description and image alt tags\n`;
     }
 
     setGeneratedCode(analysisText);
@@ -98,139 +115,153 @@ ${
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4">
-      <div className="container mx-auto max-w-3xl">
-        <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
-          <div className="border-b border-border/50 p-6 flex items-center gap-3">
-            <Search className="w-5 h-5 text-accent" />
-            <h1 className="text-xl font-semibold">SEO Tools</h1>
-          </div>
-
-          <div className="border-b border-border/50">
-            <div className="flex">
-              <button
-                className={`px-6 py-3 text-sm font-medium transition-all ${
-                  activeTab === "meta"
-                    ? "border-b-2 border-accent"
-                    : "text-foreground/60 hover:text-foreground"
-                }`}
-                onClick={() => setActiveTab("meta")}
-              >
-                Meta Tag Generator
-              </button>
-              <button
-                className={`px-6 py-3 text-sm font-medium transition-all ${
-                  activeTab === "keyword"
-                    ? "border-b-2 border-accent"
-                    : "text-foreground/60 hover:text-foreground"
-                }`}
-                onClick={() => setActiveTab("keyword")}
-              >
-                Keyword Research
-              </button>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      
+      <div className="flex-grow pt-24 pb-16 px-4">
+        <div className="container mx-auto max-w-3xl">
+          <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
+            <div className="border-b border-border/50 p-6 flex items-center gap-3">
+              <Search className="w-5 h-5 text-accent" />
+              <h1 className="text-xl font-semibold">Blog SEO Tools</h1>
             </div>
-          </div>
 
-          <div className="p-6">
-            {activeTab === "meta" ? (
-              <div className="animate-fade-in">
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">
-                    Page Title
-                  </label>
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-border/50 bg-background/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
-                    placeholder="Enter page title"
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">
-                    Meta Description
-                  </label>
-                  <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-border/50 bg-background/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all min-h-[100px]"
-                    placeholder="Enter meta description"
-                  />
-                </div>
-
-                <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">
-                    Keywords (comma separated)
-                  </label>
-                  <input
-                    type="text"
-                    value={keywords}
-                    onChange={(e) => setKeywords(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-border/50 bg-background/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
-                    placeholder="keyword1, keyword2, keyword3"
-                  />
-                </div>
-
+            <div className="border-b border-border/50">
+              <div className="flex">
                 <button
-                  onClick={generateMetaTags}
-                  className="w-full py-3 rounded-lg bg-accent text-white font-medium transition-all duration-300 hover:bg-accent/90 hover:shadow-lg active:scale-95"
+                  className={`px-6 py-3 text-sm font-medium transition-all ${
+                    activeTab === "meta"
+                      ? "border-b-2 border-accent"
+                      : "text-foreground/60 hover:text-foreground"
+                  }`}
+                  onClick={() => setActiveTab("meta")}
                 >
-                  Generate Meta Tags
+                  Meta Tag Generator
+                </button>
+                <button
+                  className={`px-6 py-3 text-sm font-medium transition-all ${
+                    activeTab === "keyword"
+                      ? "border-b-2 border-accent"
+                      : "text-foreground/60 hover:text-foreground"
+                  }`}
+                  onClick={() => setActiveTab("keyword")}
+                >
+                  Keyword Research
                 </button>
               </div>
-            ) : (
-              <div className="animate-fade-in">
-                <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">
-                    Keywords (comma separated)
-                  </label>
-                  <textarea
-                    value={keywords}
-                    onChange={(e) => setKeywords(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-border/50 bg-background/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all min-h-[120px]"
-                    placeholder="Enter keywords to analyze (comma separated)"
-                  />
-                </div>
+            </div>
 
-                <button
-                  onClick={analyzeKeywords}
-                  className="w-full py-3 rounded-lg bg-accent text-white font-medium transition-all duration-300 hover:bg-accent/90 hover:shadow-lg active:scale-95"
-                >
-                  Analyze Keywords
-                </button>
-              </div>
-            )}
+            <div className="p-6">
+              {activeTab === "meta" ? (
+                <div className="animate-fade-in">
+                  <h2 className="text-lg font-medium mb-4">Optimize Your Blog's SEO</h2>
+                  <p className="text-foreground/70 mb-4">
+                    Generate meta tags to improve your blog's visibility in search engines and social media platforms.
+                  </p>
+                  
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">
+                      Blog Post Title
+                    </label>
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => {
+                        setTitle(e.target.value);
+                        setTimeout(generateMetaTags, 500);
+                      }}
+                      className="w-full px-4 py-3 rounded-lg border border-border/50 bg-background/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      placeholder="Enter your blog title"
+                    />
+                  </div>
 
-            {generatedCode && (
-              <div className="mt-8 animate-fade-in">
-                <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-lg font-medium">Generated Output</h2>
-                  <button
-                    onClick={copyToClipboard}
-                    className="flex items-center gap-1 text-sm px-3 py-1 rounded-md glass-panel glass-panel-dark border border-border/50 transition-all hover:bg-accent/10"
-                  >
-                    {copied ? (
-                      <>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </button>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">
+                      Meta Description
+                    </label>
+                    <textarea
+                      value={description}
+                      onChange={(e) => {
+                        setDescription(e.target.value);
+                        setTimeout(generateMetaTags, 500);
+                      }}
+                      className="w-full px-4 py-3 rounded-lg border border-border/50 bg-background/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all min-h-[100px]"
+                      placeholder="Enter meta description"
+                    />
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium mb-2">
+                      Keywords (comma separated)
+                    </label>
+                    <input
+                      type="text"
+                      value={keywords}
+                      onChange={(e) => {
+                        setKeywords(e.target.value);
+                        setTimeout(generateMetaTags, 500);
+                      }}
+                      className="w-full px-4 py-3 rounded-lg border border-border/50 bg-background/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
+                      placeholder="keyword1, keyword2, keyword3"
+                    />
+                  </div>
                 </div>
-                <div className="p-4 rounded-lg glass-panel glass-panel-dark border border-border/50 overflow-x-auto">
-                  <pre className="text-sm whitespace-pre-wrap">{generatedCode}</pre>
+              ) : (
+                <div className="animate-fade-in">
+                  <h2 className="text-lg font-medium mb-4">Blog Keyword Analysis</h2>
+                  <p className="text-foreground/70 mb-4">
+                    Analyze your blog keywords to optimize your content for search engines.
+                  </p>
+                  
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium mb-2">
+                      Keywords (comma separated)
+                    </label>
+                    <textarea
+                      value={keywords}
+                      onChange={(e) => {
+                        setKeywords(e.target.value);
+                        setTimeout(analyzeKeywords, 500);
+                      }}
+                      className="w-full px-4 py-3 rounded-lg border border-border/50 bg-background/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all min-h-[120px]"
+                      placeholder="Enter keywords to analyze (comma separated)"
+                    />
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+
+              {generatedCode && (
+                <div className="mt-8 animate-fade-in">
+                  <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-lg font-medium">Generated Output</h2>
+                    <button
+                      onClick={copyToClipboard}
+                      className="flex items-center gap-1 text-sm px-3 py-1 rounded-md glass-panel glass-panel-dark border border-border/50 transition-all hover:bg-accent/10"
+                    >
+                      {copied ? (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <div className="p-4 rounded-lg glass-panel glass-panel-dark border border-border/50 overflow-x-auto">
+                    <pre className="text-sm whitespace-pre-wrap">{generatedCode}</pre>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 };
