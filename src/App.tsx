@@ -9,7 +9,6 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PercentageCalculator from "./pages/calculators/PercentageCalculator";
 import QRCodeGenerator from "./components/QRCodeGenerator";
-import SEOTools from "./components/SEOTools";
 
 // ScrollToTop component to reset scroll position on route change
 const ScrollToTop = () => {
@@ -35,8 +34,6 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/calculators/percentage" element={<PercentageCalculator />} />
           <Route path="/utilities/qr-code" element={<QRCodeGenerator />} />
-          <Route path="/seo/meta-tags" element={<SEOTools />} />
-          <Route path="/seo/keyword-research" element={<SEOTools />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

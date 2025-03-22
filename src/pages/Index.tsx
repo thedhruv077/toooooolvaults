@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Hero from "../components/Hero";
 import { Link } from "react-router-dom";
-import { Calculator, QrCode, Search, ArrowRight } from "lucide-react";
+import { Calculator, QrCode, ArrowRight } from "lucide-react";
 
 const Index = () => {
   return (
@@ -21,7 +21,7 @@ const Index = () => {
               Premium Tools for Every Need
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto max-w-4xl">
               {/* Calculators */}
               <div className="glass-panel glass-panel-dark rounded-xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
@@ -29,7 +29,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Calculators</h3>
                 <p className="text-foreground/70 mb-4">
-                  Quickly solve complex calculations with our suite of specialized calculators.
+                  Quickly solve complex calculations with our suite of specialized calculators for your blog content.
                 </p>
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center gap-2">
@@ -61,7 +61,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Utilities</h3>
                 <p className="text-foreground/70 mb-4">
-                  Enhance your productivity with our collection of useful utilities.
+                  Enhance your blog content with our collection of useful utilities.
                 </p>
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center gap-2">
@@ -82,38 +82,6 @@ const Index = () => {
                   className="flex items-center text-sm font-medium text-accent hover:text-accent/80 transition-colors"
                 >
                   <span>Explore Utilities</span>
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </div>
-              
-              {/* SEO Tools */}
-              <div className="glass-panel glass-panel-dark rounded-xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
-                  <Search className="w-6 h-6 text-accent" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">SEO Tools</h3>
-                <p className="text-foreground/70 mb-4">
-                  Optimize your content and improve your search engine rankings.
-                </p>
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    <span>Meta Tag Generator</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    <span>Keyword Research</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    <span>SEO Analysis</span>
-                  </li>
-                </ul>
-                <Link
-                  to="/seo/meta-tags"
-                  className="flex items-center text-sm font-medium text-accent hover:text-accent/80 transition-colors"
-                >
-                  <span>Boost Your SEO</span>
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
               </div>

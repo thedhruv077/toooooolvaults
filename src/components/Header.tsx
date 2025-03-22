@@ -5,9 +5,7 @@ import { ThemeToggle } from "./ui/theme-toggle";
 import {
   Calculator,
   ChevronDown,
-  Search,
   QrCode,
-  Globe,
   Menu,
   X,
 } from "lucide-react";
@@ -87,22 +85,6 @@ const Header = () => {
               </Link>
             </div>
           </div>
-
-          <div className="group relative">
-            <button className="flex items-center gap-1 py-2 highlight-hover px-3 rounded-md">
-              <Globe className="w-4 h-4" />
-              <span>SEO Tools</span>
-              <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-            </button>
-            <div className="nav-dropdown">
-              <Link to="/seo/keyword-research" className="nav-dropdown-item">
-                Keyword Research
-              </Link>
-              <Link to="/seo/meta-tags" className="nav-dropdown-item">
-                Meta Tag Generator
-              </Link>
-            </div>
-          </div>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -158,7 +140,7 @@ const Header = () => {
             </div>
 
             <h3 className="text-lg font-medium mb-4">Utilities</h3>
-            <div className="flex flex-col gap-2 mb-6">
+            <div className="flex flex-col gap-2">
               <Link
                 to="/utilities/qr-code"
                 className="nav-dropdown-item"
@@ -172,24 +154,6 @@ const Header = () => {
                 onClick={toggleMobileMenu}
               >
                 Password Generator
-              </Link>
-            </div>
-
-            <h3 className="text-lg font-medium mb-4">SEO Tools</h3>
-            <div className="flex flex-col gap-2">
-              <Link
-                to="/seo/keyword-research"
-                className="nav-dropdown-item"
-                onClick={toggleMobileMenu}
-              >
-                Keyword Research
-              </Link>
-              <Link
-                to="/seo/meta-tags"
-                className="nav-dropdown-item"
-                onClick={toggleMobileMenu}
-              >
-                Meta Tag Generator
               </Link>
             </div>
           </div>
