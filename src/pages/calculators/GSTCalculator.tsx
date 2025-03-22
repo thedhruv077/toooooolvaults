@@ -8,10 +8,10 @@ import Footer from "../../components/Footer";
 
 const GSTCalculator = () => {
   const [calculationType, setCalculationType] = useState<"exclusive" | "inclusive">("exclusive");
-  const [amount, setAmount] = useState<string>("1000");
-  const [gstRate, setGstRate] = useState<string>("18");
-  const [gstAmount, setGstAmount] = useState<string>("");
-  const [totalAmount, setTotalAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>("1000.00");
+  const [gstRate, setGstRate] = useState<string>("18.00");
+  const [gstAmount, setGstAmount] = useState<string>("180.00");
+  const [totalAmount, setTotalAmount] = useState<string>("1180.00");
   const [animateResult, setAnimateResult] = useState(false);
   
   useEffect(() => {
@@ -19,12 +19,12 @@ const GSTCalculator = () => {
   }, [amount, gstRate, calculationType]);
   
   const calculateGST = () => {
-    const baseAmount = parseFloat(amount);
-    const rate = parseFloat(gstRate);
+    const baseAmount = parseFloat(amount) || 0;
+    const rate = parseFloat(gstRate) || 0;
     
-    if (isNaN(baseAmount) || isNaN(rate) || baseAmount < 0 || rate < 0) {
-      setGstAmount("Please enter valid values");
-      setTotalAmount("");
+    if (baseAmount < 0 || rate < 0) {
+      setGstAmount("0.00");
+      setTotalAmount("0.00");
       return;
     }
     
@@ -40,8 +40,7 @@ const GSTCalculator = () => {
       total = baseAmount;
       // baseAmount here is actually the total, so we calculate the base price
       const basePrice = baseAmount - gst;
-      // Update baseAmount to be the actual base price for display
-      setAmount(basePrice.toFixed(2));
+      // For inclusive calculation, we don't update the amount input
     }
     
     setGstAmount(gst.toFixed(2));
@@ -52,8 +51,8 @@ const GSTCalculator = () => {
   };
   
   const reset = () => {
-    setAmount("1000");
-    setGstRate("18");
+    setAmount("1000.00");
+    setGstRate("18.00");
     setCalculationType("exclusive");
   };
   
@@ -106,11 +105,12 @@ const GSTCalculator = () => {
                       {calculationType === "exclusive" ? "Amount (Excluding GST)" : "Amount (Including GST)"}
                     </label>
                     <Input
-                      type="number"
+                      type="text"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
                       className="w-full"
                       placeholder="Enter amount"
+                      inputMode="decimal"
                     />
                   </div>
                   
@@ -119,12 +119,12 @@ const GSTCalculator = () => {
                       <DollarSign className="w-4 h-4" /> GST Rate (%)
                     </label>
                     <Input
-                      type="number"
+                      type="text"
                       value={gstRate}
                       onChange={(e) => setGstRate(e.target.value)}
                       className="w-full"
                       placeholder="Enter GST rate"
-                      step="0.5"
+                      inputMode="decimal"
                     />
                   </div>
                 </div>
@@ -168,6 +168,16 @@ const GSTCalculator = () => {
                   </p>
                 </div>
               )}
+              
+              <div className="mt-8 p-4 rounded-lg bg-background/30">
+                <h3 className="font-medium mb-2">Tips for Using GST Calculations in Blog Posts</h3>
+                <ul className="space-y-1 text-sm text-foreground/70">
+                  <li>• Include GST calculations in product review posts</li>
+                  <li>• Explain tax implications for different price points</li>
+                  <li>• Compare pre-tax and post-tax values for better context</li>
+                  <li>• Note that GST rates may vary by country and product category</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

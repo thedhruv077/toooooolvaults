@@ -11,6 +11,11 @@ import PercentageCalculator from "./pages/calculators/PercentageCalculator";
 import EMICalculator from "./pages/calculators/EMICalculator";
 import GSTCalculator from "./pages/calculators/GSTCalculator";
 import QRCodeGenerator from "./components/QRCodeGenerator";
+import PasswordGenerator from "./components/PasswordGenerator";
+import AreaCalculator from "./components/AreaCalculator";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
 
 // ScrollToTop component to reset scroll position on route change
 const ScrollToTop = () => {
@@ -37,7 +42,12 @@ const App = () => (
           <Route path="/calculators/percentage" element={<PercentageCalculator />} />
           <Route path="/calculators/emi" element={<EMICalculator />} />
           <Route path="/calculators/gst" element={<GSTCalculator />} />
+          <Route path="/calculators/area" element={<AreaCalculator />} />
           <Route path="/utilities/qr-code" element={<QRCodeGenerator />} />
+          <Route path="/utilities/password" element={<PasswordGenerator />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/contact" element={<ContactUs />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

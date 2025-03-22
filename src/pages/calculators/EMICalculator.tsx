@@ -7,12 +7,12 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 const EMICalculator = () => {
-  const [loanAmount, setLoanAmount] = useState<string>("100000");
-  const [interestRate, setInterestRate] = useState<string>("8.5");
+  const [loanAmount, setLoanAmount] = useState<string>("200000.00");
+  const [interestRate, setInterestRate] = useState<string>("8.50");
   const [loanTerm, setLoanTerm] = useState<string>("20");
-  const [emi, setEmi] = useState<string>("");
-  const [totalInterest, setTotalInterest] = useState<string>("");
-  const [totalPayment, setTotalPayment] = useState<string>("");
+  const [emi, setEmi] = useState<string>("1712.88");
+  const [totalInterest, setTotalInterest] = useState<string>("211091.20");
+  const [totalPayment, setTotalPayment] = useState<string>("411091.20");
   const [animateResult, setAnimateResult] = useState(false);
   
   useEffect(() => {
@@ -20,12 +20,14 @@ const EMICalculator = () => {
   }, [loanAmount, interestRate, loanTerm]);
   
   const calculateEMI = () => {
-    const principal = parseFloat(loanAmount);
+    const principal = parseFloat(loanAmount) || 0;
     const rate = parseFloat(interestRate) / 100 / 12; // Monthly interest rate
     const time = parseFloat(loanTerm) * 12; // Total months
     
-    if (isNaN(principal) || isNaN(rate) || isNaN(time) || principal <= 0 || rate <= 0 || time <= 0) {
-      setEmi("Please enter valid values");
+    if (principal <= 0 || rate <= 0 || time <= 0) {
+      setEmi("0.00");
+      setTotalInterest("0.00");
+      setTotalPayment("0.00");
       return;
     }
     
@@ -43,8 +45,8 @@ const EMICalculator = () => {
   };
   
   const reset = () => {
-    setLoanAmount("100000");
-    setInterestRate("8.5");
+    setLoanAmount("200000.00");
+    setInterestRate("8.50");
     setLoanTerm("20");
   };
   
@@ -73,11 +75,12 @@ const EMICalculator = () => {
                       <Sliders className="w-4 h-4" /> Loan Amount
                     </label>
                     <Input
-                      type="number"
+                      type="text"
                       value={loanAmount}
                       onChange={(e) => setLoanAmount(e.target.value)}
                       className="w-full"
                       placeholder="Enter loan amount"
+                      inputMode="decimal"
                     />
                   </div>
                   
@@ -86,12 +89,12 @@ const EMICalculator = () => {
                       <Sliders className="w-4 h-4" /> Interest Rate (% per annum)
                     </label>
                     <Input
-                      type="number"
+                      type="text"
                       value={interestRate}
                       onChange={(e) => setInterestRate(e.target.value)}
                       className="w-full"
                       placeholder="Enter interest rate"
-                      step="0.1"
+                      inputMode="decimal"
                     />
                   </div>
                   
@@ -100,11 +103,12 @@ const EMICalculator = () => {
                       <Calendar className="w-4 h-4" /> Loan Term (years)
                     </label>
                     <Input
-                      type="number"
+                      type="text"
                       value={loanTerm}
                       onChange={(e) => setLoanTerm(e.target.value)}
                       className="w-full"
                       placeholder="Enter loan term in years"
+                      inputMode="decimal"
                     />
                   </div>
                 </div>
@@ -146,6 +150,16 @@ const EMICalculator = () => {
                   </p>
                 </div>
               )}
+              
+              <div className="mt-8 p-4 rounded-lg bg-background/30">
+                <h3 className="font-medium mb-2">Tips for Using EMI Calculations in Blog Posts</h3>
+                <ul className="space-y-1 text-sm text-foreground/70">
+                  <li>• Compare different loan scenarios (term lengths, interest rates)</li>
+                  <li>• Show the impact of extra payments on total interest</li>
+                  <li>• Create realistic examples for personal finance articles</li>
+                  <li>• Pair calculations with advice on managing loan repayments</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
