@@ -34,15 +34,21 @@ const Index = () => {
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    <span>Percentage Calculator</span>
+                    <Link to="/calculators/percentage" className="hover:text-accent transition-colors">
+                      Percentage Calculator
+                    </Link>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    <span>EMI Calculator</span>
+                    <Link to="/calculators/emi" className="hover:text-accent transition-colors">
+                      EMI Calculator
+                    </Link>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    <span>GST Calculator</span>
+                    <Link to="/calculators/gst" className="hover:text-accent transition-colors">
+                      GST Calculator
+                    </Link>
                   </li>
                 </ul>
                 <Link
@@ -66,15 +72,17 @@ const Index = () => {
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    <span>QR Code Generator</span>
+                    <Link to="/utilities/qr-code" className="hover:text-accent transition-colors">
+                      QR Code Generator
+                    </Link>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    <span>Password Generator</span>
+                    <span>Password Generator (Coming Soon)</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-                    <span>Text Tools</span>
+                    <span>Text Tools (Coming Soon)</span>
                   </li>
                 </ul>
                 <Link
