@@ -13,6 +13,7 @@ import GSTCalculator from "./pages/calculators/GSTCalculator";
 import QRCodeGenerator from "./components/QRCodeGenerator";
 import PasswordGenerator from "./components/PasswordGenerator";
 import AreaCalculator from "./components/AreaCalculator";
+import InvoiceGenerator from "./components/InvoiceGenerator";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/calculators/area" element={<AreaCalculator />} />
           <Route path="/utilities/qr-code" element={<QRCodeGenerator />} />
           <Route path="/utilities/password" element={<PasswordGenerator />} />
+          <Route path="/utilities/invoice" element={<InvoiceGenerator />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/contact" element={<ContactUs />} />

@@ -8,6 +8,7 @@ import {
   QrCode,
   Menu,
   X,
+  FileText,
 } from "lucide-react";
 
 const Header = () => {
@@ -83,6 +84,9 @@ const Header = () => {
               <Link to="/utilities/password" className="nav-dropdown-item">
                 Password Generator
               </Link>
+              <Link to="/utilities/invoice" className="nav-dropdown-item">
+                Invoice Generator
+              </Link>
             </div>
           </div>
         </nav>
@@ -154,6 +158,13 @@ const Header = () => {
                 onClick={toggleMobileMenu}
               >
                 Password Generator
+              </Link>
+              <Link
+                to="/utilities/invoice"
+                className="nav-dropdown-item"
+                onClick={toggleMobileMenu}
+              >
+                Invoice Generator
               </Link>
             </div>
           </div>

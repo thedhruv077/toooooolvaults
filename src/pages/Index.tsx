@@ -88,6 +88,12 @@ const Index = () => {
                       Password Generator
                     </Link>
                   </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
+                    <Link to="/utilities/invoice" className="hover:text-accent transition-colors">
+                      Invoice Generator
+                    </Link>
+                  </li>
                 </ul>
                 <Link
                   to="/utilities/qr-code"
