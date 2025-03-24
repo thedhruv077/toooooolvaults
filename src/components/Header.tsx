@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   FileText,
+  Sparkles,
 } from "lucide-react";
 
 const Header = () => {
@@ -31,7 +32,7 @@ const Header = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "py-3 glass-panel glass-panel-dark shadow-lg"
+          ? "py-3 glass-panel glass-panel-dark shadow-xl border-b border-white/5"
           : "py-5 bg-transparent"
       }`}
     >
@@ -41,9 +42,11 @@ const Header = () => {
           
           <Link
             to="/"
-            className="text-2xl font-medium text-glass animate-fade-in"
+            className="text-2xl font-bold text-glass flex items-center"
           >
-            <span className="font-bold">Tool</span>Vault
+            <Sparkles className="w-5 h-5 text-accent mr-2" />
+            <span className="bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent">Tool</span>
+            <span>Vault</span>
           </Link>
         </div>
 
@@ -51,7 +54,7 @@ const Header = () => {
         <nav className="hidden md:flex items-center gap-6">
           <div className="group relative">
             <button className="flex items-center gap-1 py-2 highlight-hover px-3 rounded-md">
-              <Calculator className="w-4 h-4" />
+              <Calculator className="w-4 h-4 text-accent" />
               <span>Calculators</span>
               <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
             </button>
@@ -73,7 +76,7 @@ const Header = () => {
 
           <div className="group relative">
             <button className="flex items-center gap-1 py-2 highlight-hover px-3 rounded-md">
-              <QrCode className="w-4 h-4" />
+              <QrCode className="w-4 h-4 text-accent" />
               <span>Utilities</span>
               <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
             </button>
@@ -111,7 +114,7 @@ const Header = () => {
           }`}
         >
           <div className="flex flex-col h-full pt-20 px-6 pb-10 overflow-y-auto">
-            <h3 className="text-lg font-medium mb-4">Calculators</h3>
+            <h3 className="text-lg font-medium mb-4 text-accent">Calculators</h3>
             <div className="flex flex-col gap-2 mb-6">
               <Link
                 to="/calculators/percentage"
@@ -143,7 +146,7 @@ const Header = () => {
               </Link>
             </div>
 
-            <h3 className="text-lg font-medium mb-4">Utilities</h3>
+            <h3 className="text-lg font-medium mb-4 text-accent">Utilities</h3>
             <div className="flex flex-col gap-2">
               <Link
                 to="/utilities/qr-code"

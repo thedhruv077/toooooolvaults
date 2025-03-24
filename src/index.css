@@ -55,7 +55,7 @@
     --muted: 217 33% 18%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 216 34% 52%;
+    --accent: 216 34% 62%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 63% 31%;
@@ -104,10 +104,51 @@
   }
   
   .nav-dropdown {
-    @apply absolute top-full left-0 mt-1 w-60 p-2 rounded-lg glass-panel glass-panel-dark opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top scale-95 group-hover:scale-100 z-50;
+    @apply absolute top-full left-0 mt-1 w-60 p-2 rounded-lg glass-panel glass-panel-dark opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top scale-95 group-hover:scale-100 z-50 shadow-xl;
   }
   
   .nav-dropdown-item {
-    @apply flex items-center gap-2 px-3 py-2 rounded-md text-sm highlight-hover w-full;
+    @apply flex items-center gap-2 px-3 py-2 rounded-md text-sm highlight-hover w-full hover:text-accent;
+  }
+
+  .premium-shadow {
+    @apply shadow-[0_10px_40px_-15px_rgba(0,0,0,0.3)] dark:shadow-[0_10px_40px_-15px_rgba(0,0,0,0.7)];
+  }
+  
+  .premium-border {
+    @apply border border-white/10 dark:border-white/5;
+  }
+  
+  .premium-gradient {
+    @apply bg-gradient-to-br from-accent to-accent/50;
+  }
+  
+  .premium-text {
+    @apply font-medium text-foreground;
+  }
+  
+  .premium-card {
+    @apply glass-panel glass-panel-dark rounded-xl premium-shadow hover:shadow-lg transition-all duration-300 hover:-translate-y-1;
+  }
+  
+  .button-glow {
+    @apply relative overflow-hidden;
+  }
+  
+  .button-glow::after {
+    @apply content-[''] absolute top-0 left-[-50%] w-[200%] h-full bg-white/10 transform -skew-x-12 transition-all duration-1000 opacity-0;
+  }
+  
+  .button-glow:hover::after {
+    @apply opacity-100 animate-[glow_1.5s_ease-in-out_infinite];
+  }
+  
+  @keyframes glow {
+    0% {
+      left: -50%;
+    }
+    100% {
+      left: 100%;
+    }
   }
 }
