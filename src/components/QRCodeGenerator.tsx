@@ -32,7 +32,9 @@ const QRCodeGenerator = () => {
     try {
       // Using Google Charts API to generate QR code
       const encodedText = encodeURIComponent(text);
-      const url = `https://chart.googleapis.com/chart?cht=qr&chl=${encodedText}&chs=${size}x${size}&choe=UTF-8&chld=${errorCorrectionLevel}&chco=${color.replace('#', '')}`;
+      const colorParam = color.replace('#', '');
+      const bgColorParam = bgColor.replace('#', '');
+      const url = `https://chart.googleapis.com/chart?cht=qr&chl=${encodedText}&chs=${size}x${size}&choe=UTF-8&chld=${errorCorrectionLevel}&chco=${bgColorParam}|${colorParam}`;
       
       setQrCodeUrl(url);
       setIsGenerating(false);
@@ -81,7 +83,7 @@ const QRCodeGenerator = () => {
       
       <div className="flex-grow pt-24 pb-16 px-4">
         <div className="container mx-auto max-w-4xl">
-          <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden shadow-lg border border-accent/20">
+          <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden shadow-lg border border-accent/20 premium-shadow">
             <div className="border-b border-border/50 p-6 flex items-center gap-3 bg-accent/5">
               <QrCode className="w-6 h-6 text-accent" />
               <h1 className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">QR Code Generator</h1>
@@ -106,7 +108,7 @@ const QRCodeGenerator = () => {
                       <Button 
                         size="sm"
                         onClick={generateQRCode}
-                        className="absolute right-1 top-1 bg-accent hover:bg-accent/90"
+                        className="absolute right-1 top-1 bg-accent hover:bg-accent/90 button-glow"
                       >
                         Generate
                       </Button>
@@ -205,7 +207,7 @@ const QRCodeGenerator = () => {
                     
                     <Button 
                       onClick={downloadQRCode}
-                      className="flex items-center gap-2 bg-accent hover:bg-accent/90"
+                      className="flex items-center gap-2 bg-accent hover:bg-accent/90 button-glow"
                       disabled={!qrCodeUrl}
                     >
                       <Download className="w-4 h-4" />
@@ -217,7 +219,7 @@ const QRCodeGenerator = () => {
                 <div className="flex flex-col items-center justify-center">
                   {qrCodeUrl && (
                     <div className="flex flex-col items-center">
-                      <div className="p-6 bg-white rounded-xl mb-6 border shadow-xl transform transition-all duration-300 hover:shadow-accent/20 hover:scale-105">
+                      <div className="p-6 bg-white rounded-xl mb-6 border shadow-xl transform transition-all duration-300 hover:shadow-accent/20 hover:scale-105 premium-shadow">
                         <img
                           src={qrCodeUrl}
                           alt="QR Code"
