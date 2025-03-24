@@ -1,10 +1,12 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/toooooolvaults/", // 👈 Add this line (GitHub repo name)
+  // Remove or update the base path - this is likely causing the white screen
+  // base: "/toooooolvaults/", 
   server: {
     host: "::",
     port: 8080,
@@ -22,5 +24,3 @@ export default defineConfig(({ mode }) => ({
     },
   },
 }));
-
-
