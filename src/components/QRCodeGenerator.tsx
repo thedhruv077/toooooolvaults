@@ -1,293 +1,309 @@
 
-import React, { useState, useEffect } from "react";
-import { QrCode, Download, Copy, CheckCircle2, RefreshCw, Sliders, Shield } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect, ChangeEvent } from "react";
+import { QrCode, Download, Link, RefreshCw, Check } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import Header from "./Header";
-import Footer from "./Footer";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "@/components/ui/use-toast";
 
 const QRCodeGenerator = () => {
-  const [text, setText] = useState("https://yourblog.com");
-  const [qrCodeUrl, setQrCodeUrl] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [size, setSize] = useState(300);
-  const [errorCorrectionLevel, setErrorCorrectionLevel] = useState("M");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [color, setColor] = useState("#000000");
-  const [bgColor, setBgColor] = useState("#FFFFFF");
-
+  const [qrContent, setQrContent] = useState<string>("");
+  const [qrColor, setQrColor] = useState<string>("#000000");
+  const [qrBgColor, setQrBgColor] = useState<string>("#FFFFFF");
+  const [qrSize, setQrSize] = useState<string>("200");
+  const [qrType, setQrType] = useState<string>("url");
+  const [qrImageUrl, setQrImageUrl] = useState<string>("");
+  const [copied, setCopied] = useState<boolean>(false);
+  const [contactInfo, setContactInfo] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
+  
+  // Generate QR code on initial render
   useEffect(() => {
-    generateQRCode();
-  }, []);
-
-  const generateQRCode = () => {
-    if (!text.trim()) {
-      toast.error("Please enter a valid URL or text");
+    if (qrContent) {
+      handleGenerateQR();
+    }
+  }, [qrColor, qrBgColor, qrSize]);
+  
+  const handleContactInfoChange = (field: string, value: string) => {
+    setContactInfo(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Update QR content
+    const content = `BEGIN:VCARD\nVERSION:3.0\nN:${contactInfo.name}\nEMAIL:${contactInfo.email}\nTEL:${contactInfo.phone}\nEND:VCARD`;
+    setQrContent(content);
+  };
+  
+  const handleGenerateQR = () => {
+    if (!qrContent && qrType !== 'contact') {
+      toast({ title: "Error", description: "Please enter content for the QR code", variant: "destructive" });
       return;
     }
     
-    setIsGenerating(true);
+    let content = qrContent;
     
-    try {
-      // Using Google Charts API to generate QR code
-      const encodedText = encodeURIComponent(text);
-      const colorParam = color.replace('#', '');
-      const bgColorParam = bgColor.replace('#', '');
-      const url = `https://chart.googleapis.com/chart?cht=qr&chl=${encodedText}&chs=${size}x${size}&choe=UTF-8&chld=${errorCorrectionLevel}&chco=${bgColorParam}|${colorParam}`;
-      
-      setQrCodeUrl(url);
-      setIsGenerating(false);
-    } catch (error) {
-      toast.error("Failed to generate QR code");
-      setIsGenerating(false);
+    // Format content based on type
+    if (qrType === "url" && content && !content.match(/^https?:\/\//i)) {
+      content = "https://" + content;
+    } else if (qrType === "email" && content) {
+      content = "mailto:" + content;
+    } else if (qrType === "phone" && content) {
+      content = "tel:" + content;
+    } else if (qrType === "contact") {
+      if (!contactInfo.name && !contactInfo.email && !contactInfo.phone) {
+        toast({ title: "Error", description: "Please enter at least one contact detail", variant: "destructive" });
+        return;
+      }
+      content = `BEGIN:VCARD\nVERSION:3.0\nN:${contactInfo.name}\nEMAIL:${contactInfo.email}\nTEL:${contactInfo.phone}\nEND:VCARD`;
     }
+    
+    // Generate QR code using API
+    const placeholderUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(content)}&size=${qrSize}x${qrSize}&color=${qrColor.replace("#", "")}&bgcolor=${qrBgColor.replace("#", "")}`;
+    
+    setQrImageUrl(placeholderUrl);
+    toast({ title: "Success", description: "QR code generated successfully" });
   };
-
+  
   const downloadQRCode = () => {
-    if (!qrCodeUrl) return;
+    if (!qrImageUrl) {
+      toast({ title: "Error", description: "Please generate a QR code first", variant: "destructive" });
+      return;
+    }
     
-    const link = document.createElement("a");
-    link.href = qrCodeUrl;
-    link.download = "qrcode.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast.success("QR code downloaded successfully!");
-  };
-
-  const copyQRCodeUrl = () => {
-    if (!qrCodeUrl) return;
+    // Create a temporary link element
+    const a = document.createElement("a");
+    a.href = qrImageUrl;
+    a.download = `qrcode-${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     
-    navigator.clipboard.writeText(qrCodeUrl);
-    setCopied(true);
-    toast.success("QR code URL copied to clipboard!");
-    
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-  };
-
-  const resetAll = () => {
-    setText("https://yourblog.com");
-    setSize(300);
-    setErrorCorrectionLevel("M");
-    setColor("#000000");
-    setBgColor("#FFFFFF");
-    toast.info("All settings reset to default");
+    toast({ title: "Success", description: "QR code downloaded successfully" });
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background to-background/80">
+    <div className="min-h-screen flex flex-col">
       <Header />
       
-      <div className="flex-grow pt-24 pb-16 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden shadow-lg border border-accent/20 premium-shadow">
-            <div className="border-b border-border/50 p-6 flex items-center gap-3 bg-accent/5">
-              <QrCode className="w-6 h-6 text-accent" />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">QR Code Generator</h1>
+      <main className="flex-grow pt-24 pb-16 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <div className="mb-12 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-accent/10 text-accent mb-6">
+              <QrCode size={36} />
             </div>
+            <h1 className="text-4xl font-display font-bold mb-4">QR Code Generator</h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Create custom QR codes for websites, contacts, and more.
+            </p>
+          </div>
 
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-accent" />
-                      URL or Text Content
-                    </label>
-                    <div className="relative">
-                      <Input
-                        type="text"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        className="w-full pr-24 border-accent/20 focus:border-accent"
-                        placeholder="Enter URL or text"
-                      />
-                      <Button 
-                        size="sm"
-                        onClick={generateQRCode}
-                        className="absolute right-1 top-1 bg-accent hover:bg-accent/90 button-glow"
-                      >
-                        Generate
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                      <Sliders className="w-4 h-4 text-accent" /> 
-                      QR Code Size
-                    </label>
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="range"
-                        min="100"
-                        max="500"
-                        value={size}
-                        onChange={(e) => setSize(parseInt(e.target.value))}
-                        className="flex-grow h-2 rounded-lg appearance-none bg-accent/30 cursor-pointer"
-                      />
-                      <span className="text-sm font-medium w-16 text-right">{size}px</span>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <label className="block text-sm font-medium mb-2">
-                      Error Correction Level
-                    </label>
-                    <div className="grid grid-cols-4 gap-2">
-                      {["L", "M", "Q", "H"].map((level) => (
-                        <button
-                          key={level}
-                          onClick={() => setErrorCorrectionLevel(level)}
-                          className={`py-2 rounded-md text-center transition-all duration-200 ${
-                            errorCorrectionLevel === level
-                              ? "bg-accent text-white shadow-md"
-                              : "bg-accent/10 hover:bg-accent/20"
-                          }`}
-                        >
-                          {level}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <label className="block text-sm font-medium mb-2">
-                        QR Color
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="color"
-                          value={color}
-                          onChange={(e) => setColor(e.target.value)}
-                          className="h-10 w-10 rounded cursor-pointer border border-border"
-                        />
-                        <Input
-                          type="text"
-                          value={color}
-                          onChange={(e) => setColor(e.target.value)}
-                          className="w-full border-accent/20"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <label className="block text-sm font-medium mb-2">
-                        Background Color
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="color"
-                          value={bgColor}
-                          onChange={(e) => setBgColor(e.target.value)}
-                          className="h-10 w-10 rounded cursor-pointer border border-border"
-                        />
-                        <Input
-                          type="text"
-                          value={bgColor}
-                          onChange={(e) => setBgColor(e.target.value)}
-                          className="w-full border-accent/20"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between mt-6">
-                    <Button 
-                      variant="outline" 
-                      onClick={resetAll}
-                      className="flex items-center gap-2 border-accent/20 hover:bg-accent/10"
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                      Reset
-                    </Button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle>QR Code Content</CardTitle>
+                  <CardDescription>
+                    Enter the content for your QR code
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Tabs defaultValue="url" className="w-full" value={qrType} onValueChange={setQrType}>
+                    <TabsList className="grid grid-cols-3 mb-4">
+                      <TabsTrigger value="url">URL</TabsTrigger>
+                      <TabsTrigger value="text">Text</TabsTrigger>
+                      <TabsTrigger value="contact">Contact</TabsTrigger>
+                    </TabsList>
                     
-                    <Button 
-                      onClick={downloadQRCode}
-                      className="flex items-center gap-2 bg-accent hover:bg-accent/90 button-glow"
-                      disabled={!qrCodeUrl}
-                    >
-                      <Download className="w-4 h-4" />
-                      Download
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center justify-center">
-                  {qrCodeUrl && (
-                    <div className="flex flex-col items-center">
-                      <div className="p-6 bg-white rounded-xl mb-6 border shadow-xl transform transition-all duration-300 hover:shadow-accent/20 hover:scale-105 premium-shadow">
-                        <img
-                          src={qrCodeUrl}
-                          alt="QR Code"
-                          className="max-w-full h-auto"
-                          style={{ minWidth: "200px", minHeight: "200px" }}
+                    <TabsContent value="url" className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="url-input">Website URL</Label>
+                        <div className="flex">
+                          <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
+                            https://
+                          </span>
+                          <Input
+                            id="url-input"
+                            placeholder="example.com"
+                            value={qrContent}
+                            onChange={(e) => setQrContent(e.target.value)}
+                            className="rounded-l-none"
+                          />
+                        </div>
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="text" className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="text-input">Text Content</Label>
+                        <Textarea
+                          id="text-input"
+                          placeholder="Enter text content for your QR code"
+                          value={qrContent}
+                          onChange={(e) => setQrContent(e.target.value)}
+                          rows={4}
                         />
                       </div>
-
-                      <button
-                        onClick={copyQRCodeUrl}
-                        className="flex items-center gap-2 px-4 py-2 rounded-md glass-panel border border-accent/20 font-medium transition-all duration-200 hover:bg-accent/10 active:scale-95"
-                      >
-                        {copied ? (
-                          <>
-                            <CheckCircle2 className="w-4 h-4 text-green-500" />
-                            <span>Copied!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-4 h-4" />
-                            <span>Copy URL</span>
-                          </>
-                        )}
-                      </button>
+                    </TabsContent>
+                    
+                    <TabsContent value="contact" className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name-input">Name</Label>
+                        <Input
+                          id="name-input"
+                          placeholder="Full Name"
+                          value={contactInfo.name}
+                          onChange={(e) => handleContactInfoChange('name', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email-input">Email</Label>
+                        <Input
+                          id="email-input"
+                          placeholder="email@example.com"
+                          value={contactInfo.email}
+                          onChange={(e) => handleContactInfoChange('email', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phone-input">Phone</Label>
+                        <Input
+                          id="phone-input"
+                          placeholder="+1 (555) 123-4567"
+                          value={contactInfo.phone}
+                          onChange={(e) => handleContactInfoChange('phone', e.target.value)}
+                        />
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                  
+                  <div className="grid grid-cols-2 gap-4 mt-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="qr-color">QR Code Color</Label>
+                      <div className="flex">
+                        <Input
+                          id="qr-color"
+                          type="color"
+                          value={qrColor}
+                          onChange={(e) => setQrColor(e.target.value)}
+                          className="w-12 h-10 p-1 border-0"
+                        />
+                        <Input
+                          value={qrColor}
+                          onChange={(e) => setQrColor(e.target.value)}
+                          className="flex-1 ml-2"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="qr-bg-color">Background Color</Label>
+                      <div className="flex">
+                        <Input
+                          id="qr-bg-color"
+                          type="color"
+                          value={qrBgColor}
+                          onChange={(e) => setQrBgColor(e.target.value)}
+                          className="w-12 h-10 p-1 border-0"
+                        />
+                        <Input
+                          value={qrBgColor}
+                          onChange={(e) => setQrBgColor(e.target.value)}
+                          className="flex-1 ml-2"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 space-y-2">
+                    <Label htmlFor="qr-size">QR Code Size</Label>
+                    <Select value={qrSize} onValueChange={setQrSize}>
+                      <SelectTrigger id="qr-size">
+                        <SelectValue placeholder="Select size" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="100">Small (100x100)</SelectItem>
+                        <SelectItem value="200">Medium (200x200)</SelectItem>
+                        <SelectItem value="300">Large (300x300)</SelectItem>
+                        <SelectItem value="400">X-Large (400x400)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full" onClick={handleGenerateQR}>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Generate QR Code
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+            
+            <div>
+              <Card className="glass-card h-full flex flex-col">
+                <CardHeader>
+                  <CardTitle>Your QR Code</CardTitle>
+                  <CardDescription>
+                    Preview and download your custom QR code
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow flex flex-col items-center justify-center">
+                  {qrImageUrl ? (
+                    <div className="flex flex-col items-center">
+                      <div className="border border-border p-4 rounded-xl bg-white">
+                        <img 
+                          src={qrImageUrl} 
+                          alt="Generated QR Code"
+                          className="max-w-full h-auto"
+                        />
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-4">
+                        Scan this QR code to access your content
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-center p-8">
+                      <QrCode className="h-24 w-24 mx-auto opacity-20 mb-4" />
+                      <p className="text-muted-foreground">
+                        Enter your content and click "Generate QR Code" to create a custom QR code
+                      </p>
                     </div>
                   )}
-
-                  {!qrCodeUrl && text && isGenerating && (
-                    <div className="flex justify-center mt-8">
-                      <div className="w-16 h-16 border-4 border-accent/20 border-t-accent rounded-full animate-spin"></div>
-                    </div>
-                  )}
-
-                  {!qrCodeUrl && !isGenerating && (
-                    <div className="flex flex-col items-center justify-center p-8 border border-dashed border-accent/30 rounded-xl">
-                      <QrCode className="w-16 h-16 text-accent/30 mb-4" />
-                      <p className="text-foreground/60 text-center">Enter your URL or text and click Generate to create a QR code</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-10 p-6 rounded-lg bg-background/30 border border-accent/10">
-                <h3 className="font-bold mb-3 text-accent">Quick Tips</h3>
-                <ul className="space-y-2 text-sm text-foreground/70">
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    <span>Higher error correction levels (M, Q, H) make your QR code more reliable but may need to be larger</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    <span>For blog posts, use medium size QR codes (250-350px) for optimal scanning</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    <span>Custom colors can match your blog's branding</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent">•</span>
-                    <span>Test your QR codes on multiple devices before publishing</span>
-                  </li>
-                </ul>
-              </div>
+                </CardContent>
+                <CardFooter className="justify-center gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={handleGenerateQR}
+                    className="flex items-center"
+                    disabled={!qrContent && qrType !== 'contact'}
+                  >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Refresh
+                  </Button>
+                  <Button
+                    onClick={downloadQRCode}
+                    className="flex items-center"
+                    disabled={!qrImageUrl}
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                  </Button>
+                </CardFooter>
+              </Card>
             </div>
           </div>
         </div>
-      </div>
-      
+      </main>
+
       <Footer />
     </div>
   );
