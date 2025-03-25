@@ -8,14 +8,14 @@ const Hero = () => {
     <section className="py-32 md:py-40 px-4">
       <div className="max-w-4xl mx-auto text-center">
         <span className="inline-block px-3 py-1 text-xs font-medium rounded-full glass-panel glass-panel-dark animate-fade-in mb-8">
-          Premium Tools for Everyone
+          Free Premium Tools for Everyone
         </span>
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-glass animate-fade-in [animation-delay:200ms] text-balance leading-tight">
-          Powerful Tools to Enhance Your Digital Experience
+          Free Online Calculators & Utilities
         </h1>
         <p className="text-lg md:text-xl text-foreground/70 mb-10 animate-fade-in [animation-delay:400ms] max-w-2xl mx-auto text-balance">
-          Discover our collection of premium utilities designed to simplify
-          calculations, boost your SEO, and improve productivity.
+          Discover our collection of free premium utilities designed to simplify 
+          calculations, generate useful resources, and improve productivity.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in [animation-delay:600ms]">
           <Link

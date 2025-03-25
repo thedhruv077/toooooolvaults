@@ -1,14 +1,26 @@
+
+# Allow all robots complete access
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://toolvault.com/sitemap.xml
+
+# Specific rules for major search engines
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
-User-agent: Twitterbot
+User-agent: Slurp
 Allow: /
 
-User-agent: facebookexternalhit
+User-agent: DuckDuckBot
 Allow: /
 
-User-agent: *
-Allow: /
+# Crawl delay to prevent overloading server
+Crawl-delay: 5
+
+# Disallow specific directories if needed
+# Disallow: /admin/

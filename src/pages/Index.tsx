@@ -5,10 +5,24 @@ import Footer from "../components/Footer";
 import Hero from "../components/Hero";
 import { Link } from "react-router-dom";
 import { Calculator, QrCode, ArrowRight, Lock, SquareCode, Users, Mail, FileText } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>Tool Vault - Premium Calculators & Utilities for Everyone</title>
+        <meta name="description" content="Free premium tools and calculators for everyone. Financial calculators, QR code generators, password generators and more utilities." />
+        <meta name="keywords" content="tool vault, calculators, utilities, financial calculators, QR code generator, password generator, invoice generator, GST calculator, percentage calculator, EMI calculator" />
+        <meta property="og:title" content="Tool Vault - Premium Calculators & Utilities" />
+        <meta property="og:description" content="Free premium tools and calculators for everyone. Financial calculators, QR code generators, password generators and more utilities." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Tool Vault - Premium Calculators & Utilities" />
+        <meta name="twitter:description" content="Free premium tools and calculators for everyone. Financial calculators, QR code generators, password generators and more utilities." />
+        <link rel="canonical" href="https://toolvault.com/" />
+      </Helmet>
+      
       <Header />
       
       <main className="flex-grow">
@@ -18,7 +32,7 @@ const Index = () => {
         <section className="py-16 px-4">
           <div className="container mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12 text-glass">
-              Premium Tools for Every Blog
+              Premium Tools for Everyone
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto max-w-4xl">
@@ -29,7 +43,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Financial Calculators</h3>
                 <p className="text-foreground/70 mb-4">
-                  Powerful financial calculators for your blog content. Create engaging financial examples and accurate calculations.
+                  Powerful financial calculators for your content. Create engaging financial examples and accurate calculations.
                 </p>
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center gap-2">
@@ -71,9 +85,9 @@ const Index = () => {
                 <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
                   <QrCode className="w-6 h-6 text-accent" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Blogging Utilities</h3>
+                <h3 className="text-xl font-semibold mb-3">Essential Utilities</h3>
                 <p className="text-foreground/70 mb-4">
-                  Essential utilities to enhance your blog content and reader experience. Generate useful elements for your posts.
+                  Essential utilities to enhance your content and user experience. Generate useful elements for your projects.
                 </p>
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center gap-2">
@@ -113,7 +127,7 @@ const Index = () => {
                 </div>
                 <h3 className="text-lg font-semibold mb-2">About Us</h3>
                 <p className="text-foreground/70 mb-4 text-sm">
-                  Learn about our mission to provide premium blog tools and calculators.
+                  Learn about our mission to provide premium tools and calculators.
                 </p>
                 <Link
                   to="/about"

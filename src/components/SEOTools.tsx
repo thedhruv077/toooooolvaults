@@ -3,12 +3,13 @@ import React, { useState } from "react";
 import { Search, FileText, Copy, CheckCircle2 } from "lucide-react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { Helmet } from "react-helmet-async";
 
 const SEOTools = () => {
   const [activeTab, setActiveTab] = useState<"meta" | "keyword">("meta");
-  const [title, setTitle] = useState("My Awesome Blog Post");
-  const [description, setDescription] = useState("Engaging content about blogging and digital marketing strategies.");
-  const [keywords, setKeywords] = useState("blogging, content marketing, SEO, digital marketing");
+  const [title, setTitle] = useState("My Website Title");
+  const [description, setDescription] = useState("Engaging content about digital tools and resources.");
+  const [keywords, setKeywords] = useState("tools, utilities, calculators, digital resources");
   const [generatedCode, setGeneratedCode] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -32,13 +33,13 @@ const SEOTools = () => {
       ? `<meta name="keywords" content="${keywords}">`
       : "";
 
-    const code = `<!-- Primary Meta Tags for Blog -->
+    const code = `<!-- Primary Meta Tags -->
 ${metaTitle}
 ${metaDescription}
 ${metaKeywords}
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="article">
+<meta property="og:type" content="website">
 <meta property="og:title" content="${title}">
 ${
   description.trim()
@@ -66,7 +67,7 @@ ${
       .map((k) => k.trim())
       .filter((k) => k);
 
-    let analysisText = `# Keyword Analysis for Your Blog\n\n`;
+    let analysisText = `# Keyword Analysis for Your Content\n\n`;
     analysisText += `Total Keywords: ${keywordList.length}\n\n`;
 
     if (keywordList.length > 0) {
@@ -94,7 +95,7 @@ ${
         });
 
       analysisText += `\n## How to Use These Keywords\n\n`;
-      analysisText += `1. Include these keywords in your blog post title, headings, and first paragraph\n`;
+      analysisText += `1. Include these keywords in your page title, headings, and first paragraph\n`;
       analysisText += `2. Aim for a keyword density of 1-2% in your content\n`;
       analysisText += `3. Use variations of these keywords throughout your content\n`;
       analysisText += `4. Include these keywords in your meta description and image alt tags\n`;
@@ -116,6 +117,12 @@ ${
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>SEO Tools - Generate Meta Tags & Analyze Keywords | Tool Vault</title>
+        <meta name="description" content="Free SEO tools to generate meta tags and analyze keywords for better search engine visibility." />
+        <meta name="keywords" content="SEO tools, meta tag generator, keyword analyzer, SEO optimization, search engine optimization" />
+      </Helmet>
+      
       <Header />
       
       <div className="flex-grow pt-24 pb-16 px-4">
@@ -123,7 +130,7 @@ ${
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-6 flex items-center gap-3">
               <Search className="w-5 h-5 text-accent" />
-              <h1 className="text-xl font-semibold">Blog SEO Tools</h1>
+              <h1 className="text-xl font-semibold">SEO Tools</h1>
             </div>
 
             <div className="border-b border-border/50">
@@ -154,14 +161,14 @@ ${
             <div className="p-6">
               {activeTab === "meta" ? (
                 <div className="animate-fade-in">
-                  <h2 className="text-lg font-medium mb-4">Optimize Your Blog's SEO</h2>
+                  <h2 className="text-lg font-medium mb-4">Optimize Your SEO</h2>
                   <p className="text-foreground/70 mb-4">
-                    Generate meta tags to improve your blog's visibility in search engines and social media platforms.
+                    Generate meta tags to improve your website's visibility in search engines and social media platforms.
                   </p>
                   
                   <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">
-                      Blog Post Title
+                      Website Title
                     </label>
                     <input
                       type="text"
@@ -171,7 +178,7 @@ ${
                         setTimeout(generateMetaTags, 500);
                       }}
                       className="w-full px-4 py-3 rounded-lg border border-border/50 bg-background/50 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
-                      placeholder="Enter your blog title"
+                      placeholder="Enter your website title"
                     />
                   </div>
 
@@ -208,9 +215,9 @@ ${
                 </div>
               ) : (
                 <div className="animate-fade-in">
-                  <h2 className="text-lg font-medium mb-4">Blog Keyword Analysis</h2>
+                  <h2 className="text-lg font-medium mb-4">Keyword Analysis</h2>
                   <p className="text-foreground/70 mb-4">
-                    Analyze your blog keywords to optimize your content for search engines.
+                    Analyze your keywords to optimize your content for search engines.
                   </p>
                   
                   <div className="mb-6">
