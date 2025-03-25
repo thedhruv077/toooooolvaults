@@ -13,9 +13,7 @@ import {
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "./ui/navigation-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -60,13 +58,13 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Desktop Navigation - Using Radix UI NavigationMenu */}
+        {/* Desktop Navigation - Moved to right */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger className="flex items-center gap-1 py-2">
                 <Calculator className="w-4 h-4 text-accent" />
-                <span>Calculators</span>
+                <span>Tools</span>
               </NavigationMenuTrigger>
               <NavigationMenuContent className="glass-panel glass-panel-dark shadow-xl border border-white/10 animate-fade-in">
                 <div className="grid gap-2 p-3 w-[400px]">
@@ -164,18 +162,6 @@ const Header = () => {
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-          <div className="hidden md:flex">
-            <Button asChild variant="ghost" className="text-sm hover:bg-accent/10 hover:text-accent">
-              <Link to="/about">About</Link>
-            </Button>
-            <Button asChild variant="ghost" className="text-sm hover:bg-accent/10 hover:text-accent">
-              <Link to="/contact">Contact</Link>
-            </Button>
-            <Button asChild variant="outline" className="text-sm bg-accent/5 border-accent/30 hover:bg-accent/10 hover:text-accent transition-all">
-              <Link to="/privacy">Privacy</Link>
-            </Button>
-          </div>
-          
           {/* Mobile Theme Toggle */}
           <div className="md:hidden flex">
             <ThemeToggle />
@@ -206,7 +192,7 @@ const Header = () => {
           <div className="flex flex-col h-full pt-20 px-6 pb-10 overflow-y-auto">
             <h3 className="text-lg font-medium mb-4 flex items-center gap-2 text-accent">
               <Calculator className="w-5 h-5 text-accent" />
-              Calculators
+              Tools
             </h3>
             <div className="flex flex-col gap-4 mb-8">
               <Link
@@ -307,21 +293,6 @@ const Header = () => {
                   <div className="text-xs text-muted-foreground">Create professional invoices</div>
                 </div>
               </Link>
-            </div>
-            
-            {/* Additional pages for mobile */}
-            <div className="mt-auto pt-8 border-t border-border/30">
-              <div className="grid grid-cols-3 gap-3">
-                <Button asChild variant="outline" className="bg-accent/5 border-accent/20 hover:bg-accent/10 w-full justify-start">
-                  <Link to="/about" onClick={toggleMobileMenu}>About</Link>
-                </Button>
-                <Button asChild variant="outline" className="bg-accent/5 border-accent/20 hover:bg-accent/10 w-full justify-start">
-                  <Link to="/contact" onClick={toggleMobileMenu}>Contact</Link>
-                </Button>
-                <Button asChild variant="outline" className="bg-accent/5 border-accent/20 hover:bg-accent/10 w-full justify-start">
-                  <Link to="/privacy" onClick={toggleMobileMenu}>Privacy</Link>
-                </Button>
-              </div>
             </div>
           </div>
         </div>
