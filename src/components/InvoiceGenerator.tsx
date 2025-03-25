@@ -105,20 +105,32 @@ const InvoiceMaker = () => {
   
   const handleGenerateInvoice = async () => {
     if (!companyName || !clientName) {
-      toast({ title: "Error", description: "Please enter company and client information", variant: "destructive" });
+      toast({ 
+        title: "Error", 
+        description: "Please enter company and client information", 
+        variant: "destructive" 
+      });
       return;
     }
     
     if (items.some(item => !item.description)) {
-      toast({ title: "Error", description: "Please fill in all item descriptions", variant: "destructive" });
+      toast({ 
+        title: "Error", 
+        description: "Please fill in all item descriptions", 
+        variant: "destructive" 
+      });
       return;
     }
     
     setIsGenerating(true);
     
     try {
-      // Create a new jsPDF instance
-      const doc = new jsPDF();
+      const doc = new jsPDF({
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      });
+
       const invoiceElement = document.getElementById('invoice-content');
       
       if (!invoiceElement) {
@@ -128,16 +140,50 @@ const InvoiceMaker = () => {
       const canvas = await html2canvas(invoiceElement, {
         scale: 2,
         logging: false,
-        useCORS: true
+        useCORS: true,
+        allowTaint: true,
+        windowWidth: invoiceElement.scrollWidth,
+        windowHeight: invoiceElement.scrollHeight
       });
       
-      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
-      // Add image to PDF
-      const imgWidth = 210;
-      const imgHeight = canvas.height * imgWidth / canvas.width;
-      
-      doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      // Add image to PDF with better positioning
+      doc.addImage(
+        canvas.toDataURL('image/png'),
+        'PNG',
+        0,
+        0,
+        imgWidth,
+        imgHeight,
+        undefined,
+        'FAST'
+      );
+
+      // If content exceeds one page, add new pages
+      if (imgHeight > pageHeight) {
+        let remainingHeight = imgHeight;
+        let position = -pageHeight;
+        
+        while (remainingHeight > 0) {
+          doc.addPage();
+          doc.addImage(
+            canvas.toDataURL('image/png'),
+            'PNG',
+            0,
+            position,
+            imgWidth,
+            imgHeight,
+            undefined,
+            'FAST'
+          );
+          remainingHeight -= pageHeight;
+          position -= pageHeight;
+        }
+      }
+
       doc.save(`Invoice-${invoiceNumber}.pdf`);
       
       toast({ title: "Success", description: "Invoice downloaded successfully!" });
@@ -157,22 +203,22 @@ const InvoiceMaker = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow pt-24 pb-16 px-4">
+      <main className="flex-grow pt-20 md:pt-24 pb-16 px-3 md:px-4">
         <div className="container mx-auto max-w-5xl">
-          <div className="mb-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-accent/10 text-accent mb-6">
-              <Receipt size={36} />
+          <div className="mb-8 md:mb-12 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-accent/10 text-accent mb-4 md:mb-6">
+              <Receipt size={isMobile ? 28 : 36} />
             </div>
-            <h1 className="text-4xl font-display font-bold mb-4">Invoice Maker</h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <h1 className="text-2xl md:text-4xl font-display font-bold mb-3 md:mb-4">Invoice Maker</h1>
+            <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
               Create professional invoices with our easy-to-use template.
             </p>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div id="invoice-content" className="bg-white dark:bg-background rounded-xl shadow-lg overflow-hidden">
-              <div className={`p-6 md:p-8 border-b ${isMobile ? 'space-y-6' : ''}`}>
-                <div className="flex flex-col md:flex-row justify-between">
+              <div className="p-4 md:p-8 border-b space-y-6 md:space-y-0">
+                <div className="flex flex-col md:flex-row justify-between gap-6">
                   <div className="mb-6 md:mb-0">
                     <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">INVOICE</h2>
                     <div className="mt-4 space-y-2">
@@ -233,9 +279,9 @@ const InvoiceMaker = () => {
                 </div>
               </div>
               
-              <div className={`p-6 md:p-8 border-b ${isMobile ? 'space-y-6' : ''}`}>
+              <div className="p-4 md:p-8 border-b space-y-4">
                 <h3 className="text-lg font-semibold mb-4">Bill To:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div className="space-y-1">
                     <Label htmlFor="client-name">Client Name</Label>
                     <Input
@@ -259,76 +305,78 @@ const InvoiceMaker = () => {
                 </div>
               </div>
               
-              <div className={`p-6 md:p-8 border-b ${isMobile ? 'space-y-6' : ''}`}>
-                <div className="flex flex-wrap justify-between items-center mb-4">
+              <div className="p-4 md:p-8 border-b space-y-4">
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-3">
                   <h3 className="text-lg font-semibold">Items</h3>
                   <Button 
                     variant="outline" 
                     size="sm" 
                     onClick={addItem}
-                    className="flex items-center"
+                    className="flex items-center w-full md:w-auto justify-center"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Item
                   </Button>
                 </div>
                 
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="py-2 text-left">Description</th>
-                        <th className="py-2 text-right">Qty</th>
-                        <th className="py-2 text-right">Price</th>
-                        <th className="py-2 text-right">Amount</th>
-                        <th className="py-2 w-10"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((item) => (
-                        <tr key={item.id} className="border-b">
-                          <td className="py-3 pr-4">
-                            <Input
-                              placeholder="Item description"
-                              value={item.description}
-                              onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                            />
-                          </td>
-                          <td className="py-3 px-2">
-                            <Input
-                              type="number"
-                              min="1"
-                              className="text-right"
-                              value={item.quantity}
-                              onChange={(e) => updateItem(item.id, 'quantity', parseInt(e.target.value) || 0)}
-                            />
-                          </td>
-                          <td className="py-3 px-2">
-                            <Input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              className="text-right"
-                              value={item.price}
-                              onChange={(e) => updateItem(item.id, 'price', parseFloat(e.target.value) || 0)}
-                            />
-                          </td>
-                          <td className="py-3 px-2 text-right font-medium">
-                            ₹{(item.quantity * item.price).toFixed(2)}
-                          </td>
-                          <td className="py-3 pl-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeItem(item.id)}
-                            >
-                              <Trash2 className="w-4 h-4 text-muted-foreground" />
-                            </Button>
-                          </td>
+                <div className="overflow-x-auto -mx-4 md:mx-0">
+                  <div className="min-w-[640px] px-4 md:px-0">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="py-2 text-left">Description</th>
+                          <th className="py-2 text-right">Qty</th>
+                          <th className="py-2 text-right">Price</th>
+                          <th className="py-2 text-right">Amount</th>
+                          <th className="py-2 w-10"></th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {items.map((item) => (
+                          <tr key={item.id} className="border-b">
+                            <td className="py-3 pr-4">
+                              <Input
+                                placeholder="Item description"
+                                value={item.description}
+                                onChange={(e) => updateItem(item.id, 'description', e.target.value)}
+                              />
+                            </td>
+                            <td className="py-3 px-2">
+                              <Input
+                                type="number"
+                                min="1"
+                                className="text-right"
+                                value={item.quantity}
+                                onChange={(e) => updateItem(item.id, 'quantity', parseInt(e.target.value) || 0)}
+                              />
+                            </td>
+                            <td className="py-3 px-2">
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                className="text-right"
+                                value={item.price}
+                                onChange={(e) => updateItem(item.id, 'price', parseFloat(e.target.value) || 0)}
+                              />
+                            </td>
+                            <td className="py-3 px-2 text-right font-medium">
+                              ₹{(item.quantity * item.price).toFixed(2)}
+                            </td>
+                            <td className="py-3 pl-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => removeItem(item.id)}
+                              >
+                                <Trash2 className="w-4 h-4 text-muted-foreground" />
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 
                 <div className="mt-6 ml-auto md:w-1/2">
@@ -387,8 +435,8 @@ const InvoiceMaker = () => {
                 </div>
               </div>
               
-              <div className="p-6 md:p-8">
-                <div className="space-y-1">
+              <div className="p-4 md:p-8">
+                <div className="space-y-2">
                   <Label htmlFor="notes">Notes</Label>
                   <Textarea
                     id="notes"
@@ -401,14 +449,17 @@ const InvoiceMaker = () => {
               </div>
             </div>
             
-            <div className="flex justify-end gap-4">
-              <Button variant="outline" className="flex items-center">
+            <div className="flex flex-col md:flex-row justify-end gap-3 md:gap-4">
+              <Button 
+                variant="outline" 
+                className="flex items-center justify-center"
+              >
                 <FileText className="w-4 h-4 mr-2" />
                 Save Draft
               </Button>
               <Button 
                 onClick={handleGenerateInvoice} 
-                className="flex items-center"
+                className="flex items-center justify-center"
                 disabled={isGenerating}
               >
                 {isGenerating ? (
@@ -434,4 +485,3 @@ const InvoiceMaker = () => {
 };
 
 export default InvoiceMaker;
-
