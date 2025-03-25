@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Header from "./Header";
 import Footer from "./Footer";
+import { Helmet } from "react-helmet-async";
 
 type ShapeType = "rectangle" | "circle" | "triangle" | "square";
 
@@ -153,6 +154,12 @@ const AreaCalculator = () => {
   
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>Area Calculator - Calculate Areas of Different Shapes | Tool Vault</title>
+        <meta name="description" content="Free area calculator to find areas of rectangle, square, circle, and triangle. Perfect for DIY projects, home improvement, and educational purposes." />
+        <meta name="keywords" content="area calculator, calculate area, rectangle area, square area, circle area, triangle area, shape calculator" />
+      </Helmet>
+      
       <Header />
       
       <div className="flex-grow pt-24 pb-16 px-4">
@@ -160,15 +167,15 @@ const AreaCalculator = () => {
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-6 flex items-center gap-3">
               <Calculator className="w-5 h-5 text-accent" />
-              <h1 className="text-xl font-semibold">Area Calculator for Blog Content</h1>
+              <h1 className="text-xl font-semibold">Area Calculator</h1>
             </div>
 
             <div className="p-6">
               <div className="mb-6">
-                <h2 className="text-lg font-medium mb-4">Area Calculator for Your Blog Posts</h2>
+                <h2 className="text-lg font-medium mb-4">Area Calculator</h2>
                 <p className="text-foreground/70 mb-6">
-                  Easily calculate the area of common shapes to include in your blog posts about home improvement, 
-                  gardening, DIY projects, or educational content.
+                  Easily calculate the area of common shapes for home improvement, 
+                  gardening, DIY projects, or educational purposes.
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -277,11 +284,11 @@ const AreaCalculator = () => {
               </div>
               
               <div className="mt-8 p-4 rounded-lg bg-background/30">
-                <h3 className="font-medium mb-2">Using Area Calculations in Your Blog</h3>
+                <h3 className="font-medium mb-2">Using Area Calculations</h3>
                 <ul className="space-y-1 text-sm text-foreground/70">
-                  <li>• Home improvement posts: Calculate paint or flooring needed</li>
-                  <li>• Gardening articles: Determine soil or mulch requirements</li>
-                  <li>• Educational content: Illustrate mathematical concepts</li>
+                  <li>• Home improvement: Calculate paint or flooring needed</li>
+                  <li>• Gardening: Determine soil or mulch requirements</li>
+                  <li>• Educational purposes: Illustrate mathematical concepts</li>
                   <li>• DIY projects: Specify material quantities</li>
                 </ul>
               </div>

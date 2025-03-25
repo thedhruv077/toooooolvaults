@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const EMICalculator = () => {
   const [loanAmount, setLoanAmount] = useState<string>("200000.00");
@@ -52,6 +53,12 @@ const EMICalculator = () => {
   
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>EMI Calculator - Calculate Monthly Loan Repayments | Tool Vault</title>
+        <meta name="description" content="Free EMI calculator to calculate monthly loan payments, total interest cost, and total repayment amount for home loans, car loans, and personal loans." />
+        <meta name="keywords" content="EMI calculator, loan calculator, monthly payment calculator, mortgage calculator, loan repayment calculator" />
+      </Helmet>
+      
       <Header />
       
       <div className="flex-grow pt-24 pb-16 px-4">
@@ -59,14 +66,14 @@ const EMICalculator = () => {
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-6 flex items-center gap-3">
               <Calculator className="w-5 h-5 text-accent" />
-              <h1 className="text-xl font-semibold">EMI Calculator for Blog Content</h1>
+              <h1 className="text-xl font-semibold">EMI Calculator</h1>
             </div>
 
             <div className="p-6">
               <div className="mb-6">
-                <h2 className="text-lg font-medium mb-4">EMI Calculator for Your Blog Posts</h2>
+                <h2 className="text-lg font-medium mb-4">EMI Calculator</h2>
                 <p className="text-foreground/70 mb-4">
-                  Calculate monthly EMI (Equated Monthly Installment) for loans. This tool helps your blog readers understand loan repayments, interest costs, and total payments.
+                  Calculate monthly EMI (Equated Monthly Installment) for loans. This tool helps you understand loan repayments, interest costs, and total payments.
                 </p>
 
                 <div className="grid grid-cols-1 gap-6 mb-6">
@@ -146,18 +153,18 @@ const EMICalculator = () => {
                     </div>
                   </div>
                   <p className="mt-4 text-sm text-foreground/70 text-center">
-                    You can copy these results and use them in your blog posts about loans and finances.
+                    These results show your loan payment schedule and total costs
                   </p>
                 </div>
               )}
               
               <div className="mt-8 p-4 rounded-lg bg-background/30">
-                <h3 className="font-medium mb-2">Tips for Using EMI Calculations in Blog Posts</h3>
+                <h3 className="font-medium mb-2">Tips for Using EMI Calculations</h3>
                 <ul className="space-y-1 text-sm text-foreground/70">
                   <li>• Compare different loan scenarios (term lengths, interest rates)</li>
-                  <li>• Show the impact of extra payments on total interest</li>
-                  <li>• Create realistic examples for personal finance articles</li>
-                  <li>• Pair calculations with advice on managing loan repayments</li>
+                  <li>• See the impact of extra payments on total interest</li>
+                  <li>• Make informed decisions about loan affordability</li>
+                  <li>• Plan budget for loan repayments</li>
                 </ul>
               </div>
             </div>

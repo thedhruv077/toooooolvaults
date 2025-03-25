@@ -11,8 +11,8 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-glass">Tool Vault</h3>
             <p className="text-sm text-foreground/70 mb-4">
-              A collection of useful tools and calculators for bloggers and content creators.
-              Enhance your content with our high-quality utilities.
+              A collection of useful tools and calculators. 
+              Enhance your productivity with our high-quality utilities.
             </p>
             <div className="flex items-center gap-2 text-sm text-foreground/70">
               <span>Made by Tool Vault with </span>

@@ -20,7 +20,19 @@ User-agent: DuckDuckBot
 Allow: /
 
 # Crawl delay to prevent overloading server
-Crawl-delay: 5
+Crawl-delay: 2
 
-# Disallow specific directories if needed
-# Disallow: /admin/
+# Tools and calculators specific directives
+Allow: /calculators/
+Allow: /utilities/
+Allow: /seo-tools
+
+# Make sure search engines prioritize current tools
+Allow: /calculators/percentage
+Allow: /calculators/emi
+Allow: /calculators/gst
+Allow: /calculators/area
+Allow: /utilities/qr-code
+Allow: /utilities/password
+Allow: /utilities/invoice
+Allow: /seo-tools
