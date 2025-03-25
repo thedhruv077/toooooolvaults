@@ -65,14 +65,14 @@ const GSTCalculator = () => {
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-6 flex items-center gap-3">
               <Calculator className="w-5 h-5 text-accent" />
-              <h1 className="text-xl font-semibold">GST Calculator for Blog Content</h1>
+              <h1 className="text-xl font-semibold">GST Calculator</h1>
             </div>
 
             <div className="p-6">
               <div className="mb-6">
-                <h2 className="text-lg font-medium mb-4">GST Calculator for Your Blog Posts</h2>
+                <h2 className="text-lg font-medium mb-4">GST Calculator</h2>
                 <p className="text-foreground/70 mb-4">
-                  Calculate GST (Goods and Services Tax) for product prices quickly. This tool helps your blog readers understand tax calculations for their purchases.
+                  Calculate GST (Goods and Services Tax) for product prices quickly. This tool helps you understand tax calculations for your purchases.
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-6">
@@ -164,15 +164,15 @@ const GSTCalculator = () => {
                     </div>
                   </div>
                   <p className="mt-4 text-sm text-foreground/70 text-center">
-                    You can copy these results and use them in your blog posts about product pricing and taxes.
+                    You can copy these results and use them for your tax calculations.
                   </p>
                 </div>
               )}
               
               <div className="mt-8 p-4 rounded-lg bg-background/30">
-                <h3 className="font-medium mb-2">Tips for Using GST Calculations in Blog Posts</h3>
+                <h3 className="font-medium mb-2">Tips for Using GST Calculations</h3>
                 <ul className="space-y-1 text-sm text-foreground/70">
-                  <li>• Include GST calculations in product review posts</li>
+                  <li>• Include GST calculations when preparing invoices</li>
                   <li>• Explain tax implications for different price points</li>
                   <li>• Compare pre-tax and post-tax values for better context</li>
                   <li>• Note that GST rates may vary by country and product category</li>

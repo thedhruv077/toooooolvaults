@@ -76,14 +76,14 @@ const PercentageCalculator = () => {
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden shadow-lg">
             <div className="border-b border-border/50 p-6 flex items-center gap-3 bg-accent/5">
               <Calculator className="w-5 h-5 text-accent" />
-              <h1 className="text-xl font-semibold">Percentage Calculator for Blog Content</h1>
+              <h1 className="text-xl font-semibold">Percentage Calculator</h1>
             </div>
 
             <div className="p-6">
               <div className="mb-6">
-                <h2 className="text-lg font-medium mb-4 text-glass">Percentage Calculator for Your Blog Posts</h2>
+                <h2 className="text-lg font-medium mb-4 text-glass">Percentage Calculator</h2>
                 <p className="text-foreground/70 mb-6">
-                  Quickly calculate percentages for your blog content. Create engaging statistics, 
+                  Quickly calculate percentages for your content. Create engaging statistics, 
                   financial examples, or data visualizations with accurate percentage calculations.
                 </p>
 
@@ -195,16 +195,16 @@ const PercentageCalculator = () => {
                   </p>
                 </div>
                 <p className="mt-4 text-sm text-foreground/70 text-center">
-                  You can copy these results and use them in your blog posts about finance, statistics, or data analysis.
+                  You can copy these results and use them in your calculations and reports.
                 </p>
               </div>
               
               <div className="mt-8 p-5 rounded-lg bg-background/30 border border-accent/5">
-                <h3 className="font-medium mb-3 text-accent">Tips for Using Percentages in Blog Content</h3>
+                <h3 className="font-medium mb-3 text-accent">Tips for Using Percentages</h3>
                 <ul className="space-y-2 text-sm text-foreground/70">
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
-                    <span>Use percentages to simplify complex data for your readers</span>
+                    <span>Use percentages to simplify complex data</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
