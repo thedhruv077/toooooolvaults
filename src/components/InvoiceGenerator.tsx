@@ -200,71 +200,126 @@ const InvoiceGenerator = () => {
       tempContainer.style.left = '-9999px';
       tempContainer.style.width = '210mm'; // A4 width
       
-      // Style the PDF content for better rendering
+      // Apply specific PDF styles to the cloned element
       clonedElement.style.width = '210mm';
+      clonedElement.style.padding = '20mm';
+      clonedElement.style.boxSizing = 'border-box';
       clonedElement.style.backgroundColor = 'white';
       clonedElement.style.color = 'black';
-      clonedElement.style.padding = '15mm 15mm';
-      clonedElement.style.boxSizing = 'border-box';
+      clonedElement.style.fontFamily = 'Arial, sans-serif';
       
-      // Remove UI elements not needed in PDF
-      const elementsToRemove = clonedElement.querySelectorAll('button');
-      elementsToRemove.forEach(el => el.remove());
+      // Remove buttons and other unnecessary UI elements
+      const buttonsToRemove = clonedElement.querySelectorAll('button, .hover-card-content');
+      buttonsToRemove.forEach(el => el.remove());
       
-      // Ensure all text is visible with proper styling
+      // Ensure proper styling for all elements in PDF
       const allElements = clonedElement.querySelectorAll('*');
       allElements.forEach(el => {
         const element = el as HTMLElement;
         if (element.style) {
           element.style.color = 'black';
+          element.style.fontSize = element.tagName === 'H1' ? '24px' : 
+                                   element.tagName === 'H2' ? '20px' : 
+                                   element.tagName === 'H3' ? '16px' : '12px';
+          element.style.lineHeight = '1.5';
           element.style.textOverflow = 'visible';
           element.style.overflow = 'visible';
           element.style.whiteSpace = 'normal';
           
-          // Set appropriate font sizes
-          if (element.tagName === 'H1') element.style.fontSize = '24px';
-          else if (element.tagName === 'H2') element.style.fontSize = '20px';
-          else if (element.tagName === 'H3') element.style.fontSize = '16px';
-          else element.style.fontSize = '12px';
+          // Make sure input values are visible
+          if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+            const inputEl = element as HTMLInputElement;
+            const textNode = document.createTextNode(inputEl.value || '');
+            element.parentNode?.replaceChild(textNode, element);
+          }
         }
       });
       
-      // Render the invoice to canvas with improved quality
+      // Force table to be visible with proper styling
+      const tables = clonedElement.querySelectorAll('table');
+      tables.forEach(table => {
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
+        
+        const cells = table.querySelectorAll('td, th');
+        cells.forEach(cell => {
+          const cellEl = cell as HTMLElement;
+          cellEl.style.padding = '8px';
+          cellEl.style.border = '1px solid #ddd';
+          cellEl.style.textAlign = cell.tagName === 'TH' ? 'left' : 
+                                  cellEl.classList.contains('text-right') ? 'right' : 'left';
+        });
+      });
+      
+      // Render the element to canvas at higher quality
       const canvas = await html2canvas(clonedElement, {
-        scale: 2, // Higher scale for better quality
+        scale: 3, // Higher scale for better quality
         useCORS: true,
         allowTaint: true,
         backgroundColor: 'white',
         logging: false,
+        onclone: (clonedDoc, clonedElement) => {
+          // Additional manipulation of the cloned document if needed
+          const inputs = clonedElement.querySelectorAll('input, textarea, select');
+          inputs.forEach(input => {
+            if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
+              if (input.parentNode) {
+                const text = document.createTextNode(input.value);
+                input.parentNode.replaceChild(text, input);
+              }
+            } else if (input instanceof HTMLSelectElement) {
+              if (input.parentNode) {
+                const text = document.createTextNode(input.options[input.selectedIndex]?.text || '');
+                input.parentNode.replaceChild(text, input);
+              }
+            }
+          });
+        }
       });
       
       // Clean up
       document.body.removeChild(tempContainer);
       
-      // Convert to image for PDF
+      // Get canvas as image
       const imgData = canvas.toDataURL('image/png');
       
-      // Calculate dimensions for PDF
+      // Calculate dimensions to fit in PDF
       const pdfWidth = 210; // A4 width in mm
       const pdfHeight = 297; // A4 height in mm
       const aspectRatio = canvas.height / canvas.width;
-      const imgWidth = pdfWidth;
-      const imgHeight = pdfWidth * aspectRatio;
+      const imgWidth = pdfWidth - 20; // Subtract margins
+      const imgHeight = imgWidth * aspectRatio;
       
-      // Add image to PDF, handling multi-page if needed
-      let heightLeft = imgHeight;
-      let position = 0;
+      // Add image to first page with proper positioning
+      doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
       
-      // Add first page
-      doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pdfHeight;
-      
-      // Add additional pages if content overflows
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        doc.addPage();
-        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pdfHeight;
+      // If the content overflows the first page, add more pages
+      if (imgHeight > pdfHeight - 20) {
+        let remainingHeight = imgHeight;
+        let currentPage = 1;
+        
+        while (remainingHeight > pdfHeight - 20) {
+          const visibleHeight = pdfHeight - 20;
+          
+          // Add a new page
+          doc.addPage();
+          currentPage++;
+          
+          // Position calculations for showing the next part of the image
+          const position = -1 * (visibleHeight * currentPage - 10);
+          
+          // Add the image with a clip to show only the next portion
+          doc.addImage(
+            imgData, 
+            'PNG', 
+            10, // x position
+            position, // y position (negative to show the part below)
+            imgWidth, 
+            imgHeight
+          );
+          
+          remainingHeight -= visibleHeight;
+        }
       }
       
       // Save the PDF
@@ -565,7 +620,7 @@ const InvoiceGenerator = () => {
                 <HoverCardTrigger asChild>
                   <Button 
                     onClick={handleGenerateInvoice} 
-                    className="flex items-center justify-center bg-accent hover:bg-accent/90 transition-all duration-300 shadow-md hover:shadow-lg hover:translate-y-[-2px]"
+                    className="flex items-center justify-center bg-accent hover:bg-accent/90 transition-all duration-300 shadow-md hover:shadow-xl hover:translate-y-[-2px] button-glow"
                     disabled={isGenerating}
                   >
                     {isGenerating ? (
@@ -581,8 +636,11 @@ const InvoiceGenerator = () => {
                     )}
                   </Button>
                 </HoverCardTrigger>
-                <HoverCardContent className="p-4">
-                  <p className="text-sm">Download your invoice as a PDF document.</p>
+                <HoverCardContent className="p-4 text-sm w-60 bg-popover shadow-lg border border-border/50">
+                  <div className="flex flex-col gap-2">
+                    <p className="font-medium">Download PDF Invoice</p>
+                    <p>Get a professional PDF document you can save, print or email to your clients.</p>
+                  </div>
                 </HoverCardContent>
               </HoverCard>
             </div>
