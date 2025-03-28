@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import html2canvas from 'html2canvas';
@@ -175,12 +176,11 @@ const InvoiceGenerator = () => {
     setIsGenerating(true);
     
     try {
-      // First, let's create a hidden clone for PDF generation to avoid affecting the UI
       if (!invoiceContentRef.current) {
         throw new Error('Invoice element not found');
       }
       
-      // Create a new PDF with A4 format
+      // Create PDF with standard A4 format
       const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -188,70 +188,83 @@ const InvoiceGenerator = () => {
         compress: true,
       });
       
-      // Clone the invoice element to avoid modifying the visible content
-      const invoiceClone = invoiceContentRef.current.cloneNode(true) as HTMLElement;
+      // Clone the DOM element to avoid affecting the visible UI
+      const originalElement = invoiceContentRef.current;
+      const clonedElement = originalElement.cloneNode(true) as HTMLElement;
+      
+      // Prepare temp container for the cloned element
       const tempContainer = document.createElement('div');
-      tempContainer.appendChild(invoiceClone);
+      document.body.appendChild(tempContainer);
+      tempContainer.appendChild(clonedElement);
       tempContainer.style.position = 'absolute';
       tempContainer.style.left = '-9999px';
-      tempContainer.style.top = '-9999px';
-      document.body.appendChild(tempContainer);
+      tempContainer.style.width = '210mm'; // A4 width
       
-      // Prepare the clone for better PDF rendering
-      invoiceClone.style.width = '210mm'; // A4 width
-      invoiceClone.style.padding = '10mm';
-      invoiceClone.style.backgroundColor = 'white';
-      invoiceClone.style.color = 'black';
+      // Style the PDF content for better rendering
+      clonedElement.style.width = '210mm';
+      clonedElement.style.backgroundColor = 'white';
+      clonedElement.style.color = 'black';
+      clonedElement.style.padding = '15mm 15mm';
+      clonedElement.style.boxSizing = 'border-box';
       
-      // Remove any buttons or unnecessary elements from the clone
-      const buttonsToRemove = invoiceClone.querySelectorAll('button');
-      buttonsToRemove.forEach(button => button.remove());
+      // Remove UI elements not needed in PDF
+      const elementsToRemove = clonedElement.querySelectorAll('button');
+      elementsToRemove.forEach(el => el.remove());
       
-      // Set explicit font sizes to avoid scaling issues
-      const allText = invoiceClone.querySelectorAll('*');
-      allText.forEach(el => {
-        (el as HTMLElement).style.fontSize = '12px';
-        (el as HTMLElement).style.lineHeight = '1.5';
+      // Ensure all text is visible with proper styling
+      const allElements = clonedElement.querySelectorAll('*');
+      allElements.forEach(el => {
+        const element = el as HTMLElement;
+        if (element.style) {
+          element.style.color = 'black';
+          element.style.textOverflow = 'visible';
+          element.style.overflow = 'visible';
+          element.style.whiteSpace = 'normal';
+          
+          // Set appropriate font sizes
+          if (element.tagName === 'H1') element.style.fontSize = '24px';
+          else if (element.tagName === 'H2') element.style.fontSize = '20px';
+          else if (element.tagName === 'H3') element.style.fontSize = '16px';
+          else element.style.fontSize = '12px';
+        }
       });
       
-      // Ensure headings are visible
-      const headings = invoiceClone.querySelectorAll('h1, h2, h3, h4, h5, h6');
-      headings.forEach(heading => {
-        (heading as HTMLElement).style.fontSize = '16px';
-        (heading as HTMLElement).style.fontWeight = 'bold';
-      });
-      
-      // Improve rendering quality with html2canvas options
-      const canvas = await html2canvas(invoiceClone, {
-        scale: 2,
+      // Render the invoice to canvas with improved quality
+      const canvas = await html2canvas(clonedElement, {
+        scale: 2, // Higher scale for better quality
         useCORS: true,
         allowTaint: true,
+        backgroundColor: 'white',
         logging: false,
-        backgroundColor: '#ffffff',
-        windowWidth: invoiceClone.scrollWidth,
-        windowHeight: invoiceClone.scrollHeight
       });
       
-      // Remove the temporary element
+      // Clean up
       document.body.removeChild(tempContainer);
       
-      const imgData = canvas.toDataURL('image/png', 1.0);
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 297; // A4 height in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Convert to image for PDF
+      const imgData = canvas.toDataURL('image/png');
+      
+      // Calculate dimensions for PDF
+      const pdfWidth = 210; // A4 width in mm
+      const pdfHeight = 297; // A4 height in mm
+      const aspectRatio = canvas.height / canvas.width;
+      const imgWidth = pdfWidth;
+      const imgHeight = pdfWidth * aspectRatio;
+      
+      // Add image to PDF, handling multi-page if needed
       let heightLeft = imgHeight;
       let position = 0;
       
       // Add first page
-      doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
-      heightLeft -= pageHeight;
+      doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
       
-      // Add new pages if content overflows
+      // Add additional pages if content overflows
       while (heightLeft > 0) {
         position = heightLeft - imgHeight;
         doc.addPage();
-        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
-        heightLeft -= pageHeight;
+        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
       }
       
       // Save the PDF
@@ -547,23 +560,31 @@ const InvoiceGenerator = () => {
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft
               </Button>
-              <Button 
-                onClick={handleGenerateInvoice} 
-                className="flex items-center justify-center bg-accent hover:bg-accent/90"
-                disabled={isGenerating}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Invoice
-                  </>
-                )}
-              </Button>
+              
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Button 
+                    onClick={handleGenerateInvoice} 
+                    className="flex items-center justify-center bg-accent hover:bg-accent/90 transition-all duration-300 shadow-md hover:shadow-lg hover:translate-y-[-2px]"
+                    disabled={isGenerating}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4 mr-2" />
+                        Download Invoice
+                      </>
+                    )}
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent className="p-4">
+                  <p className="text-sm">Download your invoice as a PDF document.</p>
+                </HoverCardContent>
+              </HoverCard>
             </div>
           </div>
         </div>
