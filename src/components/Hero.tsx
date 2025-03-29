@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ArrowRight, Percent } from "lucide-react";
+import { ArrowRight, Percent, FileImage, Calculator, Lock, QrCode } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -17,6 +17,39 @@ const Hero = () => {
           Discover our collection of free premium utilities designed to simplify 
           calculations, generate useful resources, and improve productivity.
         </p>
+        
+        {/* Direct tool access links */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10 animate-fade-in [animation-delay:500ms]">
+          <Link
+            to="/calculators/percentage"
+            className="flex flex-col items-center justify-center p-4 rounded-lg glass-panel glass-panel-dark transition-all duration-300 hover:bg-accent/10 hover:scale-105"
+          >
+            <Percent className="w-6 h-6 text-accent mb-2" />
+            <span className="text-sm font-medium">Percentage</span>
+          </Link>
+          <Link
+            to="/utilities/qr-code"
+            className="flex flex-col items-center justify-center p-4 rounded-lg glass-panel glass-panel-dark transition-all duration-300 hover:bg-accent/10 hover:scale-105"
+          >
+            <QrCode className="w-6 h-6 text-accent mb-2" />
+            <span className="text-sm font-medium">QR Code</span>
+          </Link>
+          <Link
+            to="/utilities/password"
+            className="flex flex-col items-center justify-center p-4 rounded-lg glass-panel glass-panel-dark transition-all duration-300 hover:bg-accent/10 hover:scale-105"
+          >
+            <Lock className="w-6 h-6 text-accent mb-2" />
+            <span className="text-sm font-medium">Password</span>
+          </Link>
+          <Link
+            to="/utilities/jpg-to-pdf"
+            className="flex flex-col items-center justify-center p-4 rounded-lg glass-panel glass-panel-dark transition-all duration-300 hover:bg-accent/10 hover:scale-105"
+          >
+            <FileImage className="w-6 h-6 text-accent mb-2" />
+            <span className="text-sm font-medium">JPG to PDF</span>
+          </Link>
+        </div>
+        
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in [animation-delay:600ms]">
           <Link
             to="/calculators/percentage"

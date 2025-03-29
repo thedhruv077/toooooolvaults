@@ -100,6 +100,7 @@ const JPGtoPDFConverter = () => {
     setImageUrls([]);
   };
 
+  // This is the fixed convertToPdf function that properly handles image conversion
   const convertToPdf = async () => {
     if (images.length === 0) {
       toast({
@@ -115,51 +116,97 @@ const JPGtoPDFConverter = () => {
     
     try {
       // Create PDF with A4 size
-      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      // Process each image
+      // Process each image sequentially
       for (let i = 0; i < images.length; i++) {
-        // Load image
-        const img = await loadImage(imageUrls[i]);
-        
         // Add a new page for each image after the first one
         if (i > 0) {
           pdf.addPage();
         }
         
-        // Calculate dimensions to fit the image on the page
-        const imgRatio = img.width / img.height;
-        const pageRatio = pdfWidth / pdfHeight;
+        // Create a FileReader to read the image as Data URL
+        const reader = new FileReader();
         
-        let finalWidth, finalHeight;
+        // Process the image using Promise to handle asynchronous file reading
+        await new Promise<void>((resolve, reject) => {
+          reader.onload = async (event) => {
+            try {
+              if (event.target && typeof event.target.result === 'string') {
+                const img = new Image();
+                
+                // Load the image to get its dimensions
+                await new Promise<void>((resolveImg) => {
+                  img.onload = () => {
+                    // Calculate dimensions to fit the image on the page
+                    const imgRatio = img.width / img.height;
+                    const pageRatio = pdfWidth / pdfHeight;
+                    
+                    let finalWidth, finalHeight;
+                    
+                    if (imgRatio > pageRatio) {
+                      // Image is wider than the page aspect ratio
+                      finalWidth = pdfWidth;
+                      finalHeight = pdfWidth / imgRatio;
+                    } else {
+                      // Image is taller than the page aspect ratio
+                      finalHeight = pdfHeight;
+                      finalWidth = pdfHeight * imgRatio;
+                    }
+                    
+                    // Center the image on the page
+                    const xOffset = (pdfWidth - finalWidth) / 2;
+                    const yOffset = (pdfHeight - finalHeight) / 2;
+                    
+                    // Add image to PDF with correct format
+                    const imgFormat = images[i].type === 'image/png' ? 'PNG' : 'JPEG';
+                    
+                    // Add the image to the PDF
+                    pdf.addImage(
+                      event.target.result, 
+                      imgFormat, 
+                      xOffset, 
+                      yOffset, 
+                      finalWidth, 
+                      finalHeight
+                    );
+                    
+                    resolveImg();
+                  };
+                  
+                  img.onerror = () => {
+                    reject(new Error(`Failed to load image ${i + 1}`));
+                  };
+                  
+                  img.src = event.target.result;
+                });
+                
+                resolve();
+              } else {
+                reject(new Error(`Failed to read image ${i + 1}`));
+              }
+            } catch (err) {
+              reject(err);
+            }
+          };
+          
+          reader.onerror = () => {
+            reject(new Error(`Failed to read image ${i + 1}`));
+          };
+          
+          // Read the image file as data URL
+          reader.readAsDataURL(images[i]);
+        });
         
-        if (imgRatio > pageRatio) {
-          // Image is wider than the page aspect ratio
-          finalWidth = pdfWidth;
-          finalHeight = pdfWidth / imgRatio;
-        } else {
-          // Image is taller than the page aspect ratio
-          finalHeight = pdfHeight;
-          finalWidth = pdfHeight * imgRatio;
-        }
-        
-        // Center the image on the page
-        const xOffset = (pdfWidth - finalWidth) / 2;
-        const yOffset = (pdfHeight - finalHeight) / 2;
-        
-        // Add image to PDF
-        pdf.addImage(
-          img, 
-          'JPEG', 
-          xOffset, 
-          yOffset, 
-          finalWidth, 
-          finalHeight
-        );
-        
-        setProgress((i + 1) / images.length * 100);
+        // Update progress after each image is processed
+        setProgress(((i + 1) / images.length) * 100);
       }
       
       // Save the PDF
@@ -169,7 +216,6 @@ const JPGtoPDFConverter = () => {
       toast({
         title: "Conversion complete",
         description: `Successfully converted ${images.length} image${images.length > 1 ? 's' : ''} to PDF`,
-        variant: "default",
       });
     } catch (error) {
       console.error("Error converting to PDF:", error);
@@ -182,16 +228,6 @@ const JPGtoPDFConverter = () => {
       setLoading(false);
       setProgress(0);
     }
-  };
-
-  // Helper function to load an image as a promise
-  const loadImage = (src: string): Promise<HTMLImageElement> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    });
   };
 
   return (
