@@ -35,7 +35,7 @@ const JPGtoPDFConverter = () => {
       }
       
       if (validFiles.length > 0) {
-        // Create URLs for the new images first
+        // Create URLs for the new images
         const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
         
         // Update the state
@@ -312,12 +312,12 @@ const JPGtoPDFConverter = () => {
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {imageUrls.map((url, index) => (
-                    <div key={`${url}-${index}`} className="relative group border border-border rounded-md overflow-hidden">
-                      <div className="relative pt-[100%]">
+                    <div key={`${url}-${index}`} className="relative group bg-background border border-border rounded-md overflow-hidden shadow-sm">
+                      <div className="aspect-square relative">
                         <img
                           src={url}
                           alt={`Uploaded image ${index + 1}`}
-                          className="absolute inset-0 w-full h-full object-cover"
+                          className="absolute inset-0 w-full h-full object-contain p-1"
                         />
                       </div>
                       <button
@@ -325,7 +325,8 @@ const JPGtoPDFConverter = () => {
                           e.stopPropagation();
                           removeImage(index);
                         }}
-                        className="absolute top-2 right-2 bg-black/70 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-1 right-1 bg-black/70 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label="Remove image"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
