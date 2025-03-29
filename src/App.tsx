@@ -19,6 +19,9 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import SEOTools from "./components/SEOTools";
+import SIPCalculator from "./components/SIPCalculator";
+import RealEstateCalculator from "./components/RealEstateCalculator";
+import JPGtoPDFConverter from "./components/JPGtoPDFConverter";
 
 // ScrollToTop component to reset scroll position on route change
 const ScrollToTop = () => {
@@ -47,9 +50,12 @@ const App = () => (
             <Route path="/calculators/emi" element={<EMICalculator />} />
             <Route path="/calculators/gst" element={<GSTCalculator />} />
             <Route path="/calculators/area" element={<AreaCalculator />} />
+            <Route path="/calculators/sip" element={<SIPCalculator />} />
+            <Route path="/calculators/real-estate" element={<RealEstateCalculator />} />
             <Route path="/utilities/qr-code" element={<QRCodeGenerator />} />
             <Route path="/utilities/password" element={<PasswordGenerator />} />
             <Route path="/utilities/invoice" element={<InvoiceGenerator />} />
+            <Route path="/utilities/jpg-to-pdf" element={<JPGtoPDFConverter />} />
             <Route path="/seo-tools" element={<SEOTools />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
