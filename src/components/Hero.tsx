@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Percent } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -22,7 +22,8 @@ const Hero = () => {
             to="/calculators/percentage"
             className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-accent text-white font-medium transition-all duration-300 hover:bg-accent/90 hover:shadow-lg hover:scale-105 active:scale-95"
           >
-            <span>Try a Calculator</span>
+            <Percent className="w-4 h-4" />
+            <span>Try Percentage Calculator</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link

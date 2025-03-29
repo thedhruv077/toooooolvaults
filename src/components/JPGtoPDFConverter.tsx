@@ -119,28 +119,17 @@ const JPGtoPDFConverter = () => {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      // Load all images first to avoid async issues
-      const loadedImages: HTMLImageElement[] = [];
-      
+      // Process each image
       for (let i = 0; i < images.length; i++) {
-        const image = new Image();
-        image.src = imageUrls[i];
-        await new Promise<void>((resolve) => {
-          image.onload = () => resolve();
-        });
-        loadedImages.push(image);
-        setProgress((i + 1) / images.length * 50); // First 50% is for loading
-      }
-      
-      // Add images to PDF
-      for (let i = 0; i < loadedImages.length; i++) {
+        // Load image
+        const img = await loadImage(imageUrls[i]);
+        
+        // Add a new page for each image after the first one
         if (i > 0) {
           pdf.addPage();
         }
         
-        const img = loadedImages[i];
-        
-        // Calculate aspect ratio to fit the page
+        // Calculate dimensions to fit the image on the page
         const imgRatio = img.width / img.height;
         const pageRatio = pdfWidth / pdfHeight;
         
@@ -160,6 +149,7 @@ const JPGtoPDFConverter = () => {
         const xOffset = (pdfWidth - finalWidth) / 2;
         const yOffset = (pdfHeight - finalHeight) / 2;
         
+        // Add image to PDF
         pdf.addImage(
           img, 
           'JPEG', 
@@ -169,7 +159,7 @@ const JPGtoPDFConverter = () => {
           finalHeight
         );
         
-        setProgress(50 + (i + 1) / loadedImages.length * 50); // Last 50% is for PDF creation
+        setProgress((i + 1) / images.length * 100);
       }
       
       // Save the PDF
@@ -192,6 +182,16 @@ const JPGtoPDFConverter = () => {
       setLoading(false);
       setProgress(0);
     }
+  };
+
+  // Helper function to load an image as a promise
+  const loadImage = (src: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
   };
 
   return (
