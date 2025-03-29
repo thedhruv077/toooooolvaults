@@ -7,6 +7,7 @@ import { FileImage, Upload, Trash2, Download, Check, AlertCircle } from "lucide-
 import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
 import Footer from "./Footer";
+import { Helmet } from "react-helmet-async";
 
 const JPGtoPDFConverter = () => {
   const [images, setImages] = useState<File[]>([]);
@@ -34,12 +35,18 @@ const JPGtoPDFConverter = () => {
       }
       
       if (validFiles.length > 0) {
-        const newImages = [...images, ...validFiles];
-        setImages(newImages);
-        
-        // Create URLs for the new images
+        // Create URLs for the new images first
         const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
-        setImageUrls([...imageUrls, ...newImageUrls]);
+        
+        // Update the state
+        setImages(prevImages => [...prevImages, ...validFiles]);
+        setImageUrls(prevUrls => [...prevUrls, ...newImageUrls]);
+        
+        // Show success toast
+        toast({
+          title: "Images uploaded",
+          description: `${validFiles.length} image${validFiles.length > 1 ? 's' : ''} uploaded successfully`,
+        });
       }
     }
   };
@@ -68,12 +75,18 @@ const JPGtoPDFConverter = () => {
       }
       
       if (validFiles.length > 0) {
-        const newImages = [...images, ...validFiles];
-        setImages(newImages);
-        
         // Create URLs for the new images
         const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
-        setImageUrls([...imageUrls, ...newImageUrls]);
+        
+        // Update the state
+        setImages(prevImages => [...prevImages, ...validFiles]);
+        setImageUrls(prevUrls => [...prevUrls, ...newImageUrls]);
+        
+        // Show success toast
+        toast({
+          title: "Images uploaded",
+          description: `${validFiles.length} image${validFiles.length > 1 ? 's' : ''} dropped successfully`,
+        });
       }
     }
   };
@@ -98,6 +111,11 @@ const JPGtoPDFConverter = () => {
     
     setImages([]);
     setImageUrls([]);
+    
+    toast({
+      title: "Cleared all images",
+      description: "All images have been removed",
+    });
   };
 
   // Fixed convertToPdf function that correctly handles image conversion
@@ -143,8 +161,7 @@ const JPGtoPDFConverter = () => {
                 return;
               }
               
-              // We need to ensure we're working with a data URL string
-              // FileReader.readAsDataURL always returns a string
+              // Ensure we're working with a data URL string
               const dataUrl = event.target.result as string;
               
               const img = new Image();
@@ -236,6 +253,12 @@ const JPGtoPDFConverter = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>JPG to PDF Converter | Free Online Tool | Tool Vault</title>
+        <meta name="description" content="Convert your JPG, JPEG, or PNG images to PDF online for free. No watermark, high quality, and easy to use." />
+        <meta name="keywords" content="jpg to pdf, image to pdf, convert jpg to pdf, free pdf converter, png to pdf, jpeg to pdf, online converter" />
+      </Helmet>
+      
       <Header />
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="text-center mb-10">
@@ -289,12 +312,14 @@ const JPGtoPDFConverter = () => {
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {imageUrls.map((url, index) => (
-                    <div key={`${url}-${index}`} className="relative group">
-                      <img
-                        src={url}
-                        alt={`Uploaded image ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-md"
-                      />
+                    <div key={`${url}-${index}`} className="relative group border border-border rounded-md overflow-hidden">
+                      <div className="relative pt-[100%]">
+                        <img
+                          src={url}
+                          alt={`Uploaded image ${index + 1}`}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      </div>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -305,7 +330,7 @@ const JPGtoPDFConverter = () => {
                         <Trash2 className="w-4 h-4" />
                       </button>
                       <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs py-1 px-2 truncate">
-                        {images[index].name}
+                        {images[index]?.name || `Image ${index + 1}`}
                       </div>
                     </div>
                   ))}
