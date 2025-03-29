@@ -100,7 +100,7 @@ const JPGtoPDFConverter = () => {
     setImageUrls([]);
   };
 
-  // This is the fixed convertToPdf function that properly handles image conversion
+  // Fixed convertToPdf function that correctly handles image conversion
   const convertToPdf = async () => {
     if (images.length === 0) {
       toast({
@@ -132,66 +132,70 @@ const JPGtoPDFConverter = () => {
           pdf.addPage();
         }
         
-        // Create a FileReader to read the image as Data URL
-        const reader = new FileReader();
-        
         // Process the image using Promise to handle asynchronous file reading
         await new Promise<void>((resolve, reject) => {
+          const reader = new FileReader();
+          
           reader.onload = async (event) => {
             try {
-              if (event.target && typeof event.target.result === 'string') {
-                const img = new Image();
-                
-                // Load the image to get its dimensions
-                await new Promise<void>((resolveImg) => {
-                  img.onload = () => {
-                    // Calculate dimensions to fit the image on the page
-                    const imgRatio = img.width / img.height;
-                    const pageRatio = pdfWidth / pdfHeight;
-                    
-                    let finalWidth, finalHeight;
-                    
-                    if (imgRatio > pageRatio) {
-                      // Image is wider than the page aspect ratio
-                      finalWidth = pdfWidth;
-                      finalHeight = pdfWidth / imgRatio;
-                    } else {
-                      // Image is taller than the page aspect ratio
-                      finalHeight = pdfHeight;
-                      finalWidth = pdfHeight * imgRatio;
-                    }
-                    
-                    // Center the image on the page
-                    const xOffset = (pdfWidth - finalWidth) / 2;
-                    const yOffset = (pdfHeight - finalHeight) / 2;
-                    
-                    // Add image to PDF with correct format
-                    const imgFormat = images[i].type === 'image/png' ? 'PNG' : 'JPEG';
-                    
-                    // Add the image to the PDF
-                    pdf.addImage(
-                      event.target.result, 
-                      imgFormat, 
-                      xOffset, 
-                      yOffset, 
-                      finalWidth, 
-                      finalHeight
-                    );
-                    
-                    resolveImg();
-                  };
-                  
-                  img.onerror = () => {
-                    reject(new Error(`Failed to load image ${i + 1}`));
-                  };
-                  
-                  img.src = event.target.result;
-                });
-                
-                resolve();
-              } else {
+              if (!event.target || !event.target.result) {
                 reject(new Error(`Failed to read image ${i + 1}`));
+                return;
               }
+              
+              // We need to ensure we're working with a data URL string
+              // FileReader.readAsDataURL always returns a string
+              const dataUrl = event.target.result as string;
+              
+              const img = new Image();
+              
+              // Load the image to get its dimensions
+              await new Promise<void>((resolveImg) => {
+                img.onload = () => {
+                  // Calculate dimensions to fit the image on the page
+                  const imgRatio = img.width / img.height;
+                  const pageRatio = pdfWidth / pdfHeight;
+                  
+                  let finalWidth, finalHeight;
+                  
+                  if (imgRatio > pageRatio) {
+                    // Image is wider than the page aspect ratio
+                    finalWidth = pdfWidth;
+                    finalHeight = pdfWidth / imgRatio;
+                  } else {
+                    // Image is taller than the page aspect ratio
+                    finalHeight = pdfHeight;
+                    finalWidth = pdfHeight * imgRatio;
+                  }
+                  
+                  // Center the image on the page
+                  const xOffset = (pdfWidth - finalWidth) / 2;
+                  const yOffset = (pdfHeight - finalHeight) / 2;
+                  
+                  // Add image to PDF with correct format
+                  const imgFormat = images[i].type === 'image/png' ? 'PNG' : 'JPEG';
+                  
+                  // Add the image to the PDF - using the DataURL which is guaranteed to be a string
+                  pdf.addImage(
+                    dataUrl, 
+                    imgFormat, 
+                    xOffset, 
+                    yOffset, 
+                    finalWidth, 
+                    finalHeight
+                  );
+                  
+                  resolveImg();
+                };
+                
+                img.onerror = () => {
+                  reject(new Error(`Failed to load image ${i + 1}`));
+                };
+                
+                img.src = dataUrl;
+              });
+              
+              resolve();
             } catch (err) {
               reject(err);
             }
@@ -201,7 +205,7 @@ const JPGtoPDFConverter = () => {
             reject(new Error(`Failed to read image ${i + 1}`));
           };
           
-          // Read the image file as data URL
+          // Read the image file as data URL to ensure we get a string result
           reader.readAsDataURL(images[i]);
         });
         
