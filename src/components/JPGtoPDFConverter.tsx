@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,14 +34,12 @@ const JPGtoPDFConverter = () => {
       }
       
       if (validFiles.length > 0) {
-        // Create URLs for the new images
         const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
+        console.log("New image URLs:", newImageUrls);
         
-        // Update the state
         setImages(prevImages => [...prevImages, ...validFiles]);
         setImageUrls(prevUrls => [...prevUrls, ...newImageUrls]);
         
-        // Show success toast
         toast({
           title: "Images uploaded",
           description: `${validFiles.length} image${validFiles.length > 1 ? 's' : ''} uploaded successfully`,
@@ -75,14 +72,12 @@ const JPGtoPDFConverter = () => {
       }
       
       if (validFiles.length > 0) {
-        // Create URLs for the new images
         const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
+        console.log("New image URLs:", newImageUrls);
         
-        // Update the state
         setImages(prevImages => [...prevImages, ...validFiles]);
         setImageUrls(prevUrls => [...prevUrls, ...newImageUrls]);
         
-        // Show success toast
         toast({
           title: "Images uploaded",
           description: `${validFiles.length} image${validFiles.length > 1 ? 's' : ''} dropped successfully`,
@@ -92,7 +87,6 @@ const JPGtoPDFConverter = () => {
   };
 
   const removeImage = (index: number) => {
-    // Free up memory by revoking URL
     URL.revokeObjectURL(imageUrls[index]);
     
     const newImageUrls = [...imageUrls];
@@ -106,7 +100,6 @@ const JPGtoPDFConverter = () => {
   };
 
   const clearAllImages = () => {
-    // Free up memory by revoking all URLs
     imageUrls.forEach(url => URL.revokeObjectURL(url));
     
     setImages([]);
@@ -118,7 +111,6 @@ const JPGtoPDFConverter = () => {
     });
   };
 
-  // Fixed convertToPdf function that correctly handles image conversion
   const convertToPdf = async () => {
     if (images.length === 0) {
       toast({
@@ -133,7 +125,6 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
     
     try {
-      // Create PDF with A4 size
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -143,14 +134,11 @@ const JPGtoPDFConverter = () => {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      // Process each image sequentially
       for (let i = 0; i < images.length; i++) {
-        // Add a new page for each image after the first one
         if (i > 0) {
           pdf.addPage();
         }
         
-        // Process the image using Promise to handle asynchronous file reading
         await new Promise<void>((resolve, reject) => {
           const reader = new FileReader();
           
@@ -161,38 +149,30 @@ const JPGtoPDFConverter = () => {
                 return;
               }
               
-              // Ensure we're working with a data URL string
               const dataUrl = event.target.result as string;
               
               const img = new Image();
               
-              // Load the image to get its dimensions
               await new Promise<void>((resolveImg) => {
                 img.onload = () => {
-                  // Calculate dimensions to fit the image on the page
                   const imgRatio = img.width / img.height;
                   const pageRatio = pdfWidth / pdfHeight;
                   
                   let finalWidth, finalHeight;
                   
                   if (imgRatio > pageRatio) {
-                    // Image is wider than the page aspect ratio
                     finalWidth = pdfWidth;
                     finalHeight = pdfWidth / imgRatio;
                   } else {
-                    // Image is taller than the page aspect ratio
                     finalHeight = pdfHeight;
                     finalWidth = pdfHeight * imgRatio;
                   }
                   
-                  // Center the image on the page
                   const xOffset = (pdfWidth - finalWidth) / 2;
                   const yOffset = (pdfHeight - finalHeight) / 2;
                   
-                  // Add image to PDF with correct format
                   const imgFormat = images[i].type === 'image/png' ? 'PNG' : 'JPEG';
                   
-                  // Add the image to the PDF - using the DataURL which is guaranteed to be a string
                   pdf.addImage(
                     dataUrl, 
                     imgFormat, 
@@ -222,18 +202,14 @@ const JPGtoPDFConverter = () => {
             reject(new Error(`Failed to read image ${i + 1}`));
           };
           
-          // Read the image file as data URL to ensure we get a string result
           reader.readAsDataURL(images[i]);
         });
         
-        // Update progress after each image is processed
         setProgress(((i + 1) / images.length) * 100);
       }
       
-      // Save the PDF
       pdf.save('converted-images.pdf');
       
-      // Show success message
       toast({
         title: "Conversion complete",
         description: `Successfully converted ${images.length} image${images.length > 1 ? 's' : ''} to PDF`,
@@ -312,12 +288,16 @@ const JPGtoPDFConverter = () => {
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {imageUrls.map((url, index) => (
-                    <div key={`${url}-${index}`} className="relative group bg-background border border-border rounded-md overflow-hidden shadow-sm">
-                      <div className="aspect-square relative">
+                    <div key={`${url}-${index}`} className="relative group bg-white dark:bg-gray-800 border border-border rounded-md overflow-hidden shadow">
+                      <div className="aspect-square flex items-center justify-center bg-gray-100 dark:bg-gray-700">
                         <img
                           src={url}
                           alt={`Uploaded image ${index + 1}`}
-                          className="absolute inset-0 w-full h-full object-contain p-1"
+                          className="max-w-full max-h-full object-contain p-2"
+                          onError={(e) => {
+                            console.error("Image load error:", e);
+                            (e.target as HTMLImageElement).src = "/placeholder.svg";
+                          }}
                         />
                       </div>
                       <button
