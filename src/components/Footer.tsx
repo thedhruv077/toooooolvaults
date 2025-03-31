@@ -2,10 +2,16 @@
 import React from "react";
 import { Instagram, Heart, Info, Mail, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
+import GoogleAd from "./GoogleAd";
 
 const Footer = () => {
   return (
     <footer className="py-8 mt-16 glass-panel glass-panel-dark border-t border-border/50">
+      {/* Footer ad - will appear on every page */}
+      <div className="container mx-auto px-4 mb-8">
+        <GoogleAd slot="footer-ad-slot" format="horizontal" className="mx-auto" />
+      </div>
+      
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>

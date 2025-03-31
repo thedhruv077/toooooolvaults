@@ -137,6 +137,8 @@ const ContactUs = () => {
                       />
                     </div>
                     
+                    <GoogleAd slot="form-mid-ad-slot" format="rectangle" className="my-4" />
+                    
                     <div>
                       <label className="block text-sm font-medium mb-2" htmlFor="message">
                         Your Message
