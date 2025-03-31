@@ -9,6 +9,7 @@ interface GoogleAdProps {
   className?: string;
   responsive?: boolean;
   style?: React.CSSProperties;
+  publisherId?: string; // Optional publisher ID to override default
 }
 
 const sizeMap = {
@@ -18,12 +19,16 @@ const sizeMap = {
   rectangle: { width: "300px", height: "250px" },
 };
 
+// Default publisher ID - replace this with your actual AdSense publisher ID
+const DEFAULT_PUBLISHER_ID = "ca-pub-YOUR_ACTUAL_PUBLISHER_ID";
+
 const GoogleAd: React.FC<GoogleAdProps> = ({
   slot,
   format = "auto",
   className = "",
   responsive = true,
   style = {},
+  publisherId = DEFAULT_PUBLISHER_ID, // Allow overriding publisher ID
 }) => {
   const adRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +41,7 @@ const GoogleAd: React.FC<GoogleAdProps> = ({
       script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
       script.async = true;
       script.crossOrigin = "anonymous";
-      script.dataset.adClient = "ca-pub-XXXXXXXXXXXXXXXX"; // Replace with your actual ad client ID
+      script.dataset.adClient = publisherId;
       document.head.appendChild(script);
     }
 
@@ -47,7 +52,7 @@ const GoogleAd: React.FC<GoogleAdProps> = ({
     } catch (error) {
       console.error("Error initializing ad:", error);
     }
-  }, [slot]);
+  }, [slot, publisherId]);
 
   const adContainerStyle = responsive
     ? { display: "block", width: "100%" }
@@ -58,7 +63,7 @@ const GoogleAd: React.FC<GoogleAdProps> = ({
       <ins
         className="adsbygoogle"
         style={adContainerStyle}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // Replace with your actual ad client ID
+        data-ad-client={publisherId}
         data-ad-slot={slot}
         data-ad-format={format === "auto" ? "auto" : ""}
         data-full-width-responsive={responsive ? "true" : "false"}
