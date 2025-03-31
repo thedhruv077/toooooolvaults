@@ -35,7 +35,7 @@ const ContactUs = () => {
       
       <div className="flex-grow pt-24 pb-16 px-4">
         <div className="container mx-auto max-w-4xl">
-          <GoogleAd slot="1234567890" format="horizontal" className="mb-6" />
+          <GoogleAd slot="contact-top-ad-slot" format="horizontal" className="mb-6" />
           
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-6">
@@ -51,7 +51,7 @@ const ContactUs = () => {
                   </p>
                 </div>
                 
-                <GoogleAd slot="0987654321" format="rectangle" className="my-4" />
+                <GoogleAd slot="contact-sidebar-ad-slot" format="rectangle" className="my-4" />
                 
                 <div className="space-y-4">
                   <div className="flex items-start">
@@ -163,7 +163,7 @@ const ContactUs = () => {
             </div>
           </div>
           
-          <GoogleAd slot="2345678901" format="horizontal" className="mt-6" />
+          <GoogleAd slot="contact-bottom-ad-slot" format="horizontal" className="mt-6" />
         </div>
       </div>
       
