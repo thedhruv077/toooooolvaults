@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -6,6 +5,7 @@ import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import GoogleAd from "../components/GoogleAd";
 
 const ContactUs = () => {
   const [name, setName] = useState("");
@@ -35,6 +35,8 @@ const ContactUs = () => {
       
       <div className="flex-grow pt-24 pb-16 px-4">
         <div className="container mx-auto max-w-4xl">
+          <GoogleAd slot="1234567890" format="horizontal" className="mb-6" />
+          
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-6">
               <h1 className="text-2xl font-bold">Contact Us</h1>
@@ -48,6 +50,8 @@ const ContactUs = () => {
                     Have questions about our tools? Want to suggest a new calculator for your blog? We'd love to hear from you!
                   </p>
                 </div>
+                
+                <GoogleAd slot="0987654321" format="rectangle" className="my-4" />
                 
                 <div className="space-y-4">
                   <div className="flex items-start">
@@ -156,6 +160,8 @@ const ContactUs = () => {
               </div>
             </div>
           </div>
+          
+          <GoogleAd slot="2345678901" format="horizontal" className="mt-6" />
         </div>
       </div>
       
