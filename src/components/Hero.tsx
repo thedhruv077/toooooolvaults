@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <section className="py-32 md:py-40 px-4">
+    <section className="py-16 md:py-24 px-4">
       <div className="max-w-4xl mx-auto text-center">
         <span className="inline-block px-3 py-1 text-xs font-medium rounded-full glass-panel glass-panel-dark animate-fade-in mb-8">
           Free Premium Tools for Everyone
