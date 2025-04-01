@@ -9,6 +9,7 @@ import { Calculator, AreaChart, Ruler, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
 import Footer from "./Footer";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type AreaUnit = "sqft" | "sqm" | "acre" | "hectare" | "bigha" | "marla";
 
@@ -40,6 +41,7 @@ const RealEstateAreaCalculator = () => {
   const [calculatedArea, setCalculatedArea] = useState<number | null>(null);
   const [convertedResults, setConvertedResults] = useState<Record<AreaUnit, number>>({} as Record<AreaUnit, number>);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const calculateArea = () => {
     let calculatedValue: number;
@@ -105,15 +107,15 @@ const RealEstateAreaCalculator = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-12">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold mb-4">Real Estate Area Calculator</h1>
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold mb-2">Real Estate Area Calculator</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Calculate and convert property area measurements between different units for real estate purposes.
+            Calculate and convert property area measurements
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -121,25 +123,25 @@ const RealEstateAreaCalculator = () => {
                 <span>Area Calculator</span>
               </CardTitle>
               <CardDescription>
-                Calculate property area and convert between different units
+                Calculate property area and convert between units
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex gap-4">
+            <CardContent className="space-y-4">
+              <div className="flex gap-2">
                 <Button
                   variant={isRectangular ? "default" : "outline"}
                   onClick={() => setIsRectangular(true)}
-                  className="flex-1"
+                  className="flex-1 text-xs md:text-sm"
                 >
-                  <Ruler className="w-4 h-4 mr-2" />
+                  <Ruler className="w-4 h-4 mr-1" />
                   Length × Width
                 </Button>
                 <Button
                   variant={!isRectangular ? "default" : "outline"}
                   onClick={() => setIsRectangular(false)}
-                  className="flex-1"
+                  className="flex-1 text-xs md:text-sm"
                 >
-                  <AreaChart className="w-4 h-4 mr-2" />
+                  <AreaChart className="w-4 h-4 mr-1" />
                   Direct Area
                 </Button>
               </div>
@@ -240,32 +242,32 @@ const RealEstateAreaCalculator = () => {
                 <>
                   <div className="bg-accent/10 p-4 rounded-lg">
                     <p className="text-sm text-muted-foreground mb-1">Original Area</p>
-                    <p className="text-2xl font-bold">
+                    <p className="text-xl font-bold break-words">
                       {calculatedArea.toFixed(2)} {unitLabels[inputUnit]}
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-2 gap-4'}`}>
                     {Object.entries(convertedResults).map(([unit, value]) => (
                       <div
                         key={unit}
-                        className={`p-4 rounded-lg ${
+                        className={`p-3 rounded-lg ${
                           unit === outputUnit
                             ? "bg-accent/20 border border-accent"
                             : "bg-accent/5"
                         }`}
                       >
                         <p className="text-xs text-muted-foreground mb-1">{unitLabels[unit as AreaUnit]}</p>
-                        <p className="text-lg font-semibold">{value.toFixed(2)}</p>
+                        <p className="text-lg font-semibold break-words">{value.toFixed(2)}</p>
                       </div>
                     ))}
                   </div>
                 </>
               ) : (
-                <div className="flex flex-col items-center justify-center h-[300px] text-center">
+                <div className="flex flex-col items-center justify-center h-[250px] text-center">
                   <Calculator className="w-12 h-12 text-muted-foreground mb-4" />
                   <p className="text-muted-foreground">
-                    Enter your dimensions and click Calculate to see the results
+                    Enter your dimensions and click Calculate
                   </p>
                 </div>
               )}

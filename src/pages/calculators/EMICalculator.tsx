@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Calculator, Sliders, Calendar } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { Helmet } from "react-helmet-async";
 import GoogleAd from "../../components/GoogleAd";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const EMICalculator = () => {
   const [loanAmount, setLoanAmount] = useState<string>("200000.00");
@@ -15,6 +17,7 @@ const EMICalculator = () => {
   const [totalInterest, setTotalInterest] = useState<string>("211091.20");
   const [totalPayment, setTotalPayment] = useState<string>("411091.20");
   const [animateResult, setAnimateResult] = useState(false);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     calculateEMI();
@@ -135,18 +138,18 @@ const EMICalculator = () => {
                   }`}
                 >
                   <h2 className="text-lg font-medium mb-4">Loan Summary</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-3 gap-4'}`}>
                     <div className="p-3 rounded-lg bg-accent/10 text-center">
                       <p className="text-sm font-medium mb-1">Monthly EMI</p>
-                      <p className="text-2xl font-bold text-glass">{emi}</p>
+                      <p className="text-xl font-bold text-glass break-words">{emi}</p>
                     </div>
                     <div className="p-3 rounded-lg bg-accent/10 text-center">
                       <p className="text-sm font-medium mb-1">Total Interest</p>
-                      <p className="text-2xl font-bold text-glass">{totalInterest}</p>
+                      <p className="text-xl font-bold text-glass break-words">{totalInterest}</p>
                     </div>
                     <div className="p-3 rounded-lg bg-accent/10 text-center">
                       <p className="text-sm font-medium mb-1">Total Payment</p>
-                      <p className="text-2xl font-bold text-glass">{totalPayment}</p>
+                      <p className="text-xl font-bold text-glass break-words">{totalPayment}</p>
                     </div>
                   </div>
                 </div>

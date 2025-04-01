@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Home, BarChart3, PiggyBank, Calculator } from "lucide-react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const RealEstateCalculator = () => {
   // EMI Calculator State
@@ -30,6 +31,8 @@ const RealEstateCalculator = () => {
     appreciationValue: number;
     futureValue: number;
   } | null>(null);
+  
+  const isMobile = useIsMobile();
 
   // Calculate EMI
   const calculateEMI = () => {
@@ -72,11 +75,11 @@ const RealEstateCalculator = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-12">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold mb-4">Real Estate Calculator</h1>
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold mb-2">Real Estate Calculator</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Calculate mortgage payments and analyze real estate investment returns with our comprehensive tools.
+            Calculate mortgage payments and investment returns
           </p>
         </div>
 
@@ -98,11 +101,11 @@ const RealEstateCalculator = () => {
                   <span>Mortgage EMI Calculator</span>
                 </CardTitle>
                 <CardDescription>
-                  Calculate your monthly mortgage payments and total interest cost
+                  Calculate your monthly mortgage payments
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="loan-amount">Loan Amount (₹)</Label>
                     <Input
@@ -143,18 +146,24 @@ const RealEstateCalculator = () => {
                 </Button>
                 
                 {emiResult && (
-                  <div className="mt-6 grid grid-cols-3 gap-4">
+                  <div className={`mt-6 grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-3 gap-4'}`}>
                     <div className="bg-accent/10 p-4 rounded-lg text-center">
                       <p className="text-sm text-muted-foreground">Monthly EMI</p>
-                      <p className="text-xl font-bold">₹{Math.round(emiResult).toLocaleString()}</p>
+                      <p className={`${isMobile ? 'text-xl' : 'text-xl'} font-bold break-words`}>
+                        ₹{Math.round(emiResult).toLocaleString()}
+                      </p>
                     </div>
                     <div className="bg-accent/10 p-4 rounded-lg text-center">
                       <p className="text-sm text-muted-foreground">Total Interest</p>
-                      <p className="text-xl font-bold">₹{Math.round(totalInterest!).toLocaleString()}</p>
+                      <p className={`${isMobile ? 'text-xl' : 'text-xl'} font-bold break-words`}>
+                        ₹{Math.round(totalInterest!).toLocaleString()}
+                      </p>
                     </div>
                     <div className="bg-accent/20 p-4 rounded-lg text-center">
                       <p className="text-sm text-muted-foreground">Total Payment</p>
-                      <p className="text-xl font-bold">₹{Math.round(totalPayment!).toLocaleString()}</p>
+                      <p className={`${isMobile ? 'text-xl' : 'text-xl'} font-bold break-words`}>
+                        ₹{Math.round(totalPayment!).toLocaleString()}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -170,11 +179,11 @@ const RealEstateCalculator = () => {
                   <span>Real Estate ROI Calculator</span>
                 </CardTitle>
                 <CardDescription>
-                  Analyze the potential return on investment for your real estate property
+                  Analyze your real estate investment returns
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="property-value">Property Value (₹)</Label>
                     <Input
@@ -238,22 +247,30 @@ const RealEstateCalculator = () => {
                 
                 {roiResult && (
                   <div className="mt-6 space-y-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-accent/10 p-4 rounded-lg text-center">
-                        <p className="text-sm text-muted-foreground">Rental Yield</p>
-                        <p className="text-xl font-bold">{roiResult.rentalYield.toFixed(2)}%</p>
+                    <div className={`grid ${isMobile ? 'grid-cols-2 gap-3' : 'grid-cols-4 gap-4'}`}>
+                      <div className="bg-accent/10 p-3 rounded-lg text-center">
+                        <p className="text-xs text-muted-foreground">Rental Yield</p>
+                        <p className="text-lg font-bold break-words">
+                          {roiResult.rentalYield.toFixed(2)}%
+                        </p>
                       </div>
-                      <div className="bg-accent/10 p-4 rounded-lg text-center">
-                        <p className="text-sm text-muted-foreground">Total ROI</p>
-                        <p className="text-xl font-bold">{roiResult.totalRoi.toFixed(2)}%</p>
+                      <div className="bg-accent/10 p-3 rounded-lg text-center">
+                        <p className="text-xs text-muted-foreground">Total ROI</p>
+                        <p className="text-lg font-bold break-words">
+                          {roiResult.totalRoi.toFixed(2)}%
+                        </p>
                       </div>
-                      <div className="bg-accent/10 p-4 rounded-lg text-center">
-                        <p className="text-sm text-muted-foreground">Appreciation</p>
-                        <p className="text-xl font-bold">₹{Math.round(roiResult.appreciationValue).toLocaleString()}</p>
+                      <div className="bg-accent/10 p-3 rounded-lg text-center">
+                        <p className="text-xs text-muted-foreground">Appreciation</p>
+                        <p className="text-lg font-bold break-words">
+                          ₹{Math.round(roiResult.appreciationValue).toLocaleString()}
+                        </p>
                       </div>
-                      <div className="bg-accent/20 p-4 rounded-lg text-center">
-                        <p className="text-sm text-muted-foreground">Future Value</p>
-                        <p className="text-xl font-bold">₹{Math.round(roiResult.futureValue).toLocaleString()}</p>
+                      <div className="bg-accent/20 p-3 rounded-lg text-center">
+                        <p className="text-xs text-muted-foreground">Future Value</p>
+                        <p className="text-lg font-bold break-words">
+                          ₹{Math.round(roiResult.futureValue).toLocaleString()}
+                        </p>
                       </div>
                     </div>
                   </div>
