@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Calculator, MoveHorizontal, MoveVertical, SquareCode } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,8 @@ const AreaCalculator = () => {
   const [lengthUnit, setLengthUnit] = useState<string>("m");
   const [animateResult, setAnimateResult] = useState(false);
   
-  const shapes: Record<ShapeType, ShapeConfig> = {
+  // Memoize shapes configuration
+  const shapes = useMemo<Record<ShapeType, ShapeConfig>>(() => ({
     rectangle: {
       name: "Rectangle",
       inputs: [
@@ -95,16 +96,17 @@ const AreaCalculator = () => {
       calculate: (values) => (values[0] * values[1]) / 2,
       formula: "Area = (Base × Height) ÷ 2"
     }
-  };
+  }), [lengthUnit]);
   
+  // Reset input values when shape changes
   useEffect(() => {
-    // Reset input values when shape changes
     const defaultValues = Array(shapes[shapeType].inputs.length).fill("0");
     setInputValues(defaultValues);
     calculateArea(defaultValues);
-  }, [shapeType, lengthUnit]);
+  }, [shapeType, lengthUnit, shapes]);
   
-  const calculateArea = (values: string[] = inputValues) => {
+  // Calculate area with useCallback for better performance
+  const calculateArea = useCallback((values: string[] = inputValues) => {
     const numericValues = values.map(val => parseFloat(val) || 0);
     const calculatedArea = shapes[shapeType].calculate(numericValues);
     
@@ -112,16 +114,18 @@ const AreaCalculator = () => {
     
     setAnimateResult(true);
     setTimeout(() => setAnimateResult(false), 500);
-  };
+  }, [inputValues, shapes, shapeType]);
   
-  const handleInputChange = (index: number, value: string) => {
+  // Handle input changes with useCallback
+  const handleInputChange = useCallback((index: number, value: string) => {
     const newValues = [...inputValues];
     newValues[index] = value;
     setInputValues(newValues);
     calculateArea(newValues);
-  };
+  }, [inputValues, calculateArea]);
   
-  const handleUnitChange = (value: string) => {
+  // Handle unit changes with useCallback
+  const handleUnitChange = useCallback((value: string) => {
     setLengthUnit(value);
     
     // Update area unit based on length unit
@@ -144,13 +148,14 @@ const AreaCalculator = () => {
       default:
         setAreaUnit("m²");
     }
-  };
+  }, []);
   
-  const reset = () => {
+  // Reset function with useCallback
+  const reset = useCallback(() => {
     const defaultValues = Array(shapes[shapeType].inputs.length).fill("0");
     setInputValues(defaultValues);
     calculateArea(defaultValues);
-  };
+  }, [shapes, shapeType, calculateArea]);
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -162,23 +167,23 @@ const AreaCalculator = () => {
       
       <Header />
       
-      <div className="flex-grow pt-24 pb-16 px-4">
+      <div className="flex-grow pt-16 pb-8 px-4">
         <div className="container mx-auto max-w-3xl">
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
-            <div className="border-b border-border/50 p-6 flex items-center gap-3">
+            <div className="border-b border-border/50 p-4 flex items-center gap-3">
               <Calculator className="w-5 h-5 text-accent" />
               <h1 className="text-xl font-semibold">Area Calculator</h1>
             </div>
 
-            <div className="p-6">
+            <div className="p-4">
               <div className="mb-6">
                 <h2 className="text-lg font-medium mb-4">Area Calculator</h2>
-                <p className="text-foreground/70 mb-6">
+                <p className="text-foreground/70 mb-4">
                   Easily calculate the area of common shapes for home improvement, 
                   gardening, DIY projects, or educational purposes.
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">
                       Select Shape
@@ -264,7 +269,7 @@ const AreaCalculator = () => {
               </div>
 
               <div
-                className={`mt-8 p-6 rounded-lg glass-panel glass-panel-dark ${
+                className={`mt-4 p-4 rounded-lg glass-panel glass-panel-dark ${
                   animateResult ? "animate-scale-in" : ""
                 }`}
               >
@@ -273,7 +278,7 @@ const AreaCalculator = () => {
                     {shapes[shapeType].formula}
                   </div>
                   
-                  <div className="text-4xl font-bold text-glass mb-2">
+                  <div className="text-3xl font-bold text-glass mb-2 break-words">
                     {area} {areaUnit}
                   </div>
                   
@@ -283,7 +288,7 @@ const AreaCalculator = () => {
                 </div>
               </div>
               
-              <div className="mt-8 p-4 rounded-lg bg-background/30">
+              <div className="mt-4 p-4 rounded-lg bg-background/30">
                 <h3 className="font-medium mb-2">Using Area Calculations</h3>
                 <ul className="space-y-1 text-sm text-foreground/70">
                   <li>• Home improvement: Calculate paint or flooring needed</li>

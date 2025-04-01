@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
 import Footer from "./Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type AreaUnit = "sqft" | "sqm" | "acre" | "hectare" | "bigha" | "marla";
 
@@ -40,69 +41,93 @@ const RealEstateAreaCalculator = () => {
   const [isRectangular, setIsRectangular] = useState<boolean>(true);
   const [calculatedArea, setCalculatedArea] = useState<number | null>(null);
   const [convertedResults, setConvertedResults] = useState<Record<AreaUnit, number>>({} as Record<AreaUnit, number>);
+  const [isCalculating, setIsCalculating] = useState<boolean>(false);
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
-  const calculateArea = () => {
-    let calculatedValue: number;
-    const lengthNum = parseFloat(length) || 0;
-    const widthNum = parseFloat(width) || 0;
-    const areaNum = parseFloat(area) || 0;
+  // Memoized unit conversions
+  const conversions = useMemo(() => unitConversions, []);
+  const labels = useMemo(() => unitLabels, []);
 
-    if (isRectangular) {
-      if (lengthNum <= 0 || widthNum <= 0) {
-        toast({
-          title: "Invalid dimensions",
-          description: "Please enter positive values for length and width",
-          variant: "destructive",
-        });
-        return;
-      }
-      calculatedValue = lengthNum * widthNum;
-    } else {
-      if (areaNum <= 0) {
-        toast({
-          title: "Invalid area",
-          description: "Please enter a positive value for area",
-          variant: "destructive",
-        });
-        return;
-      }
-      calculatedValue = areaNum;
-    }
-
-    setCalculatedArea(calculatedValue);
-
-    // Convert to all units
-    const results: Record<AreaUnit, number> = {} as Record<AreaUnit, number>;
-    const valueInSqFt = inputUnit === "sqft" ? calculatedValue : calculatedValue * unitConversions[inputUnit];
-
-    for (const unit of Object.keys(unitConversions) as AreaUnit[]) {
-      if (unit === "sqft") {
-        results[unit] = valueInSqFt;
+  const calculateArea = useCallback(() => {
+    setIsCalculating(true);
+    
+    setTimeout(() => {
+      let calculatedValue: number;
+      const lengthNum = parseFloat(length) || 0;
+      const widthNum = parseFloat(width) || 0;
+      const areaNum = parseFloat(area) || 0;
+  
+      if (isRectangular) {
+        if (lengthNum <= 0 || widthNum <= 0) {
+          toast({
+            title: "Invalid dimensions",
+            description: "Please enter positive values for length and width",
+            variant: "destructive",
+          });
+          setIsCalculating(false);
+          return;
+        }
+        calculatedValue = lengthNum * widthNum;
       } else {
-        results[unit] = valueInSqFt / unitConversions[unit];
+        if (areaNum <= 0) {
+          toast({
+            title: "Invalid area",
+            description: "Please enter a positive value for area",
+            variant: "destructive",
+          });
+          setIsCalculating(false);
+          return;
+        }
+        calculatedValue = areaNum;
       }
-    }
+  
+      setCalculatedArea(calculatedValue);
+  
+      // Convert to all units
+      const results: Record<AreaUnit, number> = {} as Record<AreaUnit, number>;
+      const valueInSqFt = inputUnit === "sqft" ? calculatedValue : calculatedValue * conversions[inputUnit];
+  
+      for (const unit of Object.keys(conversions) as AreaUnit[]) {
+        if (unit === "sqft") {
+          results[unit] = valueInSqFt;
+        } else {
+          results[unit] = valueInSqFt / conversions[unit];
+        }
+      }
+  
+      setConvertedResults(results);
+  
+      toast({
+        title: "Area calculated",
+        description: `${calculatedValue.toFixed(2)} ${inputUnit} = ${results[outputUnit].toFixed(2)} ${outputUnit}`,
+      });
+      
+      setIsCalculating(false);
+    }, 100);
+  }, [length, width, area, isRectangular, inputUnit, outputUnit, conversions, toast]);
 
-    setConvertedResults(results);
-
-    toast({
-      title: "Area calculated",
-      description: `${calculatedValue.toFixed(2)} ${inputUnit} = ${results[outputUnit].toFixed(2)} ${outputUnit}`,
-    });
-  };
-
-  const handleInputUnitChange = (value: string) => {
+  const handleInputUnitChange = useCallback((value: string) => {
     setInputUnit(value as AreaUnit);
     // Reset calculated values when unit changes
     setCalculatedArea(null);
     setConvertedResults({} as Record<AreaUnit, number>);
-  };
+  }, []);
 
-  const handleOutputUnitChange = (value: string) => {
+  const handleOutputUnitChange = useCallback((value: string) => {
     setOutputUnit(value as AreaUnit);
-  };
+  }, []);
+
+  const handleInputChange = useCallback((setter: React.Dispatch<React.SetStateAction<string>>) => 
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+    }, []);
+
+  const toggleCalculationMode = useCallback((isRect: boolean) => {
+    setIsRectangular(isRect);
+    setCalculatedArea(null);
+    setConvertedResults({} as Record<AreaUnit, number>);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -130,7 +155,7 @@ const RealEstateAreaCalculator = () => {
               <div className="flex gap-2">
                 <Button
                   variant={isRectangular ? "default" : "outline"}
-                  onClick={() => setIsRectangular(true)}
+                  onClick={() => toggleCalculationMode(true)}
                   className="flex-1 text-xs md:text-sm"
                 >
                   <Ruler className="w-4 h-4 mr-1" />
@@ -138,7 +163,7 @@ const RealEstateAreaCalculator = () => {
                 </Button>
                 <Button
                   variant={!isRectangular ? "default" : "outline"}
-                  onClick={() => setIsRectangular(false)}
+                  onClick={() => toggleCalculationMode(false)}
                   className="flex-1 text-xs md:text-sm"
                 >
                   <AreaChart className="w-4 h-4 mr-1" />
@@ -155,7 +180,7 @@ const RealEstateAreaCalculator = () => {
                         id="length"
                         type="number"
                         value={length}
-                        onChange={(e) => setLength(e.target.value)}
+                        onChange={handleInputChange(setLength)}
                         placeholder="Enter length"
                       />
                     </div>
@@ -167,7 +192,7 @@ const RealEstateAreaCalculator = () => {
                         id="width"
                         type="number"
                         value={width}
-                        onChange={(e) => setWidth(e.target.value)}
+                        onChange={handleInputChange(setWidth)}
                         placeholder="Enter width"
                       />
                     </div>
@@ -181,7 +206,7 @@ const RealEstateAreaCalculator = () => {
                       id="area"
                       type="number"
                       value={area}
-                      onChange={(e) => setArea(e.target.value)}
+                      onChange={handleInputChange(setArea)}
                       placeholder="Enter area"
                     />
                   </div>
@@ -195,7 +220,7 @@ const RealEstateAreaCalculator = () => {
                     <SelectValue placeholder="Select unit" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(unitLabels).map(([key, label]) => (
+                    {Object.entries(labels).map(([key, label]) => (
                       <SelectItem key={key} value={key}>
                         {label}
                       </SelectItem>
@@ -211,7 +236,7 @@ const RealEstateAreaCalculator = () => {
                     <SelectValue placeholder="Select unit" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(unitLabels).map(([key, label]) => (
+                    {Object.entries(labels).map(([key, label]) => (
                       <SelectItem key={key} value={key}>
                         {label}
                       </SelectItem>
@@ -221,8 +246,8 @@ const RealEstateAreaCalculator = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={calculateArea} className="w-full">
-                Calculate <ArrowRight className="ml-2 w-4 h-4" />
+              <Button onClick={calculateArea} className="w-full" disabled={isCalculating}>
+                {isCalculating ? 'Calculating...' : 'Calculate'} {!isCalculating && <ArrowRight className="ml-2 w-4 h-4" />}
               </Button>
             </CardFooter>
           </Card>
@@ -238,12 +263,21 @@ const RealEstateAreaCalculator = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {calculatedArea ? (
+              {isCalculating ? (
+                <>
+                  <Skeleton className="h-20 w-full mb-4" />
+                  <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-2 gap-4'}`}>
+                    {[1, 2, 3, 4, 5, 6].map(idx => (
+                      <Skeleton key={idx} className="h-16 w-full" />
+                    ))}
+                  </div>
+                </>
+              ) : calculatedArea ? (
                 <>
                   <div className="bg-accent/10 p-4 rounded-lg">
                     <p className="text-sm text-muted-foreground mb-1">Original Area</p>
                     <p className="text-xl font-bold break-words">
-                      {calculatedArea.toFixed(2)} {unitLabels[inputUnit]}
+                      {calculatedArea.toFixed(2)} {labels[inputUnit]}
                     </p>
                   </div>
 
@@ -257,8 +291,8 @@ const RealEstateAreaCalculator = () => {
                             : "bg-accent/5"
                         }`}
                       >
-                        <p className="text-xs text-muted-foreground mb-1">{unitLabels[unit as AreaUnit]}</p>
-                        <p className="text-lg font-semibold break-words">{value.toFixed(2)}</p>
+                        <p className="text-xs text-muted-foreground mb-1">{labels[unit as AreaUnit]}</p>
+                        <p className="text-base md:text-lg font-semibold break-words">{value.toFixed(2)}</p>
                       </div>
                     ))}
                   </div>

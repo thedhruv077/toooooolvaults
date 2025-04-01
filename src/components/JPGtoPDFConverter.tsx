@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+
+import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { jsPDF } from "jspdf";
@@ -13,8 +14,16 @@ const JPGtoPDFConverter = () => {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [imageLoadErrors, setImageLoadErrors] = useState<Record<number, boolean>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  // Clean up image URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      imageUrls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [imageUrls]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -35,7 +44,6 @@ const JPGtoPDFConverter = () => {
       
       if (validFiles.length > 0) {
         const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
-        console.log("New image URLs:", newImageUrls);
         
         setImages(prevImages => [...prevImages, ...validFiles]);
         setImageUrls(prevUrls => [...prevUrls, ...newImageUrls]);
@@ -46,6 +54,26 @@ const JPGtoPDFConverter = () => {
         });
       }
     }
+
+    // Reset the input so the same file can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleImageLoad = (index: number) => {
+    // If image loads successfully, remove it from error state
+    setImageLoadErrors(prev => {
+      const newErrors = {...prev};
+      delete newErrors[index];
+      return newErrors;
+    });
+  };
+
+  const handleImageError = (index: number) => {
+    // Mark image as having load error
+    setImageLoadErrors(prev => ({...prev, [index]: true}));
+    console.error(`Failed to load image at index ${index}`);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -73,7 +101,6 @@ const JPGtoPDFConverter = () => {
       
       if (validFiles.length > 0) {
         const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
-        console.log("New image URLs:", newImageUrls);
         
         setImages(prevImages => [...prevImages, ...validFiles]);
         setImageUrls(prevUrls => [...prevUrls, ...newImageUrls]);
@@ -97,6 +124,13 @@ const JPGtoPDFConverter = () => {
     
     setImageUrls(newImageUrls);
     setImages(newImages);
+    
+    // Remove any error entries for this index
+    setImageLoadErrors(prev => {
+      const newErrors = {...prev};
+      delete newErrors[index];
+      return newErrors;
+    });
   };
 
   const clearAllImages = () => {
@@ -104,6 +138,7 @@ const JPGtoPDFConverter = () => {
     
     setImages([]);
     setImageUrls([]);
+    setImageLoadErrors({});
     
     toast({
       title: "Cleared all images",
@@ -236,8 +271,8 @@ const JPGtoPDFConverter = () => {
       </Helmet>
       
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-12">
-        <div className="text-center mb-10">
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="text-center mb-6">
           <h1 className="text-3xl font-bold mb-4">JPG to PDF Converter</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Convert your JPG, JPEG, or PNG images to PDF quickly and easily. Maintain quality and create multi-page documents.
@@ -288,17 +323,22 @@ const JPGtoPDFConverter = () => {
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {imageUrls.map((url, index) => (
-                    <div key={`${url}-${index}`} className="relative group bg-white dark:bg-gray-800 border border-border rounded-md overflow-hidden shadow">
-                      <div className="aspect-square flex items-center justify-center bg-gray-100 dark:bg-gray-700">
-                        <img
-                          src={url}
-                          alt={`Uploaded image ${index + 1}`}
-                          className="max-w-full max-h-full object-contain p-2"
-                          onError={(e) => {
-                            console.error("Image load error:", e);
-                            (e.target as HTMLImageElement).src = "/placeholder.svg";
-                          }}
-                        />
+                    <div key={`${url}-${index}`} className="relative group bg-white dark:bg-gray-800 border border-border rounded-md overflow-hidden aspect-square shadow">
+                      <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+                        {imageLoadErrors[index] ? (
+                          <div className="flex flex-col items-center text-center p-2">
+                            <AlertCircle className="w-8 h-8 text-red-500 mb-1" />
+                            <span className="text-xs">Image load error</span>
+                          </div>
+                        ) : (
+                          <img
+                            src={url}
+                            alt={`Uploaded image ${index + 1}`}
+                            className="max-w-full max-h-full object-contain p-2"
+                            onLoad={() => handleImageLoad(index)}
+                            onError={() => handleImageError(index)}
+                          />
+                        )}
                       </div>
                       <button
                         onClick={(e) => {

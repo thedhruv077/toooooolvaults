@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,26 +9,20 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import Header from "./Header";
 import Footer from "./Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const SIPCalculator = () => {
   const [monthlyInvestment, setMonthlyInvestment] = useState<number>(5000);
   const [years, setYears] = useState<number>(10);
   const [interestRate, setInterestRate] = useState<number>(12);
-  const [result, setResult] = useState<{
-    totalInvestment: number;
-    totalInterest: number;
-    totalValue: number;
-    yearlyData: any[];
-  }>({
-    totalInvestment: 0,
-    totalInterest: 0,
-    totalValue: 0,
-    yearlyData: [],
-  });
   const [isCalculated, setIsCalculated] = useState(false);
+  const [isCalculating, setIsCalculating] = useState(false);
   const isMobile = useIsMobile();
 
-  const calculateSIP = () => {
+  // Memoize calculation results
+  const result = useMemo(() => {
+    if (!isCalculated) return null;
+    
     const monthlyRate = interestRate / 12 / 100;
     const months = years * 12;
     const totalInvestment = monthlyInvestment * months;
@@ -57,15 +51,33 @@ const SIPCalculator = () => {
       });
     }
     
-    setResult({
+    return {
       totalInvestment,
       totalInterest,
       totalValue,
       yearlyData,
-    });
+    };
+  }, [monthlyInvestment, years, interestRate, isCalculated]);
+
+  const calculateSIP = useCallback(() => {
+    setIsCalculating(true);
     
-    setIsCalculated(true);
-  };
+    // Use requestAnimationFrame for smoother UI updates
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        setIsCalculated(true);
+        setIsCalculating(false);
+      }, 100);
+    });
+  }, []);
+
+  const handleInputChange = useCallback((setter: React.Dispatch<React.SetStateAction<number>>) => 
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = Number(e.target.value);
+      if (!isNaN(value)) {
+        setter(value);
+      }
+    }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -96,7 +108,7 @@ const SIPCalculator = () => {
                   id="monthly-investment"
                   type="number"
                   value={monthlyInvestment}
-                  onChange={(e) => setMonthlyInvestment(Number(e.target.value))}
+                  onChange={handleInputChange(setMonthlyInvestment)}
                   placeholder="Enter amount"
                 />
               </div>
@@ -107,7 +119,7 @@ const SIPCalculator = () => {
                   id="time-period"
                   type="number"
                   value={years}
-                  onChange={(e) => setYears(Number(e.target.value))}
+                  onChange={handleInputChange(setYears)}
                   placeholder="Enter years"
                 />
               </div>
@@ -118,7 +130,7 @@ const SIPCalculator = () => {
                   id="interest-rate"
                   type="number"
                   value={interestRate}
-                  onChange={(e) => setInterestRate(Number(e.target.value))}
+                  onChange={handleInputChange(setInterestRate)}
                   placeholder="Enter rate"
                 />
               </div>
@@ -141,20 +153,34 @@ const SIPCalculator = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {isCalculated ? (
+              {isCalculating ? (
+                <>
+                  <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-3 gap-4'}`}>
+                    {[1, 2, 3].map(idx => (
+                      <div key={idx} className="bg-accent/10 p-4 rounded-lg">
+                        <Skeleton className="h-4 w-24 mb-2" />
+                        <Skeleton className="h-6 w-full" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="h-[250px] mt-4">
+                    <Skeleton className="h-full w-full" />
+                  </div>
+                </>
+              ) : result ? (
                 <>
                   <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-3 gap-4'}`}>
                     <div className="bg-accent/10 p-4 rounded-lg text-center">
                       <p className="text-sm text-muted-foreground">Invested Amount</p>
-                      <p className="text-lg font-bold break-words">₹{result.totalInvestment.toLocaleString()}</p>
+                      <p className="text-base sm:text-lg font-bold break-words">₹{result.totalInvestment.toLocaleString()}</p>
                     </div>
                     <div className="bg-accent/10 p-4 rounded-lg text-center">
                       <p className="text-sm text-muted-foreground">Est. Returns</p>
-                      <p className="text-lg font-bold break-words">₹{Math.round(result.totalInterest).toLocaleString()}</p>
+                      <p className="text-base sm:text-lg font-bold break-words">₹{Math.round(result.totalInterest).toLocaleString()}</p>
                     </div>
                     <div className="bg-accent/20 p-4 rounded-lg text-center">
                       <p className="text-sm text-muted-foreground">Total Value</p>
-                      <p className="text-lg font-bold break-words">₹{Math.round(result.totalValue).toLocaleString()}</p>
+                      <p className="text-base sm:text-lg font-bold break-words">₹{Math.round(result.totalValue).toLocaleString()}</p>
                     </div>
                   </div>
                   
