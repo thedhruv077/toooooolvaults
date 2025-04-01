@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Calculator, Sliders, Calendar } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -62,7 +61,7 @@ const EMICalculator = () => {
       
       <Header />
       
-      <div className="flex-grow pt-20 pb-12 px-4">
+      <div className="flex-grow pt-16 pb-8 px-4">
         <div className="container mx-auto max-w-3xl">
           <GoogleAd slot="emi-top-ad-slot" format="horizontal" className="mb-4" />
           
