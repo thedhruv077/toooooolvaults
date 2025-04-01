@@ -100,8 +100,7 @@ const PercentageCalculator = () => {
               <div className="mb-6">
                 <h2 className="text-lg font-medium mb-4 text-glass">Percentage Calculator</h2>
                 <p className="text-foreground/70 mb-4">
-                  Quickly calculate percentages for your content. Create engaging statistics, 
-                  financial examples, or data visualizations with accurate percentage calculations.
+                  Quickly calculate percentages
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-6 bg-background/50 p-4 rounded-lg">
