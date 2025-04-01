@@ -16,7 +16,9 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "./ui/navigation-menu";
 import { Button } from "./ui/button";
-import GoogleAd from "./GoogleAd";
+// src/components/Header.tsx
+import { GoogleAd } from "./GoogleAd";
+
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
