@@ -177,5 +177,97 @@ const Header = () => {
                   <div className="grid gap-1 p-2 w-[350px]">
                     <NavigationMenuLink asChild>
                       <Link to="/utilities/jpg-to-pdf" className="nav-dropdown-item group">
-                        <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center
+                        <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-all">
+                          <FileImage className="w-4 h-4 text-accent" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">JPG to PDF Converter</span>
+                        </div>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
 
+          <div className="md:hidden">
+            <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
+          </div>
+
+          {mobileMenuOpen && (
+            <div className="absolute top-full left-0 w-full bg-background border-t border-border shadow-lg animate-in fade-in slide-in-from-top md:hidden">
+              <div className="container mx-auto px-4 py-4 flex flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-medium">Tools</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Link to="/calculators/percentage" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <Calculator className="w-4 h-4" />
+                    <span>Percentage</span>
+                  </Link>
+                  <Link to="/calculators/emi" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <Calculator className="w-4 h-4" />
+                    <span>EMI</span>
+                  </Link>
+                  <Link to="/calculators/area" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <Calculator className="w-4 h-4" />
+                    <span>Area</span>
+                  </Link>
+                  <Link to="/calculators/gst" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <Calculator className="w-4 h-4" />
+                    <span>GST</span>
+                  </Link>
+                  <Link to="/calculators/sip" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <Calculator className="w-4 h-4" />
+                    <span>SIP</span>
+                  </Link>
+                  <Link to="/calculators/real-estate" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <Calculator className="w-4 h-4" />
+                    <span>Real Estate</span>
+                  </Link>
+                </div>
+                <div className="flex justify-between items-center mt-2">
+                  <h3 className="font-medium">Utilities</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Link to="/utilities/qr-code" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <QrCode className="w-4 h-4" />
+                    <span>QR Code</span>
+                  </Link>
+                  <Link to="/utilities/password" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <FileText className="w-4 h-4" />
+                    <span>Password</span>
+                  </Link>
+                  <Link to="/utilities/invoice" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <FileText className="w-4 h-4" />
+                    <span>Invoice</span>
+                  </Link>
+                </div>
+                <div className="flex justify-between items-center mt-2">
+                  <h3 className="font-medium">Converters</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Link to="/utilities/jpg-to-pdf" className="mobile-nav-item" onClick={toggleMobileMenu}>
+                    <FileImage className="w-4 h-4" />
+                    <span>JPG to PDF</span>
+                  </Link>
+                </div>
+                <div className="mt-2 flex justify-center">
+                  <ThemeToggle />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </header>
+      <div className="pt-20">
+        {/* Content padding to account for fixed header */}
+      </div>
+    </>
+  );
+};
+
+export default Header;
