@@ -48,10 +48,6 @@ const Header = () => {
               <span className="bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent font-extrabold tracking-tight">Tool</span>
               <span className="text-foreground font-medium">Vault</span>
             </Link>
-            
-            <div className="hidden md:flex">
-              <ThemeToggle />
-            </div>
           </div>
 
           <NavigationMenu className="hidden md:flex">
@@ -191,79 +187,92 @@ const Header = () => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          <div className="md:hidden">
-            <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
+          <div className="flex items-center gap-2">
+            <div className="hidden md:block">
+              <ThemeToggle />
+            </div>
+            
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleMobileMenu} 
+              className="md:hidden"
+            >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
-
+          
           {mobileMenuOpen && (
-            <div className="absolute top-full left-0 w-full bg-background border-t border-border shadow-lg animate-in fade-in slide-in-from-top md:hidden">
-              <div className="container mx-auto px-4 py-4 flex flex-col gap-2">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-medium">Tools</h3>
+            <div className="absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-t border-border/30 shadow-lg animate-in fade-in slide-in-from-top md:hidden">
+              <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
+                <div className="flex items-center justify-between border-b border-border/20 pb-3 mb-2">
+                  <h3 className="font-medium text-lg">Menu</h3>
+                  <ThemeToggle className="bg-accent/10 hover:bg-accent/20" />
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Link to="/calculators/percentage" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <Calculator className="w-4 h-4" />
-                    <span>Percentage</span>
-                  </Link>
-                  <Link to="/calculators/emi" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <Calculator className="w-4 h-4" />
-                    <span>EMI</span>
-                  </Link>
-                  <Link to="/calculators/area" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <Calculator className="w-4 h-4" />
-                    <span>Area</span>
-                  </Link>
-                  <Link to="/calculators/gst" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <Calculator className="w-4 h-4" />
-                    <span>GST</span>
-                  </Link>
-                  <Link to="/calculators/sip" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <Calculator className="w-4 h-4" />
-                    <span>SIP</span>
-                  </Link>
-                  <Link to="/calculators/real-estate" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <Calculator className="w-4 h-4" />
-                    <span>Real Estate</span>
-                  </Link>
+                
+                <div>
+                  <h3 className="font-medium text-sm text-foreground/70 mb-2 uppercase tracking-wider">Tools</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link to="/calculators/percentage" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <Calculator className="w-5 h-5 text-accent" />
+                      <span className="text-xs">Percentage</span>
+                    </Link>
+                    <Link to="/calculators/emi" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <Calculator className="w-5 h-5 text-accent" />
+                      <span className="text-xs">EMI</span>
+                    </Link>
+                    <Link to="/calculators/area" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <Calculator className="w-5 h-5 text-accent" />
+                      <span className="text-xs">Area</span>
+                    </Link>
+                    <Link to="/calculators/gst" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <Calculator className="w-5 h-5 text-accent" />
+                      <span className="text-xs">GST</span>
+                    </Link>
+                    <Link to="/calculators/sip" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <Calculator className="w-5 h-5 text-accent" />
+                      <span className="text-xs">SIP</span>
+                    </Link>
+                    <Link to="/calculators/real-estate" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <Calculator className="w-5 h-5 text-accent" />
+                      <span className="text-xs">Real Estate</span>
+                    </Link>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center mt-2">
-                  <h3 className="font-medium">Utilities</h3>
+                
+                <div>
+                  <h3 className="font-medium text-sm text-foreground/70 mb-2 uppercase tracking-wider">Utilities</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link to="/utilities/qr-code" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <QrCode className="w-5 h-5 text-accent" />
+                      <span className="text-xs">QR Code</span>
+                    </Link>
+                    <Link to="/utilities/password" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <FileText className="w-5 h-5 text-accent" />
+                      <span className="text-xs">Password</span>
+                    </Link>
+                    <Link to="/utilities/invoice" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <FileText className="w-5 h-5 text-accent" />
+                      <span className="text-xs">Invoice</span>
+                    </Link>
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Link to="/utilities/qr-code" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <QrCode className="w-4 h-4" />
-                    <span>QR Code</span>
-                  </Link>
-                  <Link to="/utilities/password" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <FileText className="w-4 h-4" />
-                    <span>Password</span>
-                  </Link>
-                  <Link to="/utilities/invoice" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <FileText className="w-4 h-4" />
-                    <span>Invoice</span>
-                  </Link>
-                </div>
-                <div className="flex justify-between items-center mt-2">
-                  <h3 className="font-medium">Converters</h3>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Link to="/utilities/jpg-to-pdf" className="mobile-nav-item" onClick={toggleMobileMenu}>
-                    <FileImage className="w-4 h-4" />
-                    <span>JPG to PDF</span>
-                  </Link>
-                </div>
-                <div className="mt-2 flex justify-center">
-                  <ThemeToggle />
+                
+                <div>
+                  <h3 className="font-medium text-sm text-foreground/70 mb-2 uppercase tracking-wider">Converters</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link to="/utilities/jpg-to-pdf" className="mobile-nav-item bg-background/50 border border-border/30 rounded-md p-2 flex flex-col items-center justify-center gap-1 hover:bg-accent/10 transition-all" onClick={toggleMobileMenu}>
+                      <FileImage className="w-5 h-5 text-accent" />
+                      <span className="text-xs">JPG to PDF</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           )}
         </div>
       </header>
-      <div className="pt-20">
+      <div className="pt-16 md:pt-20">
         {/* Content padding to account for fixed header */}
       </div>
     </>

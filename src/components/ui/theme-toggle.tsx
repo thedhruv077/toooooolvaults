@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
-export function ThemeToggle() {
+export function ThemeToggle({ className = "" }: { className?: string }) {
   // Check if we're on the client side first
   const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
@@ -41,7 +41,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="flex items-center justify-center w-10 h-10 rounded-full glass-panel glass-panel-dark transition-transform duration-300 hover:scale-110 active:scale-95"
+      className={`flex items-center justify-center w-10 h-10 rounded-full glass-panel glass-panel-dark transition-transform duration-300 hover:scale-110 active:scale-95 ${className}`}
       aria-label="Toggle theme"
     >
       {theme === "light" ? (
