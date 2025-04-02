@@ -1,17 +1,14 @@
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import GoogleAd from "../components/GoogleAd";
 
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <div className="flex-grow pt-24 pb-16 px-4">
+      <div className="flex-grow pt-16 pb-16 px-4">
         <div className="container mx-auto max-w-3xl">
-          <GoogleAd slot="privacy-top-ad-slot" format="horizontal" className="mb-6" />
-          
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-6">
               <h1 className="text-2xl font-bold">Privacy Policy</h1>
@@ -25,8 +22,6 @@ const PrivacyPolicy = () => {
                   This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website.
                 </p>
               </section>
-              
-              <GoogleAd slot="privacy-mid-ad-slot" format="rectangle" className="my-6" />
               
               <section>
                 <h2 className="text-xl font-semibold mb-3">Information We Collect</h2>
@@ -88,8 +83,6 @@ const PrivacyPolicy = () => {
               </p>
             </div>
           </div>
-          
-          <GoogleAd slot="privacy-bottom-ad-slot" format="horizontal" className="mt-6" />
         </div>
       </div>
       

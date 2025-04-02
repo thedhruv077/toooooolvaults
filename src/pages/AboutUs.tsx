@@ -1,20 +1,15 @@
-
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Users, Award, BarChart3, Target } from "lucide-react";
-import GoogleAd from "../components/GoogleAd";
 
 const AboutUs = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <div className="flex-grow pt-24 pb-16 px-4">
+      <div className="flex-grow pt-16 pb-16 px-4">
         <div className="container mx-auto max-w-4xl">
-          {/* Top ad */}
-          <GoogleAd slot="about-top-ad-slot" format="horizontal" className="mb-6" />
-          
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-6">
               <h1 className="text-2xl font-bold">About Us</h1>
@@ -25,9 +20,6 @@ const AboutUs = () => {
                 <p className="text-lg text-foreground/80 leading-relaxed mb-8">
                   Welcome to Blogger Tools, your premium suite of utilities designed specifically for content creators, bloggers, and online entrepreneurs.
                 </p>
-                
-                {/* Mid-content ad */}
-                <GoogleAd slot="about-mid-ad-slot" format="rectangle" className="my-8" />
                 
                 <div className="bg-accent/5 p-6 rounded-xl border border-accent/20 mb-8">
                   <h2 className="text-xl font-semibold mb-4">Our Mission</h2>
@@ -104,9 +96,6 @@ const AboutUs = () => {
                   We started with a few simple calculators designed specifically for blog content and steadily expanded our collection based on user feedback and requests. Today, we're proud to offer a comprehensive suite of tools that help thousands of bloggers worldwide.
                 </p>
                 
-                {/* Bottom ad before contact section */}
-                <GoogleAd slot="about-bottom-ad-slot" format="horizontal" className="my-8" />
-                
                 <div className="bg-background/30 p-6 rounded-xl border border-border/30">
                   <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
                   <p className="text-foreground/80 leading-relaxed">
@@ -116,9 +105,6 @@ const AboutUs = () => {
               </section>
             </div>
           </div>
-          
-          {/* Bottom page ad */}
-          <GoogleAd slot="about-footer-ad-slot" format="horizontal" className="mt-6" />
         </div>
       </div>
       

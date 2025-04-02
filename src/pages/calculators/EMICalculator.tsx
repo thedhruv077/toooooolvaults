@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useMemo } from "react";
 import { Calculator, Sliders, Calendar } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { Helmet } from "react-helmet-async";
-import GoogleAd from "../../components/GoogleAd";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -18,7 +16,6 @@ const EMICalculator = () => {
   const [isCalculating, setIsCalculating] = useState(false);
   const isMobile = useIsMobile();
   
-  // Memoize calculation results to prevent unnecessary recalculations
   const { emi, totalInterest, totalPayment } = useMemo(() => {
     const principal = parseFloat(loanAmount) || 0;
     const rate = parseFloat(interestRate) / 100 / 12; // Monthly interest rate
@@ -32,7 +29,6 @@ const EMICalculator = () => {
       };
     }
     
-    // EMI formula: EMI = [P x R x (1+R)^N]/[(1+R)^N-1]
     const emiValue = (principal * rate * Math.pow(1 + rate, time)) / (Math.pow(1 + rate, time) - 1);
     const totalPaymentValue = emiValue * time;
     const totalInterestValue = totalPaymentValue - principal;
@@ -44,17 +40,15 @@ const EMICalculator = () => {
     };
   }, [loanAmount, interestRate, loanTerm]);
   
-  // Debounced calculation with useCallback
   const calculateEMI = useCallback(() => {
     setIsCalculating(true);
     setAnimateResult(true);
     
-    // Use requestAnimationFrame for smoother UI updates
     requestAnimationFrame(() => {
       setTimeout(() => {
         setIsCalculating(false);
         setTimeout(() => setAnimateResult(false), 300);
-      }, 100); // Short delay to ensure UI responsiveness
+      }, 100);
     });
   }, []);
   
@@ -79,10 +73,8 @@ const EMICalculator = () => {
       
       <Header />
       
-      <div className="flex-grow pt-16 pb-8 px-4">
+      <div className="flex-grow pt-8 pb-8 px-4">
         <div className="container mx-auto max-w-3xl">
-          <GoogleAd slot="emi-top-ad-slot" format="horizontal" className="mb-4" />
-          
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-4 flex items-center gap-3">
               <Calculator className="w-5 h-5 text-accent" />
@@ -183,8 +175,6 @@ const EMICalculator = () => {
               </div>
             </div>
           </div>
-          
-          <GoogleAd slot="emi-bottom-ad-slot" format="horizontal" className="mt-4" />
         </div>
       </div>
       

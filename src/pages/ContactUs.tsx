@@ -5,7 +5,6 @@ import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import GoogleAd from "../components/GoogleAd";
 
 const ContactUs = () => {
   const [name, setName] = useState("");
@@ -33,10 +32,8 @@ const ContactUs = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <div className="flex-grow pt-24 pb-16 px-4">
+      <div className="flex-grow pt-16 pb-16 px-4">
         <div className="container mx-auto max-w-4xl">
-          <GoogleAd slot="contact-top-ad-slot" format="horizontal" className="mb-6" />
-          
           <div className="glass-panel glass-panel-dark rounded-2xl overflow-hidden">
             <div className="border-b border-border/50 p-6">
               <h1 className="text-2xl font-bold">Contact Us</h1>
@@ -50,8 +47,6 @@ const ContactUs = () => {
                     Have questions about our tools? Want to suggest a new calculator for your blog? We'd love to hear from you!
                   </p>
                 </div>
-                
-                <GoogleAd slot="contact-sidebar-ad-slot" format="rectangle" className="my-4" />
                 
                 <div className="space-y-4">
                   <div className="flex items-start">
@@ -137,8 +132,6 @@ const ContactUs = () => {
                       />
                     </div>
                     
-                    <GoogleAd slot="form-mid-ad-slot" format="rectangle" className="my-4" />
-                    
                     <div>
                       <label className="block text-sm font-medium mb-2" htmlFor="message">
                         Your Message
@@ -162,8 +155,6 @@ const ContactUs = () => {
               </div>
             </div>
           </div>
-          
-          <GoogleAd slot="contact-bottom-ad-slot" format="horizontal" className="mt-6" />
         </div>
       </div>
       
