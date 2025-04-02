@@ -43,6 +43,9 @@ const JPGtoPDFConverter = () => {
       }
       
       if (validFiles.length > 0) {
+        setImageLoadErrors({}); // Reset error state when new files are added
+        
+        // Create new image URLs
         const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
         
         setImages(prevImages => [...prevImages, ...validFiles]);
@@ -100,6 +103,8 @@ const JPGtoPDFConverter = () => {
       }
       
       if (validFiles.length > 0) {
+        setImageLoadErrors({}); // Reset error state when new files are added
+        
         const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
         
         setImages(prevImages => [...prevImages, ...validFiles]);
@@ -129,6 +134,16 @@ const JPGtoPDFConverter = () => {
     setImageLoadErrors(prev => {
       const newErrors = {...prev};
       delete newErrors[index];
+      
+      // Shift higher indices down by 1
+      Object.keys(newErrors).forEach(key => {
+        const keyIndex = parseInt(key);
+        if (keyIndex > index) {
+          newErrors[keyIndex - 1] = newErrors[keyIndex];
+          delete newErrors[keyIndex];
+        }
+      });
+      
       return newErrors;
     });
   };
@@ -143,6 +158,16 @@ const JPGtoPDFConverter = () => {
     toast({
       title: "Cleared all images",
       description: "All images have been removed",
+    });
+  };
+
+  // Helper function to create file reader promise
+  const readFileAsDataURL = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
     });
   };
 
@@ -174,73 +199,50 @@ const JPGtoPDFConverter = () => {
           pdf.addPage();
         }
         
-        await new Promise<void>((resolve, reject) => {
-          const reader = new FileReader();
+        try {
+          // Convert the file to data URL
+          const dataUrl = await readFileAsDataURL(images[i]);
           
-          reader.onload = async (event) => {
-            try {
-              if (!event.target || !event.target.result) {
-                reject(new Error(`Failed to read image ${i + 1}`));
-                return;
-              }
-              
-              const dataUrl = event.target.result as string;
-              
-              const img = new Image();
-              
-              await new Promise<void>((resolveImg) => {
-                img.onload = () => {
-                  const imgRatio = img.width / img.height;
-                  const pageRatio = pdfWidth / pdfHeight;
-                  
-                  let finalWidth, finalHeight;
-                  
-                  if (imgRatio > pageRatio) {
-                    finalWidth = pdfWidth;
-                    finalHeight = pdfWidth / imgRatio;
-                  } else {
-                    finalHeight = pdfHeight;
-                    finalWidth = pdfHeight * imgRatio;
-                  }
-                  
-                  const xOffset = (pdfWidth - finalWidth) / 2;
-                  const yOffset = (pdfHeight - finalHeight) / 2;
-                  
-                  const imgFormat = images[i].type === 'image/png' ? 'PNG' : 'JPEG';
-                  
-                  pdf.addImage(
-                    dataUrl, 
-                    imgFormat, 
-                    xOffset, 
-                    yOffset, 
-                    finalWidth, 
-                    finalHeight
-                  );
-                  
-                  resolveImg();
-                };
-                
-                img.onerror = () => {
-                  reject(new Error(`Failed to load image ${i + 1}`));
-                };
-                
-                img.src = dataUrl;
-              });
-              
-              resolve();
-            } catch (err) {
-              reject(err);
-            }
-          };
+          // Create an image element to get dimensions
+          const img = new Image();
+          await new Promise<void>((resolveImg, rejectImg) => {
+            img.onload = () => resolveImg();
+            img.onerror = () => rejectImg(new Error(`Failed to load image ${i + 1}`));
+            img.src = dataUrl;
+          });
           
-          reader.onerror = () => {
-            reject(new Error(`Failed to read image ${i + 1}`));
-          };
+          const imgRatio = img.width / img.height;
+          const pageRatio = pdfWidth / pdfHeight;
           
-          reader.readAsDataURL(images[i]);
-        });
-        
-        setProgress(((i + 1) / images.length) * 100);
+          let finalWidth, finalHeight;
+          
+          if (imgRatio > pageRatio) {
+            finalWidth = pdfWidth;
+            finalHeight = pdfWidth / imgRatio;
+          } else {
+            finalHeight = pdfHeight;
+            finalWidth = pdfHeight * imgRatio;
+          }
+          
+          const xOffset = (pdfWidth - finalWidth) / 2;
+          const yOffset = (pdfHeight - finalHeight) / 2;
+          
+          const imgFormat = images[i].type === 'image/png' ? 'PNG' : 'JPEG';
+          
+          pdf.addImage(
+            dataUrl, 
+            imgFormat, 
+            xOffset, 
+            yOffset, 
+            finalWidth, 
+            finalHeight
+          );
+          
+          setProgress(((i + 1) / images.length) * 100);
+        } catch (err) {
+          console.error(`Error processing image ${i + 1}:`, err);
+          // Continue with the next image
+        }
       }
       
       pdf.save('converted-images.pdf');
@@ -322,8 +324,8 @@ const JPGtoPDFConverter = () => {
                 </div>
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  {imageUrls.map((url, index) => (
-                    <div key={`${url}-${index}`} className="relative group bg-white dark:bg-gray-800 border border-border rounded-md overflow-hidden aspect-square shadow">
+                  {images.map((file, index) => (
+                    <div key={`${file.name}-${index}`} className="relative group bg-white dark:bg-gray-800 border border-border rounded-md overflow-hidden aspect-square shadow">
                       <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
                         {imageLoadErrors[index] ? (
                           <div className="flex flex-col items-center text-center p-2">
@@ -332,7 +334,7 @@ const JPGtoPDFConverter = () => {
                           </div>
                         ) : (
                           <img
-                            src={url}
+                            src={URL.createObjectURL(file)} // Create fresh URL for each render
                             alt={`Uploaded image ${index + 1}`}
                             className="max-w-full max-h-full object-contain p-2"
                             onLoad={() => handleImageLoad(index)}
@@ -351,7 +353,7 @@ const JPGtoPDFConverter = () => {
                         <Trash2 className="w-4 h-4" />
                       </button>
                       <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs py-1 px-2 truncate">
-                        {images[index]?.name || `Image ${index + 1}`}
+                        {file.name}
                       </div>
                     </div>
                   ))}
