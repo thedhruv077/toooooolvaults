@@ -43,13 +43,12 @@ const JPGtoPDFConverter = () => {
       }
       
       if (validFiles.length > 0) {
-        setImageLoadErrors({}); // Reset error state when new files are added
-        
-        // Create new image URLs
-        const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
-        
+        setImageLoadErrors({});
         setImages(prevImages => [...prevImages, ...validFiles]);
-        setImageUrls(prevUrls => [...prevUrls, ...newImageUrls]);
+        
+        // Create new URL objects for each file
+        const newUrls = validFiles.map(file => URL.createObjectURL(file));
+        setImageUrls(prevUrls => [...prevUrls, ...newUrls]);
         
         toast({
           title: "Images uploaded",
@@ -103,12 +102,13 @@ const JPGtoPDFConverter = () => {
       }
       
       if (validFiles.length > 0) {
-        setImageLoadErrors({}); // Reset error state when new files are added
+        setImageLoadErrors({});
         
-        const newImageUrls = validFiles.map(file => URL.createObjectURL(file));
+        // Create new URL objects for each file
+        const newUrls = validFiles.map(file => URL.createObjectURL(file));
         
         setImages(prevImages => [...prevImages, ...validFiles]);
-        setImageUrls(prevUrls => [...prevUrls, ...newImageUrls]);
+        setImageUrls(prevUrls => [...prevUrls, ...newUrls]);
         
         toast({
           title: "Images uploaded",
@@ -324,8 +324,8 @@ const JPGtoPDFConverter = () => {
                 </div>
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  {images.map((file, index) => (
-                    <div key={`${file.name}-${index}`} className="relative group bg-white dark:bg-gray-800 border border-border rounded-md overflow-hidden aspect-square shadow">
+                  {imageUrls.map((url, index) => (
+                    <div key={`${url}-${index}`} className="relative group bg-white dark:bg-gray-800 border border-border rounded-md overflow-hidden aspect-square shadow">
                       <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
                         {imageLoadErrors[index] ? (
                           <div className="flex flex-col items-center text-center p-2">
@@ -334,7 +334,7 @@ const JPGtoPDFConverter = () => {
                           </div>
                         ) : (
                           <img
-                            src={URL.createObjectURL(file)} // Create fresh URL for each render
+                            src={url}
                             alt={`Uploaded image ${index + 1}`}
                             className="max-w-full max-h-full object-contain p-2"
                             onLoad={() => handleImageLoad(index)}
@@ -353,7 +353,7 @@ const JPGtoPDFConverter = () => {
                         <Trash2 className="w-4 h-4" />
                       </button>
                       <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-xs py-1 px-2 truncate">
-                        {file.name}
+                        {images[index]?.name || `Image ${index + 1}`}
                       </div>
                     </div>
                   ))}
