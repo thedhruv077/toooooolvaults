@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ui/theme-toggle";
@@ -48,6 +47,7 @@ const Header = () => {
               <span className="bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent font-extrabold tracking-tight">Tool</span>
               <span className="text-foreground font-medium">Vault</span>
             </Link>
+            <ThemeToggle className="ml-2" />
           </div>
 
           <NavigationMenu className="hidden md:flex">
@@ -188,10 +188,6 @@ const Header = () => {
           </NavigationMenu>
 
           <div className="flex items-center gap-2">
-            <div className="hidden md:block">
-              <ThemeToggle />
-            </div>
-            
             <Button 
               variant="ghost" 
               size="icon" 
@@ -203,11 +199,10 @@ const Header = () => {
           </div>
           
           {mobileMenuOpen && (
-            <div className="absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-t border-border/30 shadow-lg animate-in fade-in slide-in-from-top md:hidden">
+            <div className="absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-t border-border/30 shadow-lg animate-in fade-in slide-in-from-right md:hidden">
               <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
                 <div className="flex items-center justify-between border-b border-border/20 pb-3 mb-2">
                   <h3 className="font-medium text-lg">Menu</h3>
-                  <ThemeToggle className="bg-accent/10 hover:bg-accent/20" />
                 </div>
                 
                 <div>
