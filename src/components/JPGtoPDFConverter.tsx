@@ -159,7 +159,8 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
     
     try {
-      const pdf = new jsPDF();
+      // Fixed: Initialize jsPDF with proper arguments
+      const pdf = new jsPDF('p', 'mm', 'a4');
       
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
