@@ -23,13 +23,6 @@ import SIPCalculator from "./components/SIPCalculator";
 import RealEstateCalculator from "./components/RealEstateCalculator";
 import RealEstateAreaCalculator from "./components/RealEstateAreaCalculator";
 import JPGtoPDFConverter from "./components/JPGtoPDFConverter";
-import PowerPointToPDFConverter from "./components/PowerPointToPDFConverter";
-import PDFToPowerPointConverter from "./components/PDFToPowerPointConverter";
-import PDFToJPGConverter from "./components/PDFToJPGConverter";
-import ExcelToPDFConverter from "./components/ExcelToPDFConverter";
-import PDFToExcelConverter from "./components/PDFToExcelConverter";
-import HTMLToPDFConverter from "./components/HTMLToPDFConverter";
-import PDFCompressor from "./components/PDFCompressor";
 
 // ScrollToTop component to reset scroll position on route change
 const ScrollToTop = () => {
@@ -65,13 +58,6 @@ const App = () => (
             <Route path="/utilities/password" element={<PasswordGenerator />} />
             <Route path="/utilities/invoice" element={<InvoiceGenerator />} />
             <Route path="/utilities/jpg-to-pdf" element={<JPGtoPDFConverter />} />
-            <Route path="/utilities/powerpoint-to-pdf" element={<PowerPointToPDFConverter />} />
-            <Route path="/utilities/pdf-to-powerpoint" element={<PDFToPowerPointConverter />} />
-            <Route path="/utilities/pdf-to-jpg" element={<PDFToJPGConverter />} />
-            <Route path="/utilities/excel-to-pdf" element={<ExcelToPDFConverter />} />
-            <Route path="/utilities/pdf-to-excel" element={<PDFToExcelConverter />} />
-            <Route path="/utilities/html-to-pdf" element={<HTMLToPDFConverter />} />
-            <Route path="/utilities/pdf-compressor" element={<PDFCompressor />} />
             <Route path="/seo-tools" element={<SEOTools />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
