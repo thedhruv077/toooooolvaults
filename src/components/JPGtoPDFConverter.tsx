@@ -159,11 +159,7 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
     
     try {
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+      const pdf = new jsPDF();
       
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -239,7 +235,7 @@ const JPGtoPDFConverter = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-950 to-slate-900">
       <Helmet>
         <title>JPG to PDF Converter | Free Online Tool | Tool Vault</title>
         <meta name="description" content="Convert your JPG, JPEG, or PNG images to PDF online for free. No watermark, high quality, and easy to use." />
@@ -249,26 +245,26 @@ const JPGtoPDFConverter = () => {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">JPG to PDF Converter</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">JPG to PDF Converter</h1>
+          <p className="text-gray-300 max-w-2xl mx-auto">
             Convert your JPG, JPEG, or PNG images to PDF quickly and easily. Maintain quality and create multi-page documents.
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto bg-card rounded-xl shadow-lg overflow-hidden premium-shadow border border-border/50 backdrop-blur-sm">
-          <div className="bg-accent/10 p-6 border-b border-border/50">
+        <div className="max-w-4xl mx-auto bg-slate-800/50 rounded-xl shadow-lg overflow-hidden border border-slate-700/80 backdrop-blur-sm">
+          <div className="bg-slate-700/50 p-6 border-b border-slate-600/50">
             <div className="flex items-center gap-3">
-              <FileImage className="w-6 h-6 text-accent" />
-              <h2 className="text-2xl font-semibold">Image to PDF Converter</h2>
+              <FileImage className="w-6 h-6 text-blue-400" />
+              <h2 className="text-2xl font-semibold text-white">Image to PDF Converter</h2>
             </div>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-gray-300 mt-1">
               Upload your images and convert them to a single PDF document
             </p>
           </div>
           
           <div className="p-6 space-y-6">
             <div 
-              className="border-2 border-dashed border-accent/30 rounded-xl p-10 text-center hover:border-accent transition-all duration-300 cursor-pointer bg-accent/5"
+              className="border-2 border-dashed border-blue-400/30 rounded-xl p-10 text-center hover:border-blue-400 transition-all duration-300 cursor-pointer bg-slate-800/50"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
@@ -282,13 +278,13 @@ const JPGtoPDFConverter = () => {
                 className="hidden"
               />
               <div className="mb-4">
-                <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ImagePlus className="w-10 h-10 text-accent" />
+                <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ImagePlus className="w-10 h-10 text-blue-400" />
                 </div>
               </div>
-              <h3 className="text-xl font-medium mb-3">Drag & Drop Images Here</h3>
-              <p className="text-muted-foreground mb-5 max-w-md mx-auto">Select JPG, JPEG, or PNG files from your device or drag them directly into this area</p>
-              <Button variant="outline" size="lg" className="gap-2 border-accent text-accent hover:bg-accent hover:text-white">
+              <h3 className="text-xl font-medium mb-3 text-white">Drag & Drop Images Here</h3>
+              <p className="text-gray-300 mb-5 max-w-md mx-auto">Select JPG, JPEG, or PNG files from your device or drag them directly into this area</p>
+              <Button variant="outline" size="lg" className="gap-2 border-blue-400 text-blue-400 hover:bg-blue-500 hover:text-white">
                 <Upload className="w-4 h-4" /> Browse Files
               </Button>
             </div>
@@ -297,24 +293,27 @@ const JPGtoPDFConverter = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-medium">Selected Images</h3>
-                    <span className="bg-accent/20 text-accent px-2 py-1 rounded-md text-sm font-medium">{previews.length}</span>
+                    <h3 className="text-lg font-medium text-white">Selected Images</h3>
+                    <span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded-md text-sm font-medium">{previews.length}</span>
                   </div>
-                  <Button variant="outline" size="sm" onClick={clearAllImages} className="text-red-500 hover:bg-red-500/10">
+                  <Button variant="outline" size="sm" onClick={clearAllImages} className="text-red-400 hover:bg-red-500/10">
                     <Trash2 className="w-4 h-4 mr-2" /> Clear All
                   </Button>
                 </div>
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {previews.map((preview, index) => (
-                    <div key={preview.id} className="relative group bg-muted/30 rounded-lg overflow-hidden aspect-square border border-border transition-all duration-300 hover:shadow-md">
-                      <div className="w-full h-full flex items-center justify-center">
-                        <img
-                          src={preview.url}
-                          alt={`Image ${index + 1}`}
-                          className="max-w-full max-h-full object-contain p-2"
-                        />
-                      </div>
+                    <div key={preview.id} className="relative group bg-slate-700/30 rounded-lg overflow-hidden aspect-square border border-slate-600/50 transition-all duration-300 hover:shadow-md">
+                      <img
+                        src={preview.url}
+                        alt={`Image ${index + 1}`}
+                        className="w-full h-full object-contain p-2"
+                        onError={(e) => {
+                          console.error("Image failed to load:", preview.url);
+                          e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'%3E%3C/circle%3E%3Cpolyline points='21 15 16 10 5 21'%3E%3C/polyline%3E%3C/svg%3E";
+                          e.currentTarget.classList.add("p-4");
+                        }}
+                      />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300"></div>
                       <button
                         onClick={(e) => {
@@ -326,7 +325,7 @@ const JPGtoPDFConverter = () => {
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-xs py-1.5 px-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-xs py-1.5 px-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 truncate">
                         {files[index]?.name || `Image ${index + 1}`}
                       </div>
                     </div>
@@ -336,29 +335,29 @@ const JPGtoPDFConverter = () => {
             )}
 
             {isConverting && (
-              <div className="space-y-2 bg-accent/5 p-4 rounded-lg border border-accent/20">
+              <div className="space-y-2 bg-blue-500/5 p-4 rounded-lg border border-blue-400/20">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="animate-pulse">
-                    <FilePlus className="w-5 h-5 text-accent" />
+                    <FilePlus className="w-5 h-5 text-blue-400" />
                   </div>
-                  <p className="font-medium">Creating your PDF...</p>
+                  <p className="font-medium text-white">Creating your PDF...</p>
                 </div>
-                <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                <div className="h-2 w-full bg-slate-700 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-accent rounded-full transition-all duration-300 ease-in-out"
+                    className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-in-out"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
-                <p className="text-right text-xs text-muted-foreground">{Math.round(progress)}%</p>
+                <p className="text-right text-xs text-gray-400">{Math.round(progress)}%</p>
               </div>
             )}
           </div>
           
-          <div className="border-t border-border/50 p-6 bg-muted/30">
+          <div className="border-t border-slate-600/50 p-6 bg-slate-800/30">
             <Button 
               onClick={convertToPdf} 
               disabled={isConverting || previews.length === 0}
-              className="w-full gap-2 bg-accent hover:bg-accent/90 text-white"
+              className="w-full gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:opacity-90 text-white"
               size="lg"
             >
               <Download className="w-5 h-5" /> 
@@ -369,28 +368,28 @@ const JPGtoPDFConverter = () => {
         
         {/* Features section */}
         <div className="mt-16 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-semibold text-center mb-8">Why Use Our JPG to PDF Converter?</h2>
+          <h2 className="text-2xl font-semibold text-center mb-8 text-white">Why Use Our JPG to PDF Converter?</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-card border border-border rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-                <Check className="w-6 h-6 text-accent" />
+            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
+                <Check className="w-6 h-6 text-blue-400" />
               </div>
-              <h3 className="text-lg font-medium mb-2">Free & Easy</h3>
-              <p className="text-muted-foreground">No signup required. Just upload and convert your images instantly.</p>
+              <h3 className="text-lg font-medium mb-2 text-white">Free & Easy</h3>
+              <p className="text-gray-300">No signup required. Just upload and convert your images instantly.</p>
             </div>
-            <div className="bg-card border border-border rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-                <Image className="w-6 h-6 text-accent" />
+            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
+                <Image className="w-6 h-6 text-blue-400" />
               </div>
-              <h3 className="text-lg font-medium mb-2">High Quality</h3>
-              <p className="text-muted-foreground">Maintains image quality during conversion for professional-looking PDFs.</p>
+              <h3 className="text-lg font-medium mb-2 text-white">High Quality</h3>
+              <p className="text-gray-300">Maintains image quality during conversion for professional-looking PDFs.</p>
             </div>
-            <div className="bg-card border border-border rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-                <AlertCircle className="w-6 h-6 text-accent" />
+            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
+              <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
+                <AlertCircle className="w-6 h-6 text-blue-400" />
               </div>
-              <h3 className="text-lg font-medium mb-2">Privacy First</h3>
-              <p className="text-muted-foreground">Your images are processed locally. We never store or share your files.</p>
+              <h3 className="text-lg font-medium mb-2 text-white">Privacy First</h3>
+              <p className="text-gray-300">Your images are processed locally. We never store or share your files.</p>
             </div>
           </div>
         </div>
