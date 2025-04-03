@@ -155,24 +155,32 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
     
     try {
-      // Fix for jsPDF constructor - using the document parameter required in v3.x
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      // Fixed jsPDF constructor by passing an object as required in v3.x
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
       
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const pdfWidth = doc.internal.pageSize.getWidth();
+      const pdfHeight = doc.internal.pageSize.getHeight();
       
       for (let i = 0; i < files.length; i++) {
         if (i > 0) {
-          pdf.addPage();
+          doc.addPage();
         }
         
         try {
           const dataUrl = await readFileAsDataURL(files[i]);
           
+          // Create an image element to get dimensions
           const img = new Image();
-          await new Promise<void>((resolveImg, rejectImg) => {
-            img.onload = () => resolveImg();
-            img.onerror = () => rejectImg(new Error(`Failed to load image ${i + 1}`));
+          await new Promise<void>((resolve, reject) => {
+            img.onload = () => resolve();
+            img.onerror = (e) => {
+              console.error("Image load error:", e);
+              reject(new Error(`Failed to load image ${i + 1}`));
+            };
             img.src = dataUrl;
           });
           
@@ -194,7 +202,8 @@ const JPGtoPDFConverter = () => {
           
           const imgFormat = files[i].type === 'image/png' ? 'PNG' : 'JPEG';
           
-          pdf.addImage(
+          // Add image to the PDF with explicit dimensions
+          doc.addImage(
             dataUrl, 
             imgFormat, 
             xOffset, 
@@ -209,7 +218,8 @@ const JPGtoPDFConverter = () => {
         }
       }
       
-      pdf.save('converted-images.pdf');
+      // Save the document
+      doc.save('converted-images.pdf');
       
       toast({
         title: "Conversion complete",
