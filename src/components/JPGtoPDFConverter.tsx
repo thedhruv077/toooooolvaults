@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -154,6 +155,7 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
     
     try {
+      // Fix: Initialize jsPDF with proper parameters
       const pdf = new jsPDF('portrait', 'mm', 'a4');
       
       const pdfWidth = pdf.internal.pageSize.getWidth();
