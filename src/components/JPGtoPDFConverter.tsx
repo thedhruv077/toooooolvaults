@@ -155,7 +155,7 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
     
     try {
-      // Fix jsPDF constructor by passing the correct object parameter format
+      // Create a new jsPDF instance with explicit options
       const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
