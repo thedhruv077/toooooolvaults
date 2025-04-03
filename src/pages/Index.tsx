@@ -8,7 +8,6 @@ import {
   QrCode, 
   ArrowRight, 
   Lock, 
-  FileText, 
   BarChart3, 
   Home, 
   FileUp, 
