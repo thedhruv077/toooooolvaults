@@ -19,7 +19,11 @@ import {
   CreditCard,
   Receipt,
   AreaChart,
-  FileImage
+  FileImage,
+  FilePowerpoint,
+  FilePdf,
+  Compress,
+  Code
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
@@ -105,6 +109,61 @@ const tools: Tool[] = [
     description: "Convert JPG images to PDF documents with high quality",
     route: "/utilities/jpg-to-pdf",
     icon: <FileImage className="w-5 h-5 text-accent" />,
+    category: "converter"
+  },
+  {
+    name: "PowerPoint to PDF",
+    description: "Convert PowerPoint presentations to PDF documents",
+    route: "/utilities/powerpoint-to-pdf",
+    icon: <FilePowerpoint className="w-5 h-5 text-accent" />,
+    category: "converter",
+    badge: "New"
+  },
+  {
+    name: "PDF to PowerPoint",
+    description: "Convert PDF files to editable PowerPoint presentations",
+    route: "/utilities/pdf-to-powerpoint",
+    icon: <FilePdf className="w-5 h-5 text-accent" />,
+    category: "converter",
+    badge: "New"
+  },
+  {
+    name: "PDF to JPG",
+    description: "Convert PDF pages to high-quality JPG images",
+    route: "/utilities/pdf-to-jpg",
+    icon: <FileImage className="w-5 h-5 text-accent" />,
+    category: "converter",
+    badge: "New"
+  },
+  {
+    name: "Excel to PDF",
+    description: "Convert Excel spreadsheets to PDF documents",
+    route: "/utilities/excel-to-pdf",
+    icon: <FileText className="w-5 h-5 text-accent" />,
+    category: "converter",
+    badge: "New"
+  },
+  {
+    name: "PDF to Excel",
+    description: "Convert PDF tables to editable Excel spreadsheets",
+    route: "/utilities/pdf-to-excel",
+    icon: <FileText className="w-5 h-5 text-accent" />,
+    category: "converter",
+    badge: "New"
+  },
+  {
+    name: "HTML to PDF",
+    description: "Convert HTML files or code to PDF documents",
+    route: "/utilities/html-to-pdf",
+    icon: <Code className="w-5 h-5 text-accent" />,
+    category: "converter",
+    badge: "New"
+  },
+  {
+    name: "PDF Compressor",
+    description: "Reduce PDF file size while maintaining quality",
+    route: "/utilities/pdf-compressor",
+    icon: <Compress className="w-5 h-5 text-accent" />,
     category: "converter",
     badge: "New"
   }
@@ -121,7 +180,7 @@ const Index = () => {
       <Helmet>
         <title>Tool Vault - Premium Calculators & Utilities for Everyone</title>
         <meta name="description" content="Free premium tools and calculators for everyone. Financial calculators, QR code generators, password generators and more utilities." />
-        <meta name="keywords" content="tool vault, calculators, utilities, financial calculators, QR code generator, password generator, invoice generator, GST calculator, percentage calculator, EMI calculator, SIP calculator, real estate calculator, JPG to PDF converter" />
+        <meta name="keywords" content="tool vault, calculators, utilities, financial calculators, QR code generator, password generator, invoice generator, GST calculator, percentage calculator, EMI calculator, SIP calculator, real estate calculator, JPG to PDF converter, PDF converter, PowerPoint converter, Excel converter, HTML to PDF, PDF compressor" />
         <meta property="og:title" content="Tool Vault - Premium Calculators & Utilities" />
         <meta property="og:description" content="Free premium tools and calculators for everyone. Financial calculators, QR code generators, password generators and more utilities." />
         <meta property="og:type" content="website" />
@@ -243,7 +302,7 @@ const Index = () => {
                     {converterTools.length} tools
                   </span>
                 </div>
-                <div className="p-4">
+                <div className="p-4 max-h-96 overflow-y-auto">
                   <ul className="space-y-3">
                     {converterTools.map((tool, index) => (
                       <li key={index}>
