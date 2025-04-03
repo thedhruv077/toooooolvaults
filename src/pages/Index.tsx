@@ -1,4 +1,3 @@
-
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -20,9 +19,9 @@ import {
   Receipt,
   AreaChart,
   FileImage,
-  FilePowerpoint,
-  FilePdf,
-  Compress,
+  FileText,
+  File,
+  ArrowDown,
   Code
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
@@ -115,7 +114,7 @@ const tools: Tool[] = [
     name: "PowerPoint to PDF",
     description: "Convert PowerPoint presentations to PDF documents",
     route: "/utilities/powerpoint-to-pdf",
-    icon: <FilePowerpoint className="w-5 h-5 text-accent" />,
+    icon: <FileText className="w-5 h-5 text-accent" />,
     category: "converter",
     badge: "New"
   },
@@ -123,7 +122,7 @@ const tools: Tool[] = [
     name: "PDF to PowerPoint",
     description: "Convert PDF files to editable PowerPoint presentations",
     route: "/utilities/pdf-to-powerpoint",
-    icon: <FilePdf className="w-5 h-5 text-accent" />,
+    icon: <File className="w-5 h-5 text-accent" />,
     category: "converter",
     badge: "New"
   },
@@ -163,7 +162,7 @@ const tools: Tool[] = [
     name: "PDF Compressor",
     description: "Reduce PDF file size while maintaining quality",
     route: "/utilities/pdf-compressor",
-    icon: <Compress className="w-5 h-5 text-accent" />,
+    icon: <ArrowDown className="w-5 h-5 text-accent" />,
     category: "converter",
     badge: "New"
   }

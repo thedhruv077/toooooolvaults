@@ -1,8 +1,7 @@
-
 import React, { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Upload, Trash2, Download, Check, AlertCircle, FilePdf } from "lucide-react";
+import { FileText, Upload, Trash2, Download, Check, AlertCircle, File } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -151,7 +150,7 @@ const PDFToExcelConverter = () => {
         <div className="max-w-4xl mx-auto bg-slate-800/50 rounded-xl shadow-lg overflow-hidden border border-slate-700/80 backdrop-blur-sm">
           <div className="bg-slate-700/50 p-6 border-b border-slate-600/50">
             <div className="flex items-center gap-3">
-              <FilePdf className="w-6 h-6 text-blue-400" />
+              <File className="w-6 h-6 text-blue-400" />
               <h2 className="text-2xl font-semibold text-white">PDF to Excel Converter</h2>
             </div>
             <p className="text-gray-300 mt-1">
@@ -176,7 +175,7 @@ const PDFToExcelConverter = () => {
                 />
                 <div className="mb-4">
                   <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FilePdf className="w-10 h-10 text-blue-400" />
+                    <File className="w-10 h-10 text-blue-400" />
                   </div>
                 </div>
                 <h3 className="text-xl font-medium mb-3 text-white">Drag & Drop PDF File Here</h3>
@@ -196,7 +195,7 @@ const PDFToExcelConverter = () => {
                 
                 <div className="bg-slate-700/30 rounded-lg overflow-hidden p-4 flex items-center space-x-4 border border-slate-600/50">
                   <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <FilePdf className="w-6 h-6 text-blue-400" />
+                    <File className="w-6 h-6 text-blue-400" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="text-white font-medium truncate">{file.name}</h4>

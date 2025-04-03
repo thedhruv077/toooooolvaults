@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,14 +16,12 @@ const JPGtoPDFConverter = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  // Clean up preview URLs when component unmounts
   useEffect(() => {
     return () => {
       previews.forEach(preview => URL.revokeObjectURL(preview.url));
     };
   }, [previews]);
 
-  // Generate a unique ID for each preview
   const generateUniqueId = () => {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   };
@@ -66,7 +63,6 @@ const JPGtoPDFConverter = () => {
       });
     }
 
-    // Reset the input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -135,7 +131,6 @@ const JPGtoPDFConverter = () => {
     });
   };
 
-  // Helper function to create file reader promise
   const readFileAsDataURL = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -159,12 +154,7 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
     
     try {
-      // Properly initialize jsPDF with orientation, unit, and format
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+      const pdf = new jsPDF('portrait', 'mm', 'a4');
       
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -175,10 +165,8 @@ const JPGtoPDFConverter = () => {
         }
         
         try {
-          // Convert the file to data URL
           const dataUrl = await readFileAsDataURL(files[i]);
           
-          // Create an image element to get dimensions
           const img = new Image();
           await new Promise<void>((resolveImg, rejectImg) => {
             img.onload = () => resolveImg();
@@ -216,7 +204,6 @@ const JPGtoPDFConverter = () => {
           setProgress(((i + 1) / files.length) * 100);
         } catch (err) {
           console.error(`Error processing image ${i + 1}:`, err);
-          // Continue with the next image
         }
       }
       
@@ -371,7 +358,6 @@ const JPGtoPDFConverter = () => {
           </div>
         </div>
         
-        {/* Features section */}
         <div className="mt-16 max-w-4xl mx-auto">
           <h2 className="text-2xl font-semibold text-center mb-8 text-white">Why Use Our JPG to PDF Converter?</h2>
           <div className="grid md:grid-cols-3 gap-6">

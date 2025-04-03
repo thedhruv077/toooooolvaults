@@ -1,8 +1,7 @@
-
 import React, { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FilePowerpoint, Upload, Trash2, Download, Check, AlertCircle, FilePdf } from "lucide-react";
+import { FileText, Upload, Trash2, Download, Check, AlertCircle, File } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -20,7 +19,6 @@ const PDFToPowerPointConverter = () => {
     
     const selectedFile = e.target.files[0];
     
-    // Check if file is a PDF file
     if (!selectedFile.name.endsWith('.pdf')) {
       toast({
         title: "Invalid file format",
@@ -37,7 +35,6 @@ const PDFToPowerPointConverter = () => {
       description: "PDF file added successfully",
     });
     
-    // Reset the input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -54,7 +51,6 @@ const PDFToPowerPointConverter = () => {
     
     const droppedFile = e.dataTransfer.files[0];
     
-    // Check if file is a PDF file
     if (!droppedFile.name.endsWith('.pdf')) {
       toast({
         title: "Invalid file format",
@@ -94,7 +90,6 @@ const PDFToPowerPointConverter = () => {
     setIsConverting(true);
     setProgress(0);
     
-    // Simulate conversion progress (in a real app, this would be the actual conversion)
     const simulateProgress = () => {
       let currentProgress = 0;
       const interval = setInterval(() => {
@@ -104,8 +99,6 @@ const PDFToPowerPointConverter = () => {
           clearInterval(interval);
           
           setTimeout(() => {
-            // In a real implementation, this would be where we'd create the actual PowerPoint
-            // For now, we'll just simulate a successful conversion
             setIsConverting(false);
             setProgress(0);
             
@@ -114,7 +107,6 @@ const PDFToPowerPointConverter = () => {
               description: "PDF file has been converted to PowerPoint",
             });
             
-            // In a real app, we would trigger the download of the converted file here
             const link = document.createElement('a');
             link.download = file.name.replace(/\.pdf$/i, '.pptx');
             link.href = URL.createObjectURL(new Blob(['PowerPoint content would go here'], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }));
@@ -127,7 +119,6 @@ const PDFToPowerPointConverter = () => {
       }, 200);
     };
     
-    // Start progress simulation
     simulateProgress();
   };
 
@@ -151,7 +142,7 @@ const PDFToPowerPointConverter = () => {
         <div className="max-w-4xl mx-auto bg-slate-800/50 rounded-xl shadow-lg overflow-hidden border border-slate-700/80 backdrop-blur-sm">
           <div className="bg-slate-700/50 p-6 border-b border-slate-600/50">
             <div className="flex items-center gap-3">
-              <FilePdf className="w-6 h-6 text-blue-400" />
+              <File className="w-6 h-6 text-blue-400" />
               <h2 className="text-2xl font-semibold text-white">PDF to PowerPoint Converter</h2>
             </div>
             <p className="text-gray-300 mt-1">
@@ -176,7 +167,7 @@ const PDFToPowerPointConverter = () => {
                 />
                 <div className="mb-4">
                   <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FilePdf className="w-10 h-10 text-blue-400" />
+                    <File className="w-10 h-10 text-blue-400" />
                   </div>
                 </div>
                 <h3 className="text-xl font-medium mb-3 text-white">Drag & Drop PDF File Here</h3>
@@ -196,7 +187,7 @@ const PDFToPowerPointConverter = () => {
                 
                 <div className="bg-slate-700/30 rounded-lg overflow-hidden p-4 flex items-center space-x-4 border border-slate-600/50">
                   <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <FilePdf className="w-6 h-6 text-blue-400" />
+                    <File className="w-6 h-6 text-blue-400" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="text-white font-medium truncate">{file.name}</h4>
@@ -210,7 +201,7 @@ const PDFToPowerPointConverter = () => {
               <div className="space-y-2 bg-blue-500/5 p-4 rounded-lg border border-blue-400/20">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="animate-pulse">
-                    <FilePowerpoint className="w-5 h-5 text-blue-400" />
+                    <FileText className="w-5 h-5 text-blue-400" />
                   </div>
                   <p className="font-medium text-white">Creating your PowerPoint...</p>
                 </div>
@@ -238,7 +229,6 @@ const PDFToPowerPointConverter = () => {
           </div>
         </div>
         
-        {/* Features section */}
         <div className="mt-16 max-w-4xl mx-auto">
           <h2 className="text-2xl font-semibold text-center mb-8 text-white">Why Use Our PDF to PowerPoint Converter?</h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -251,7 +241,7 @@ const PDFToPowerPointConverter = () => {
             </div>
             <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
               <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
-                <FilePowerpoint className="w-6 h-6 text-blue-400" />
+                <FileText className="w-6 h-6 text-blue-400" />
               </div>
               <h3 className="text-lg font-medium mb-2 text-white">Editable Output</h3>
               <p className="text-gray-300">Get fully editable PowerPoint slides that maintain content and layout.</p>

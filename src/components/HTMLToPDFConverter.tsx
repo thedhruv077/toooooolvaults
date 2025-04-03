@@ -1,8 +1,7 @@
-
 import React, { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Code, Upload, Trash2, Download, Check, AlertCircle, FilePdf } from "lucide-react";
+import { Code, Upload, Trash2, Download, Check, AlertCircle, File } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -22,7 +21,6 @@ const HTMLToPDFConverter = () => {
     
     const selectedFile = e.target.files[0];
     
-    // Check if file is an HTML file
     if (!selectedFile.name.endsWith('.html') && !selectedFile.name.endsWith('.htm')) {
       toast({
         title: "Invalid file format",
@@ -34,7 +32,6 @@ const HTMLToPDFConverter = () => {
     
     setFile(selectedFile);
     
-    // Read the file content
     const reader = new FileReader();
     reader.onload = (event) => {
       if (event.target?.result) {
@@ -48,7 +45,6 @@ const HTMLToPDFConverter = () => {
       description: "HTML file added successfully",
     });
     
-    // Reset the input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -65,7 +61,6 @@ const HTMLToPDFConverter = () => {
     
     const droppedFile = e.dataTransfer.files[0];
     
-    // Check if file is an HTML file
     if (!droppedFile.name.endsWith('.html') && !droppedFile.name.endsWith('.htm')) {
       toast({
         title: "Invalid file format",
@@ -77,7 +72,6 @@ const HTMLToPDFConverter = () => {
     
     setFile(droppedFile);
     
-    // Read the file content
     const reader = new FileReader();
     reader.onload = (event) => {
       if (event.target?.result) {
@@ -115,7 +109,6 @@ const HTMLToPDFConverter = () => {
     setIsConverting(true);
     setProgress(0);
     
-    // Simulate conversion progress (in a real app, this would be the actual conversion)
     const simulateProgress = () => {
       let currentProgress = 0;
       const interval = setInterval(() => {
@@ -125,8 +118,6 @@ const HTMLToPDFConverter = () => {
           clearInterval(interval);
           
           setTimeout(() => {
-            // In a real implementation, this would be where we'd create the actual PDF
-            // For now, we'll just simulate a successful conversion
             setIsConverting(false);
             setProgress(0);
             
@@ -135,7 +126,6 @@ const HTMLToPDFConverter = () => {
               description: "HTML has been converted to PDF",
             });
             
-            // In a real app, we would trigger the download of the converted file here
             const link = document.createElement('a');
             link.download = file ? file.name.replace(/\.(html|htm)$/i, '.pdf') : 'converted-document.pdf';
             link.href = URL.createObjectURL(new Blob(['PDF content would go here'], { type: 'application/pdf' }));
@@ -148,7 +138,6 @@ const HTMLToPDFConverter = () => {
       }, 200);
     };
     
-    // Start progress simulation
     simulateProgress();
   };
 
@@ -267,7 +256,7 @@ const HTMLToPDFConverter = () => {
               <div className="space-y-2 bg-blue-500/5 p-4 rounded-lg border border-blue-400/20">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="animate-pulse">
-                    <FilePdf className="w-5 h-5 text-blue-400" />
+                    <File className="w-5 h-5 text-blue-400" />
                   </div>
                   <p className="font-medium text-white">Creating your PDF...</p>
                 </div>
@@ -295,7 +284,6 @@ const HTMLToPDFConverter = () => {
           </div>
         </div>
         
-        {/* Features section */}
         <div className="mt-16 max-w-4xl mx-auto">
           <h2 className="text-2xl font-semibold text-center mb-8 text-white">Why Use Our HTML to PDF Converter?</h2>
           <div className="grid md:grid-cols-3 gap-6">
