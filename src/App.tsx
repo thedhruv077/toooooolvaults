@@ -22,7 +22,6 @@ import SEOTools from "./components/SEOTools";
 import SIPCalculator from "./components/SIPCalculator";
 import RealEstateCalculator from "./components/RealEstateCalculator";
 import RealEstateAreaCalculator from "./components/RealEstateAreaCalculator";
-import JPGtoPDFConverter from "./components/JPGtoPDFConverter";
 
 // ScrollToTop component to reset scroll position on route change
 const ScrollToTop = () => {
@@ -57,7 +56,7 @@ const App = () => (
             <Route path="/utilities/qr-code" element={<QRCodeGenerator />} />
             <Route path="/utilities/password" element={<PasswordGenerator />} />
             <Route path="/utilities/invoice" element={<InvoiceGenerator />} />
-            <Route path="/utilities/jpg-to-pdf" element={<JPGtoPDFConverter />} />
+            {/* Removed JPG to PDF converter route */}
             <Route path="/seo-tools" element={<SEOTools />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />

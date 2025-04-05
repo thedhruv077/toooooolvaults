@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ArrowRight, Percent, FileImage, Calculator, Lock, QrCode } from "lucide-react";
+import { ArrowRight, Percent, Calculator, Lock, QrCode } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -19,7 +19,7 @@ const Hero = () => {
         </p>
         
         {/* Direct tool access links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10 animate-fade-in [animation-delay:500ms]">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10 animate-fade-in [animation-delay:500ms]">
           <Link
             to="/calculators/percentage"
             className="flex flex-col items-center justify-center p-4 rounded-lg glass-panel glass-panel-dark transition-all duration-300 hover:bg-accent/10 hover:scale-105"
@@ -40,13 +40,6 @@ const Hero = () => {
           >
             <Lock className="w-6 h-6 text-accent mb-2" />
             <span className="text-sm font-medium">Password</span>
-          </Link>
-          <Link
-            to="/utilities/jpg-to-pdf"
-            className="flex flex-col items-center justify-center p-4 rounded-lg glass-panel glass-panel-dark transition-all duration-300 hover:bg-accent/10 hover:scale-105"
-          >
-            <FileImage className="w-6 h-6 text-accent mb-2" />
-            <span className="text-sm font-medium">JPG to PDF</span>
           </Link>
         </div>
         

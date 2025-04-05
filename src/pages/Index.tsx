@@ -1,4 +1,3 @@
-
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -98,13 +97,6 @@ const tools: Tool[] = [
     route: "/utilities/invoice",
     icon: <FileImage className="w-5 h-5 text-accent" />,
     category: "utility"
-  },
-  {
-    name: "JPG to PDF Converter",
-    description: "Convert JPG images to PDF documents with high quality",
-    route: "/utilities/jpg-to-pdf",
-    icon: <FileImage className="w-5 h-5 text-accent" />,
-    category: "converter"
   }
 ];
 
