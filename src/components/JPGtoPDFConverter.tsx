@@ -1,8 +1,7 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { jsPDF } from "jspdf";
+import jsPDF from "jspdf"; // Changed import format
 import { FileImage, Upload, Trash2, Download, Check, AlertCircle, Image, ImagePlus, FilePlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
@@ -121,11 +120,7 @@ const JPGtoPDFConverter = () => {
 
     try {
       // Create a new jsPDF instance - properly configured
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+      const doc = new jsPDF(); // Fixed constructor call
       
       let firstPageAdded = false;
 
