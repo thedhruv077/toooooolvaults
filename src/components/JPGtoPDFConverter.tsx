@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,6 @@ const JPGtoPDFConverter = () => {
 
   useEffect(() => {
     return () => {
-      // Clean up object URLs when component unmounts
       previews.forEach(preview => URL.revokeObjectURL(preview.url));
     };
   }, [previews]);
@@ -121,11 +119,10 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
 
     try {
-      // Create jsPDF instance with explicit type parameters
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
       });
       
       let firstPageAdded = false;
@@ -138,16 +135,16 @@ const JPGtoPDFConverter = () => {
           img.src = URL.createObjectURL(file);
           
           img.onload = () => {
-            const imgWidth = pdf.internal.pageSize.getWidth();
+            const imgWidth = doc.internal.pageSize.getWidth();
             const imgHeight = (img.height * imgWidth) / img.width;
             
             if (firstPageAdded) {
-              pdf.addPage();
+              doc.addPage();
             } else {
               firstPageAdded = true;
             }
             
-            pdf.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight);
+            doc.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight);
             URL.revokeObjectURL(img.src);
             resolve();
           };
@@ -162,7 +159,7 @@ const JPGtoPDFConverter = () => {
         setProgress(Math.round(((i + 1) / files.length) * 100));
       }
       
-      pdf.save('converted-images.pdf');
+      doc.save('converted-images.pdf');
       
       toast({
         title: "Conversion complete",
