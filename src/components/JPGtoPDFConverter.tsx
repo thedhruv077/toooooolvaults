@@ -119,11 +119,7 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
 
     try {
-      const doc = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-      });
+      const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       
       let firstPageAdded = false;
 
