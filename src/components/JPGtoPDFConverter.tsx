@@ -120,7 +120,7 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
 
     try {
-      // Create a new jsPDF instance with configuration
+      // Create a new jsPDF instance - properly configured
       const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
