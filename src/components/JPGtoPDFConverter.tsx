@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import { FileImage, Upload, Trash2, Download, Check, AlertCircle, Image, ImagePlus, FilePlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
