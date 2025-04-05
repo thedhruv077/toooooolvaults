@@ -208,7 +208,7 @@ const Header = () => {
                 
                 <div className="px-3 py-3 rounded-xl bg-primary/5">
                   <h4 className="font-medium mb-2 text-sm flex items-center gap-1.5 text-green-500 uppercase tracking-wide">
-                    <FileUp className="w-4 h-4" /> Converters
+                    <FileUp className="w-4 h-4" /> 
                   </h4>
                   <div className="space-y-2 ml-6 mt-3">
                     <Link to="/utilities/jpg-to-pdf" className="block py-1.5 text-sm hover:text-green-500 transition-colors flex items-center">
