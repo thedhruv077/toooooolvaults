@@ -111,7 +111,7 @@ const Header = () => {
             <div className="relative group">
               <span className="text-sm font-medium transition-colors flex items-center gap-1.5 cursor-pointer bg-primary/5 hover:bg-primary/10 px-4 py-2.5 rounded-full group-hover:text-accent">
                 <FileUp className="w-4 h-4 text-green-500" />
-                <span className="font-medium"></span>
+                <span className="font-medium">Converters</span>
                 <span className="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-gradient-to-r from-green-500 to-teal-500 group-hover:w-[calc(100%-30px)] -translate-x-1/2 transition-all duration-300"></span>
               </span>
               <div className="absolute top-full left-0 mt-1 w-56 bg-card backdrop-blur-lg border shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-left scale-95 group-hover:scale-100 z-50">
@@ -208,7 +208,7 @@ const Header = () => {
                 
                 <div className="px-3 py-3 rounded-xl bg-primary/5">
                   <h4 className="font-medium mb-2 text-sm flex items-center gap-1.5 text-green-500 uppercase tracking-wide">
-                    <FileUp className="w-4 h-4" /> Converters
+                    <FileUp className="w-4 h-4" /> 
                   </h4>
                   <div className="space-y-2 ml-6 mt-3">
                     <Link to="/utilities/jpg-to-pdf" className="block py-1.5 text-sm hover:text-green-500 transition-colors flex items-center">
