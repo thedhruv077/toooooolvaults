@@ -19,6 +19,7 @@ const JPGtoPDFConverter = () => {
 
   useEffect(() => {
     return () => {
+      // Clean up object URLs when component unmounts
       previews.forEach(preview => URL.revokeObjectURL(preview.url));
     };
   }, [previews]);
@@ -120,7 +121,7 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
 
     try {
-      // Fix: Initialize jsPDF correctly for version 3.x
+      // Create jsPDF instance with explicit type parameters
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
