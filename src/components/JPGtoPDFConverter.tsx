@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -119,7 +120,8 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
 
     try {
-      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      // Update to correctly create a new jsPDF instance
+      const doc = new jsPDF();
       
       let firstPageAdded = false;
 
