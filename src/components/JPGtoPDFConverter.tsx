@@ -120,7 +120,7 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
 
     try {
-      // Initialize jsPDF with correct constructor parameters
+      // Fix: Create jsPDF with proper constructor parameters
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -224,7 +224,7 @@ const JPGtoPDFConverter = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-950 to-slate-900">
+    <div className="min-h-screen flex flex-col bg-background">
       <Helmet>
         <title>JPG to PDF Converter | Free Online Tool | Tool Vault</title>
         <meta name="description" content="Convert your JPG, JPEG, or PNG images to PDF online for free. No watermark, high quality, and easy to use." />
@@ -236,12 +236,12 @@ const JPGtoPDFConverter = () => {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">JPG to PDF Converter</h1>
-          <p className="text-gray-300 max-w-2xl mx-auto">
+          <p className="text-gray-500 dark:text-gray-300 max-w-2xl mx-auto">
             Convert your JPG, JPEG, or PNG images to PDF quickly and easily. Maintain quality and create multi-page documents.
           </p>
         </div>
         
-        <Card className="bg-slate-900/60 border-slate-800 shadow-xl mb-8">
+        <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileImage className="h-6 w-6 text-blue-400" />
@@ -253,7 +253,7 @@ const JPGtoPDFConverter = () => {
           </CardHeader>
           <CardContent>
             <div 
-              className="border-2 border-dashed border-slate-700 rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 transition-colors"
+              className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 transition-colors"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
@@ -266,9 +266,9 @@ const JPGtoPDFConverter = () => {
                 accept=".jpg,.jpeg,.png"
                 className="hidden"
               />
-              <Upload className="h-12 w-12 mx-auto mb-4 text-slate-400" />
+              <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-lg font-medium mb-2">Drag and drop your images here</h3>
-              <p className="text-sm text-slate-400 mb-4">Or click to browse your files</p>
+              <p className="text-sm text-muted-foreground mb-4">Or click to browse your files</p>
               <Button variant="outline" className="mx-auto">
                 <ImagePlus className="mr-2 h-4 w-4" />
                 Select Images
@@ -278,7 +278,7 @@ const JPGtoPDFConverter = () => {
         </Card>
 
         {previews.length > 0 && (
-          <Card className="bg-slate-900/60 border-slate-800 shadow-xl mb-8">
+          <Card className="mt-8">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle className="flex items-center gap-2">
@@ -298,7 +298,7 @@ const JPGtoPDFConverter = () => {
                     <img 
                       src={preview.url} 
                       alt="Preview" 
-                      className="w-full h-40 object-cover rounded-md border border-slate-700"
+                      className="w-full h-40 object-cover rounded-md border border-border"
                     />
                     <Button
                       variant="destructive"
@@ -319,7 +319,7 @@ const JPGtoPDFConverter = () => {
                     <span>Converting...</span>
                     <span>{progress}%</span>
                   </div>
-                  <div className="w-full bg-slate-700 rounded-full h-2">
+                  <div className="w-full bg-secondary rounded-full h-2">
                     <div 
                       className="bg-blue-500 h-2 rounded-full transition-all duration-300" 
                       style={{ width: `${progress}%` }}
@@ -329,7 +329,7 @@ const JPGtoPDFConverter = () => {
               ) : (
                 <Button 
                   onClick={convertToPdf} 
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
                 >
                   <FilePlus className="mr-2 h-5 w-5" />
                   Convert to PDF
@@ -339,7 +339,7 @@ const JPGtoPDFConverter = () => {
           </Card>
         )}
 
-        <Card className="bg-slate-900/60 border-slate-800 shadow-xl">
+        <Card className="mt-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-6 w-6 text-blue-400" />
@@ -354,7 +354,7 @@ const JPGtoPDFConverter = () => {
                 </div>
                 <div>
                   <h3 className="font-medium mb-1">Upload Images</h3>
-                  <p className="text-sm text-slate-400">Select or drag and drop your JPG, JPEG, or PNG images.</p>
+                  <p className="text-sm text-muted-foreground">Select or drag and drop your JPG, JPEG, or PNG images.</p>
                 </div>
               </div>
               
@@ -364,7 +364,7 @@ const JPGtoPDFConverter = () => {
                 </div>
                 <div>
                   <h3 className="font-medium mb-1">Prepare Images</h3>
-                  <p className="text-sm text-slate-400">Review and arrange your images in the desired order.</p>
+                  <p className="text-sm text-muted-foreground">Review and arrange your images in the desired order.</p>
                 </div>
               </div>
               
@@ -374,7 +374,7 @@ const JPGtoPDFConverter = () => {
                 </div>
                 <div>
                   <h3 className="font-medium mb-1">Convert & Download</h3>
-                  <p className="text-sm text-slate-400">Click convert and download your PDF file instantly.</p>
+                  <p className="text-sm text-muted-foreground">Click convert and download your PDF file instantly.</p>
                 </div>
               </div>
             </div>
