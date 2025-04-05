@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ui/theme-toggle";
-import { Menu, X, Calculator, FileUp, Grid } from "lucide-react";
+import { Menu, X, Calculator, FileUp, Grid, Sparkles, Zap } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "./ui/button";
 
@@ -26,27 +26,31 @@ const Header = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "py-2 glass-panel glass-panel-dark shadow-xl border-b border-white/5" : "py-3 bg-background/40 backdrop-blur-sm"}`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled 
+          ? "py-2 glass-panel glass-panel-dark shadow-xl border-b border-white/5" 
+          : "py-3 bg-background/40 backdrop-blur-sm"
+        }`}
       >
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link to="/" className="text-xl font-bold flex items-center group">
-              <span className="text-foreground font-medium">[𝙩𝘰𝘰Ꙇ𝙫𝕒𝙪𝙡𝙩𝚜]</span>
+              <span className="text-foreground font-medium flex items-center">
+                <Sparkles className="w-5 h-5 mr-1 text-accent animate-pulse-slow" />
+                <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">[𝙩𝘰𝘰Ꙇ𝙫𝕒𝙪𝙡𝙩𝚜]</span>
+              </span>
             </Link>
             <ThemeToggle className="ml-2" />
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="text-sm font-medium hover:text-accent transition-colors">
-              Home
-            </Link>
+          <div className="hidden md:flex items-center space-x-3">
             <div className="relative group">
-              <span className="text-sm font-medium hover:text-accent transition-colors flex items-center gap-1 cursor-pointer">
-                <Calculator className="w-4 h-4" />
-                Calculators
+              <span className="text-sm font-medium hover:text-accent transition-colors flex items-center gap-1 cursor-pointer bg-secondary/40 px-3 py-2 rounded-md">
+                <Calculator className="w-4 h-4 text-accent" />
+                <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Calculators</span>
               </span>
-              <div className="absolute top-full left-0 mt-2 w-48 bg-background/95 backdrop-blur-lg border border-border/30 shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="absolute top-full left-0 mt-2 w-48 bg-background/95 backdrop-blur-lg border border-border/30 shadow-xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 premium-shadow">
                 <div className="p-2 space-y-1">
                   <Link to="/calculators/percentage" className="block px-3 py-1.5 rounded text-sm hover:bg-accent/10 transition-colors">
                     Percentage Calculator
@@ -73,11 +77,11 @@ const Header = () => {
               </div>
             </div>
             <div className="relative group">
-              <span className="text-sm font-medium hover:text-accent transition-colors flex items-center gap-1 cursor-pointer">
-                <Grid className="w-4 h-4" />
-                Utilities
+              <span className="text-sm font-medium hover:text-accent transition-colors flex items-center gap-1 cursor-pointer bg-secondary/40 px-3 py-2 rounded-md">
+                <Grid className="w-4 h-4 text-accent" />
+                <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Utilities</span>
               </span>
-              <div className="absolute top-full left-0 mt-2 w-48 bg-background/95 backdrop-blur-lg border border-border/30 shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="absolute top-full left-0 mt-2 w-48 bg-background/95 backdrop-blur-lg border border-border/30 shadow-xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 premium-shadow">
                 <div className="p-2 space-y-1">
                   <Link to="/utilities/qr-code" className="block px-3 py-1.5 rounded text-sm hover:bg-accent/10 transition-colors">
                     QR Code Generator
@@ -95,11 +99,11 @@ const Header = () => {
               </div>
             </div>
             <div className="relative group">
-              <span className="text-sm font-medium hover:text-accent transition-colors flex items-center gap-1 cursor-pointer">
-                <FileUp className="w-4 h-4" />
-                Converters
+              <span className="text-sm font-medium hover:text-accent transition-colors flex items-center gap-1 cursor-pointer bg-secondary/40 px-3 py-2 rounded-md">
+                <FileUp className="w-4 h-4 text-accent" />
+                <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Converters</span>
               </span>
-              <div className="absolute top-full left-0 mt-2 w-48 bg-background/95 backdrop-blur-lg border border-border/30 shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="absolute top-full left-0 mt-2 w-48 bg-background/95 backdrop-blur-lg border border-border/30 shadow-xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 premium-shadow">
                 <div className="p-2 space-y-1">
                   <Link to="/utilities/jpg-to-pdf" className="block px-3 py-1.5 rounded text-sm hover:bg-accent/10 transition-colors">
                     JPG to PDF
@@ -107,17 +111,11 @@ const Header = () => {
                 </div>
               </div>
             </div>
-            <Link to="/about" className="text-sm font-medium hover:text-accent transition-colors">
-              About
-            </Link>
-            <Link to="/contact" className="text-sm font-medium hover:text-accent transition-colors">
-              Contact
-            </Link>
           </div>
 
           <div className="flex items-center gap-2">
             <Button 
-              variant="ghost" 
+              variant="outline"
               size="icon" 
               onClick={toggleMobileMenu} 
               className="md:hidden"
@@ -127,21 +125,18 @@ const Header = () => {
           </div>
           
           {mobileMenuOpen && (
-            <div className="absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-t border-border/30 shadow-lg animate-in fade-in slide-in-from-right md:hidden">
+            <div className="absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-t border-border/30 shadow-xl animate-in fade-in slide-in-from-right md:hidden">
               <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
                 <div className="flex items-center justify-between border-b border-border/20 pb-3 mb-2">
-                  <h3 className="font-medium text-lg">Menu</h3>
+                  <h3 className="font-medium text-lg flex items-center">
+                    <Zap className="w-5 h-5 mr-1 text-accent" />
+                    <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Tool Categories</span>
+                  </h3>
                 </div>
                 
-                <Link to="/" className="px-2 py-2 hover:bg-accent/10 rounded-md transition-colors">
-                  Home
-                </Link>
-                
-                <div className="border-t border-border/20 my-2"></div>
-                
-                <div className="px-2 py-2">
+                <div className="px-2 py-2 bg-secondary/30 rounded-lg">
                   <h4 className="font-medium mb-2 text-sm text-foreground/70 flex items-center gap-1">
-                    <Calculator className="w-4 h-4" /> Calculators
+                    <Calculator className="w-4 h-4 text-accent" /> Calculators
                   </h4>
                   <div className="space-y-1 ml-4">
                     <Link to="/calculators/percentage" className="block py-1.5 text-sm hover:text-accent transition-colors">
@@ -168,9 +163,9 @@ const Header = () => {
                   </div>
                 </div>
                 
-                <div className="px-2 py-2">
+                <div className="px-2 py-2 bg-secondary/30 rounded-lg">
                   <h4 className="font-medium mb-2 text-sm text-foreground/70 flex items-center gap-1">
-                    <Grid className="w-4 h-4" /> Utilities
+                    <Grid className="w-4 h-4 text-accent" /> Utilities
                   </h4>
                   <div className="space-y-1 ml-4">
                     <Link to="/utilities/qr-code" className="block py-1.5 text-sm hover:text-accent transition-colors">
@@ -187,15 +182,6 @@ const Header = () => {
                     </Link>
                   </div>
                 </div>
-                
-                <div className="border-t border-border/20 my-2"></div>
-                
-                <Link to="/about" className="px-2 py-2 hover:bg-accent/10 rounded-md transition-colors">
-                  About
-                </Link>
-                <Link to="/contact" className="px-2 py-2 hover:bg-accent/10 rounded-md transition-colors">
-                  Contact
-                </Link>
               </div>
             </div>
           )}
