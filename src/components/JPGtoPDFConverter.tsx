@@ -120,8 +120,12 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
 
     try {
-      // Initialize jsPDF correctly with the proper constructor
-      const pdf = new jsPDF('portrait', 'mm', 'a4');
+      // Initialize jsPDF with the proper syntax - jsPDF is a class that requires an object for initialization
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
 
       let firstPageAdded = false;
 
