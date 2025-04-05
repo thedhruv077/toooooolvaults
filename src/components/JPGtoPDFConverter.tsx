@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -120,19 +119,13 @@ const JPGtoPDFConverter = () => {
     setProgress(0);
 
     try {
-      // Fix: Create jsPDF with proper constructor parameters
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4"
-      });
+      const pdf = new jsPDF();
 
       let firstPageAdded = false;
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         
-        // Create a promise to handle the image loading
         const imageLoadPromise = new Promise<void>((resolve, reject) => {
           const img = new Image();
           img.src = URL.createObjectURL(file);
@@ -141,7 +134,6 @@ const JPGtoPDFConverter = () => {
             const imgWidth = pdf.internal.pageSize.getWidth();
             const imgHeight = (img.height * imgWidth) / img.width;
             
-            // Add a new page for each image after the first one
             if (firstPageAdded) {
               pdf.addPage();
             } else {
@@ -160,11 +152,9 @@ const JPGtoPDFConverter = () => {
         
         await imageLoadPromise;
         
-        // Update progress
         setProgress(Math.round(((i + 1) / files.length) * 100));
       }
       
-      // Save the PDF file
       pdf.save('converted-images.pdf');
       
       toast({
@@ -187,18 +177,14 @@ const JPGtoPDFConverter = () => {
   const removeImage = (id: string) => {
     const imageIndex = previews.findIndex(preview => preview.id === id);
     if (imageIndex !== -1) {
-      // Create new arrays without the removed image
       const newPreviews = [...previews];
       const newFiles = [...files];
       
-      // Revoke URL for memory cleanup
       URL.revokeObjectURL(newPreviews[imageIndex].url);
       
-      // Remove the image from both arrays
       newPreviews.splice(imageIndex, 1);
       newFiles.splice(imageIndex, 1);
       
-      // Update state
       setPreviews(newPreviews);
       setFiles(newFiles);
       
@@ -210,10 +196,8 @@ const JPGtoPDFConverter = () => {
   };
 
   const clearAll = () => {
-    // Revoke all URLs to prevent memory leaks
     previews.forEach(preview => URL.revokeObjectURL(preview.url));
     
-    // Clear all state
     setFiles([]);
     setPreviews([]);
     
