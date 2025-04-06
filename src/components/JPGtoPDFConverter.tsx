@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import jsPDF from "jspdf"; // Changed import syntax
+import { jsPDF } from "jspdf";
 import { FileImage, Upload, Trash2, Download, Check, AlertCircle, Image, ImagePlus, FilePlus, Zap, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
@@ -131,8 +131,10 @@ const JPGtoPDFConverter: React.FC = () => {
     setProgress(0);
 
     try {
-      // Create a new jsPDF instance with proper configuration
-      const doc = new jsPDF(); // Fixed constructor call
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+      });
       
       let firstPageAdded = false;
 
@@ -145,32 +147,25 @@ const JPGtoPDFConverter: React.FC = () => {
           img.src = preview.url;
           
           img.onload = () => {
-            // Get page dimensions
             const pageWidth = doc.internal.pageSize.getWidth();
             const pageHeight = doc.internal.pageSize.getHeight();
             
-            // Calculate image dimensions considering rotation
             let imgWidth = pageWidth;
             let imgHeight = (img.height * imgWidth) / img.width;
             
-            // Handle rotation
             if (preview.rotation === 90 || preview.rotation === 270) {
-              // Swap dimensions for 90 or 270 degree rotations
               [imgWidth, imgHeight] = [imgHeight, imgWidth];
             }
             
-            // Add a new page for each image except the first one
             if (firstPageAdded) {
               doc.addPage();
             } else {
               firstPageAdded = true;
             }
             
-            // Calculate center positioning
             const x = (pageWidth - imgWidth) / 2;
             const y = (pageHeight - imgHeight) / 2;
             
-            // Add the image to the PDF
             doc.addImage(
               img, 
               'JPEG', 
@@ -183,7 +178,6 @@ const JPGtoPDFConverter: React.FC = () => {
               preview.rotation
             );
             
-            URL.revokeObjectURL(img.src);
             resolve();
           };
           
@@ -267,9 +261,7 @@ const JPGtoPDFConverter: React.FC = () => {
           </p>
         </div>
         
-        {/* Main converter card with glassmorphism effect */}
         <div className="max-w-4xl mx-auto backdrop-blur-lg bg-card/30 border rounded-2xl shadow-xl overflow-hidden">
-          {/* Header gradient strip */}
           <div className="h-2 w-full bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500"></div>
           
           <div className="p-8">
@@ -283,7 +275,6 @@ const JPGtoPDFConverter: React.FC = () => {
               </div>
             </div>
             
-            {/* Upload area */}
             <div 
               className="border-2 border-dashed border-accent/30 rounded-xl p-10 text-center hover:border-accent/80 transition-all duration-300 cursor-pointer bg-accent/5 relative overflow-hidden"
               onDragOver={handleDragOver}
@@ -299,7 +290,6 @@ const JPGtoPDFConverter: React.FC = () => {
                 className="hidden"
               />
               
-              {/* Animated background circles */}
               <div className="absolute -bottom-16 -left-16 w-32 h-32 bg-blue-500/10 rounded-full blur-xl"></div>
               <div className="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/10 rounded-full blur-xl"></div>
               
@@ -321,7 +311,6 @@ const JPGtoPDFConverter: React.FC = () => {
               </div>
             </div>
             
-            {/* Image preview area */}
             {previews.length > 0 && (
               <div className="mt-8 space-y-4">
                 <div className="flex justify-between items-center">
@@ -351,7 +340,6 @@ const JPGtoPDFConverter: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Image controls overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
                         <div className="flex justify-between items-center">
                           <Button
@@ -383,7 +371,6 @@ const JPGtoPDFConverter: React.FC = () => {
                   ))}
                 </div>
                 
-                {/* Conversion button and progress bar */}
                 <div className="mt-6 relative">
                   {isConverting ? (
                     <div className="space-y-2">
@@ -417,12 +404,10 @@ const JPGtoPDFConverter: React.FC = () => {
           </div>
         </div>
         
-        {/* Features section */}
         <div className="mt-16 max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Why Choose Our JPG to PDF Converter?</h2>
           
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Feature 1 */}
             <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border hover:shadow-lg transition-all duration-300 hover:translate-y-[-4px] group">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center mb-4 group-hover:from-blue-500/30 group-hover:to-blue-500/10 transition-all">
                 <Zap className="w-6 h-6 text-blue-500" />
@@ -431,7 +416,6 @@ const JPGtoPDFConverter: React.FC = () => {
               <p className="text-muted-foreground">Convert multiple images to PDF in seconds with our optimized processing engine.</p>
             </div>
             
-            {/* Feature 2 */}
             <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border hover:shadow-lg transition-all duration-300 hover:translate-y-[-4px] group">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500/20 to-purple-500/5 flex items-center justify-center mb-4 group-hover:from-purple-500/30 group-hover:to-purple-500/10 transition-all">
                 <Check className="w-6 h-6 text-purple-500" />
@@ -440,7 +424,6 @@ const JPGtoPDFConverter: React.FC = () => {
               <p className="text-muted-foreground">Maintain the original image quality with our lossless conversion technology.</p>
             </div>
             
-            {/* Feature 3 */}
             <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 border hover:shadow-lg transition-all duration-300 hover:translate-y-[-4px] group">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500/20 to-pink-500/5 flex items-center justify-center mb-4 group-hover:from-pink-500/30 group-hover:to-pink-500/10 transition-all">
                 <AlertCircle className="w-6 h-6 text-pink-500" />
@@ -451,7 +434,6 @@ const JPGtoPDFConverter: React.FC = () => {
           </div>
         </div>
         
-        {/* How it works section */}
         <div className="mt-16 max-w-4xl mx-auto p-8 bg-card/30 backdrop-blur-sm rounded-xl border">
           <h2 className="text-2xl font-bold text-center mb-8">How It Works</h2>
           
