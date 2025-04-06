@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -116,7 +115,7 @@ const PDFToJPGConverter = () => {
       const convertedImages: string[] = [];
       
       // Create a canvas element for rendering PDF pages
-      const canvas = canvasRef.current || document.createElement('canvas');
+      const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       
       if (!ctx) {
@@ -135,6 +134,10 @@ const PDFToJPGConverter = () => {
         // Set canvas dimensions to match the page
         canvas.width = viewport.width;
         canvas.height = viewport.height;
+        
+        // Clear canvas before rendering new page
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         // Render the page to the canvas
         await page.render({
@@ -171,21 +174,42 @@ const PDFToJPGConverter = () => {
   };
 
   const downloadImage = (imageUrl: string, index: number) => {
-    const link = document.createElement('a');
-    link.href = imageUrl;
-    link.download = `page-${index + 1}.jpg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = imageUrl;
+      link.download = `page-${index + 1}.jpg`;
+      
+      // Append to the document, click it, and remove it
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      toast({
+        title: "Download failed",
+        description: "Failed to download the image. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const downloadAllImages = () => {
-    // Create a zip file containing all images
-    // Note: In a real implementation, we would use JSZip or similar library
-    // For simplicity, we'll just download each image individually
+    if (convertedPages.length === 0) {
+      toast({
+        title: "No images to download",
+        description: "Please convert a PDF file first",
+        variant: "destructive",
+      });
+      return;
+    }
     
+    // Download each image individually
     convertedPages.forEach((page, index) => {
-      downloadImage(page, index);
+      // Add a small delay between downloads to prevent browser issues
+      setTimeout(() => {
+        downloadImage(page, index);
+      }, index * 100);
     });
     
     toast({
@@ -326,7 +350,6 @@ const PDFToJPGConverter = () => {
               </div>
             )}
 
-            {/* Hidden canvas for rendering PDF pages */}
             <canvas ref={canvasRef} style={{ display: 'none' }} />
           </div>
           
@@ -343,7 +366,6 @@ const PDFToJPGConverter = () => {
           </div>
         </Card>
         
-        {/* Features section */}
         <div className="mt-16 max-w-4xl mx-auto">
           <h2 className="text-2xl font-semibold text-center mb-8">Why Use Our PDF to JPG Converter?</h2>
           <div className="grid md:grid-cols-3 gap-6">

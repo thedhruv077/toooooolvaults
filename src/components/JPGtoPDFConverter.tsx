@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,8 +8,7 @@ import Footer from "./Footer";
 import { Helmet } from "react-helmet-async";
 import { ThemeToggle } from "./ui/theme-toggle";
 
-// Fix the jsPDF import and initialization
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 
 const JPGtoPDFConverter: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -134,11 +132,7 @@ const JPGtoPDFConverter: React.FC = () => {
     setProgress(0);
 
     try {
-      // Create a new jsPDF instance with the correct initialization
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm'
-      });
+      const doc = new jsPDF();
       
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -155,7 +149,6 @@ const JPGtoPDFConverter: React.FC = () => {
               const ctx = canvas.getContext("2d")!;
               let { width, height } = img;
               
-              // Handle rotation
               const rotation = preview.rotation;
               const radians = (rotation * Math.PI) / 180;
               
@@ -171,32 +164,26 @@ const JPGtoPDFConverter: React.FC = () => {
               ctx.rotate(radians);
               ctx.drawImage(img, -width / 2, -height / 2);
               
-              // Get image data
               const dataUrl = canvas.toDataURL("image/jpeg");
               
-              // Add page for each image (except first one)
               if (i > 0) {
                 doc.addPage();
               }
               
-              // Calculate image dimensions to fit page
               const pageWidth = doc.internal.pageSize.getWidth();
               const pageHeight = doc.internal.pageSize.getHeight();
               
               let imgWidth = pageWidth - 20; // margins
               let imgHeight = (canvas.height * imgWidth) / canvas.width;
               
-              // If image is too tall, scale by height instead
               if (imgHeight > pageHeight - 20) {
                 imgHeight = pageHeight - 20;
                 imgWidth = (canvas.width * imgHeight) / canvas.height;
               }
               
-              // Center image on page
               const x = (pageWidth - imgWidth) / 2;
               const y = (pageHeight - imgHeight) / 2;
               
-              // Add image to PDF
               doc.addImage(dataUrl, 'JPEG', x, y, imgWidth, imgHeight);
               
               resolve();
@@ -212,11 +199,9 @@ const JPGtoPDFConverter: React.FC = () => {
           };
         });
         
-        // Update progress
         setProgress(Math.round(((i + 1) / files.length) * 100));
       }
       
-      // Save PDF
       doc.save('converted-images.pdf');
       
       toast({
