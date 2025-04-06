@@ -1,13 +1,16 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { jsPDF } from "jspdf";
 import { FileImage, Upload, Trash2, Download, Check, AlertCircle, Image, ImagePlus, FilePlus, Zap, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Helmet } from "react-helmet-async";
 import { ThemeToggle } from "./ui/theme-toggle";
+
+// Import jsPDF correctly
+import { jsPDF } from "jspdf";
 
 const JPGtoPDFConverter: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -131,74 +134,89 @@ const JPGtoPDFConverter: React.FC = () => {
     setProgress(0);
 
     try {
-      const doc = new jsPDF({
+      // Create a new jsPDF instance with explicit parameters
+      const doc = new jsPDF({ 
         orientation: 'portrait',
-        unit: 'mm',
+        unit: 'mm'
       });
       
-      let firstPageAdded = false;
-
       for (let i = 0; i < files.length; i++) {
-  const file = files[i];
-  const preview = previews[i];
-
-  const imageLoadPromise = new Promise<void>((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.src = preview.url;
-
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d")!;
-      let { width, height } = img;
-
-      const rotation = preview.rotation;
-      const radians = (rotation * Math.PI) / 180;
-
-      if (rotation === 90 || rotation === 270) {
-        canvas.width = height;
-        canvas.height = width;
-      } else {
-        canvas.width = width;
-        canvas.height = height;
+        const file = files[i];
+        const preview = previews[i];
+        
+        await new Promise<void>((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = "Anonymous";
+          img.src = preview.url;
+          
+          img.onload = () => {
+            try {
+              const canvas = document.createElement("canvas");
+              const ctx = canvas.getContext("2d")!;
+              let { width, height } = img;
+              
+              // Handle rotation
+              const rotation = preview.rotation;
+              const radians = (rotation * Math.PI) / 180;
+              
+              if (rotation === 90 || rotation === 270) {
+                canvas.width = height;
+                canvas.height = width;
+              } else {
+                canvas.width = width;
+                canvas.height = height;
+              }
+              
+              ctx.translate(canvas.width / 2, canvas.height / 2);
+              ctx.rotate(radians);
+              ctx.drawImage(img, -width / 2, -height / 2);
+              
+              // Get image data
+              const dataUrl = canvas.toDataURL("image/jpeg");
+              
+              // Add page for each image (except first one)
+              if (i > 0) {
+                doc.addPage();
+              }
+              
+              // Calculate image dimensions to fit page
+              const pageWidth = doc.internal.pageSize.getWidth();
+              const pageHeight = doc.internal.pageSize.getHeight();
+              
+              let imgWidth = pageWidth - 20; // margins
+              let imgHeight = (canvas.height * imgWidth) / canvas.width;
+              
+              // If image is too tall, scale by height instead
+              if (imgHeight > pageHeight - 20) {
+                imgHeight = pageHeight - 20;
+                imgWidth = (canvas.width * imgHeight) / canvas.height;
+              }
+              
+              // Center image on page
+              const x = (pageWidth - imgWidth) / 2;
+              const y = (pageHeight - imgHeight) / 2;
+              
+              // Add image to PDF
+              doc.addImage(dataUrl, 'JPEG', x, y, imgWidth, imgHeight);
+              
+              resolve();
+            } catch (error) {
+              console.error("Error processing image:", error);
+              reject(error);
+            }
+          };
+          
+          img.onerror = (error) => {
+            console.error(`Failed to load image: ${file.name}`, error);
+            reject(new Error(`Failed to load image: ${file.name}`));
+          };
+        });
+        
+        // Update progress
+        setProgress(Math.round(((i + 1) / files.length) * 100));
       }
-
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(radians);
-      ctx.drawImage(img, -width / 2, -height / 2);
-
-      const dataUrl = canvas.toDataURL("image/jpeg");
-
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-
-      let imgWidth = pageWidth;
-      let imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      if (imgHeight > pageHeight) {
-        imgHeight = pageHeight;
-        imgWidth = (canvas.width * imgHeight) / canvas.height;
-      }
-
-      const x = (pageWidth - imgWidth) / 2;
-      const y = (pageHeight - imgHeight) / 2;
-
-      if (i > 0) doc.addPage();
-      doc.addImage(dataUrl, 'JPEG', x, y, imgWidth, imgHeight);
-
-      resolve();
-    };
-
-    img.onerror = () => {
-      reject(new Error(`Failed to load image: ${file.name}`));
-    };
-  });
-
-  await imageLoadPromise;
-
-  setProgress(Math.round(((i + 1) / files.length) * 100));
-}
       
+      // Save PDF
       doc.save('converted-images.pdf');
       
       toast({
