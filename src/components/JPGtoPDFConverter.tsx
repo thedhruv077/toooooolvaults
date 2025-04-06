@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -132,7 +133,7 @@ const JPGtoPDFConverter: React.FC = () => {
     setProgress(0);
 
     try {
-      const doc = new jsPDF();
+      const doc = new jsPDF('p', 'mm', 'a4');
       
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
