@@ -139,57 +139,65 @@ const JPGtoPDFConverter: React.FC = () => {
       let firstPageAdded = false;
 
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const preview = previews[i];
-        
-        const imageLoadPromise = new Promise<void>((resolve, reject) => {
-          const img = new Image();
-          img.src = preview.url;
-          
-          img.onload = () => {
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            
-            let imgWidth = pageWidth;
-            let imgHeight = (img.height * imgWidth) / img.width;
-            
-            if (preview.rotation === 90 || preview.rotation === 270) {
-              [imgWidth, imgHeight] = [imgHeight, imgWidth];
-            }
-            
-            if (firstPageAdded) {
-              doc.addPage();
-            } else {
-              firstPageAdded = true;
-            }
-            
-            const x = (pageWidth - imgWidth) / 2;
-            const y = (pageHeight - imgHeight) / 2;
-            
-            doc.addImage(
-              img, 
-              'JPEG', 
-              x, 
-              y, 
-              imgWidth, 
-              imgHeight, 
-              undefined, 
-              undefined, 
-              preview.rotation
-            );
-            
-            resolve();
-          };
-          
-          img.onerror = () => {
-            reject(new Error(`Failed to load image: ${file.name}`));
-          };
-        });
-        
-        await imageLoadPromise;
-        
-        setProgress(Math.round(((i + 1) / files.length) * 100));
+  const file = files[i];
+  const preview = previews[i];
+
+  const imageLoadPromise = new Promise<void>((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = preview.url;
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d")!;
+      let { width, height } = img;
+
+      const rotation = preview.rotation;
+      const radians = (rotation * Math.PI) / 180;
+
+      if (rotation === 90 || rotation === 270) {
+        canvas.width = height;
+        canvas.height = width;
+      } else {
+        canvas.width = width;
+        canvas.height = height;
       }
+
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(radians);
+      ctx.drawImage(img, -width / 2, -height / 2);
+
+      const dataUrl = canvas.toDataURL("image/jpeg");
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+
+      let imgWidth = pageWidth;
+      let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if (imgHeight > pageHeight) {
+        imgHeight = pageHeight;
+        imgWidth = (canvas.width * imgHeight) / canvas.height;
+      }
+
+      const x = (pageWidth - imgWidth) / 2;
+      const y = (pageHeight - imgHeight) / 2;
+
+      if (i > 0) doc.addPage();
+      doc.addImage(dataUrl, 'JPEG', x, y, imgWidth, imgHeight);
+
+      resolve();
+    };
+
+    img.onerror = () => {
+      reject(new Error(`Failed to load image: ${file.name}`));
+    };
+  });
+
+  await imageLoadPromise;
+
+  setProgress(Math.round(((i + 1) / files.length) * 100));
+}
       
       doc.save('converted-images.pdf');
       
