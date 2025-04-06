@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ui/theme-toggle";
-import { Menu, X, Calculator, FileUp, Grid, Sparkles, Zap, CheckCircle2, BookOpen } from "lucide-react";
+import { Menu, X, Calculator, FileUp, Grid, Sparkles, Zap, CheckCircle2, BookOpen, FileImage, File } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "./ui/button";
 
@@ -117,8 +117,12 @@ const Header = () => {
               <div className="absolute top-full left-0 mt-1 w-56 bg-card backdrop-blur-lg border shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-left scale-95 group-hover:scale-100 z-50">
                 <div className="p-2 space-y-1">
                   <Link to="/utilities/jpg-to-pdf" className="flex items-center px-3 py-2 rounded-lg text-sm hover:bg-green-500/10 transition-colors">
-                    <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
+                    <FileImage className="w-4 h-4 mr-2 text-green-500" />
                     <span>JPG to PDF</span>
+                  </Link>
+                  <Link to="/utilities/pdf-to-jpg" className="flex items-center px-3 py-2 rounded-lg text-sm hover:bg-green-500/10 transition-colors">
+                    <File className="w-4 h-4 mr-2 text-green-500" />
+                    <span>PDF to JPG</span>
                   </Link>
                 </div>
               </div>
@@ -208,12 +212,16 @@ const Header = () => {
                 
                 <div className="px-3 py-3 rounded-xl bg-primary/5">
                   <h4 className="font-medium mb-2 text-sm flex items-center gap-1.5 text-green-500 uppercase tracking-wide">
-                    <FileUp className="w-4 h-4" /> 
+                    <FileUp className="w-4 h-4" /> Converters
                   </h4>
                   <div className="space-y-2 ml-6 mt-3">
                     <Link to="/utilities/jpg-to-pdf" className="block py-1.5 text-sm hover:text-green-500 transition-colors flex items-center">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-2"></span>
                       JPG to PDF
+                    </Link>
+                    <Link to="/utilities/pdf-to-jpg" className="block py-1.5 text-sm hover:text-green-500 transition-colors flex items-center">
+                      <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-2"></span>
+                      PDF to JPG
                     </Link>
                   </div>
                 </div>
