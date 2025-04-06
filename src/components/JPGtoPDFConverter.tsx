@@ -9,8 +9,8 @@ import Footer from "./Footer";
 import { Helmet } from "react-helmet-async";
 import { ThemeToggle } from "./ui/theme-toggle";
 
-// Import jsPDF correctly
-import { jsPDF } from "jspdf";
+// Fix the jsPDF import and initialization
+import jsPDF from "jspdf";
 
 const JPGtoPDFConverter: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -134,8 +134,8 @@ const JPGtoPDFConverter: React.FC = () => {
     setProgress(0);
 
     try {
-      // Create a new jsPDF instance with explicit parameters
-      const doc = new jsPDF({ 
+      // Create a new jsPDF instance with the correct initialization
+      const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm'
       });
