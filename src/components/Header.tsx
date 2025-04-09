@@ -2,13 +2,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ui/theme-toggle";
-import { Menu, X, Calculator, FileUp, Grid, Sparkles, Zap, CheckCircle2, BookOpen, FileImage, File } from "lucide-react";
+import { Menu, X, Calculator, FileUp, Grid, Sparkles, Zap, CheckCircle2, BookOpen, FileImage, File, ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "./ui/button";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -19,8 +21,23 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu when switching to desktop view
+  useEffect(() => {
+    if (!isMobile && mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+  }, [isMobile, mobileMenuOpen]);
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+    // Reset active group when closing menu
+    if (mobileMenuOpen) {
+      setActiveGroup(null);
+    }
+  };
+
+  const toggleGroup = (group: string) => {
+    setActiveGroup(activeGroup === group ? null : group);
   };
 
   return (
@@ -135,6 +152,7 @@ const Header = () => {
               size="icon" 
               onClick={toggleMobileMenu} 
               className="md:hidden relative bg-primary/5 hover:bg-primary/10"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {mobileMenuOpen ? 
                 <X className="w-5 h-5 text-foreground/80" /> : 
@@ -144,9 +162,10 @@ const Header = () => {
             </Button>
           </div>
           
+          {/* Mobile Menu - Improved UI */}
           {mobileMenuOpen && (
-            <div className="absolute top-full left-0 w-full bg-card border-t border-border shadow-xl animate-in slide-in-from-top-5 fade-in-20 md:hidden">
-              <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
+            <div className="absolute top-full left-0 w-full bg-card border-t border-border shadow-xl md:hidden">
+              <div className="container mx-auto px-4 py-4 flex flex-col gap-3 max-h-[80vh] overflow-y-auto">
                 <div className="flex items-center justify-between border-b border-border/50 pb-3 mb-2">
                   <h3 className="font-medium text-lg flex items-center">
                     <BookOpen className="w-5 h-5 mr-2 text-blue-500" />
@@ -154,76 +173,124 @@ const Header = () => {
                   </h3>
                 </div>
                 
+                {/* Collapsible Calculator Section */}
                 <div className="px-3 py-3 rounded-xl bg-primary/5 mb-2">
-                  <h4 className="font-medium mb-2 text-sm flex items-center gap-1.5 text-blue-500 uppercase tracking-wide">
-                    <Calculator className="w-4 h-4" /> Calculators
-                  </h4>
-                  <div className="space-y-2 ml-6 mt-3">
-                    <Link to="/calculators/percentage" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
-                      Percentage Calculator
-                    </Link>
-                    <Link to="/calculators/emi" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
-                      EMI Calculator
-                    </Link>
-                    <Link to="/calculators/gst" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
-                      GST Calculator
-                    </Link>
-                    <Link to="/calculators/area" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
-                      Area Calculator
-                    </Link>
-                    <Link to="/calculators/sip" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
-                      SIP Calculator
-                    </Link>
-                    <Link to="/calculators/real-estate" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
-                      Real Estate Calculator
-                    </Link>
-                    <Link to="/calculators/real-estate-area" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
-                      Real Estate Area
-                    </Link>
-                  </div>
+                  <button 
+                    onClick={() => toggleGroup('calculators')}
+                    className="w-full font-medium mb-2 text-sm flex items-center justify-between gap-1.5 text-blue-500 uppercase tracking-wide"
+                  >
+                    <span className="flex items-center">
+                      <Calculator className="w-4 h-4 mr-1.5" /> Calculators
+                    </span>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${activeGroup === 'calculators' ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {activeGroup === 'calculators' && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-2 ml-6 mt-3"
+                    >
+                      <Link to="/calculators/percentage" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
+                        Percentage Calculator
+                      </Link>
+                      <Link to="/calculators/emi" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
+                        EMI Calculator
+                      </Link>
+                      <Link to="/calculators/gst" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
+                        GST Calculator
+                      </Link>
+                      <Link to="/calculators/area" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
+                        Area Calculator
+                      </Link>
+                      <Link to="/calculators/sip" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
+                        SIP Calculator
+                      </Link>
+                      <Link to="/calculators/real-estate" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
+                        Real Estate Calculator
+                      </Link>
+                      <Link to="/calculators/real-estate-area" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
+                        Real Estate Area
+                      </Link>
+                    </motion.div>
+                  )}
                 </div>
                 
+                {/* Collapsible Utilities Section */}
                 <div className="px-3 py-3 rounded-xl bg-primary/5 mb-2">
-                  <h4 className="font-medium mb-2 text-sm flex items-center gap-1.5 text-purple-500 uppercase tracking-wide">
-                    <Grid className="w-4 h-4" /> Utilities
-                  </h4>
-                  <div className="space-y-2 ml-6 mt-3">
-                    <Link to="/utilities/qr-code" className="block py-1.5 text-sm hover:text-purple-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-purple-500 mr-2"></span>
-                      QR Code Generator
-                    </Link>
-                    <Link to="/utilities/password" className="block py-1.5 text-sm hover:text-purple-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-purple-500 mr-2"></span>
-                      Password Generator
-                    </Link>
-                    <Link to="/utilities/invoice" className="block py-1.5 text-sm hover:text-purple-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-purple-500 mr-2"></span>
-                      Invoice Generator
-                    </Link>
-                  </div>
+                  <button 
+                    onClick={() => toggleGroup('utilities')}
+                    className="w-full font-medium mb-2 text-sm flex items-center justify-between gap-1.5 text-purple-500 uppercase tracking-wide"
+                  >
+                    <span className="flex items-center">
+                      <Grid className="w-4 h-4 mr-1.5" /> Utilities
+                    </span>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${activeGroup === 'utilities' ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {activeGroup === 'utilities' && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-2 ml-6 mt-3"
+                    >
+                      <Link to="/utilities/qr-code" className="block py-1.5 text-sm hover:text-purple-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-purple-500 mr-2"></span>
+                        QR Code Generator
+                      </Link>
+                      <Link to="/utilities/password" className="block py-1.5 text-sm hover:text-purple-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-purple-500 mr-2"></span>
+                        Password Generator
+                      </Link>
+                      <Link to="/utilities/invoice" className="block py-1.5 text-sm hover:text-purple-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-purple-500 mr-2"></span>
+                        Invoice Generator
+                      </Link>
+                    </motion.div>
+                  )}
                 </div>
                 
+                {/* Collapsible Converters Section */}
                 <div className="px-3 py-3 rounded-xl bg-primary/5">
-                  <h4 className="font-medium mb-2 text-sm flex items-center gap-1.5 text-green-500 uppercase tracking-wide">
-                    <FileUp className="w-4 h-4" /> Converters
-                  </h4>
-                  <div className="space-y-2 ml-6 mt-3">
-                    <Link to="/utilities/jpg-to-pdf" className="block py-1.5 text-sm hover:text-green-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-2"></span>
-                      JPG to PDF
-                    </Link>
-                    <Link to="/utilities/pdf-to-jpg" className="block py-1.5 text-sm hover:text-green-500 transition-colors flex items-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-2"></span>
-                      PDF to JPG
-                    </Link>
-                  </div>
+                  <button 
+                    onClick={() => toggleGroup('converters')}
+                    className="w-full font-medium mb-2 text-sm flex items-center justify-between gap-1.5 text-green-500 uppercase tracking-wide"
+                  >
+                    <span className="flex items-center">
+                      <FileUp className="w-4 h-4 mr-1.5" /> Converters
+                    </span>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${activeGroup === 'converters' ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {activeGroup === 'converters' && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-2 ml-6 mt-3"
+                    >
+                      <Link to="/utilities/jpg-to-pdf" className="block py-1.5 text-sm hover:text-green-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-2"></span>
+                        JPG to PDF
+                      </Link>
+                      <Link to="/utilities/pdf-to-jpg" className="block py-1.5 text-sm hover:text-green-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-2"></span>
+                        PDF to JPG
+                      </Link>
+                    </motion.div>
+                  )}
                 </div>
               </div>
             </div>

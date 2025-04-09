@@ -134,17 +134,12 @@ const JPGtoPDFConverter: React.FC = () => {
     setProgress(0);
 
     try {
-      const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+      const doc = new jsPDF('p', 'mm', 'a4');
       
       for (let i = 0; i < files.length; i++) {
         const preview = previews[i];
         
         await new Promise<void>((resolve, reject) => {
-          // Create image element properly
           const img = document.createElement('img');
           img.onload = () => {
             try {
@@ -152,7 +147,6 @@ const JPGtoPDFConverter: React.FC = () => {
               const ctx = canvas.getContext("2d");
               if (!ctx) throw new Error("Could not get canvas context");
               
-              // Handle rotation
               if (preview.rotation % 180 === 90) {
                 canvas.width = img.height;
                 canvas.height = img.width;
@@ -175,7 +169,6 @@ const JPGtoPDFConverter: React.FC = () => {
               const pageWidth = doc.internal.pageSize.getWidth();
               const pageHeight = doc.internal.pageSize.getHeight();
               
-              // Calculate dimensions with margins
               const margin = 10;
               let imgWidth = pageWidth - 2 * margin;
               let imgHeight = (img.height * imgWidth) / img.width;
@@ -185,18 +178,10 @@ const JPGtoPDFConverter: React.FC = () => {
                 imgWidth = (img.width * imgHeight) / img.height;
               }
               
-              // Center image on page
               const x = (pageWidth - imgWidth) / 2;
               const y = (pageHeight - imgHeight) / 2;
               
-              doc.addImage({
-                imageData: imgData,
-                format: 'JPEG',
-                x: x,
-                y: y,
-                width: imgWidth,
-                height: imgHeight
-              });
+              doc.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
 
               resolve();
             } catch (error) {
@@ -209,7 +194,6 @@ const JPGtoPDFConverter: React.FC = () => {
             reject(new Error(`Failed to load image: ${files[i].name}`));
           };
 
-          // Start loading after setting handlers
           img.src = preview.url;
           img.crossOrigin = "Anonymous";
         });
