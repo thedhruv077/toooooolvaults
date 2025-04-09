@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -262,7 +263,185 @@ const JPGtoPDFConverter: React.FC = () => {
       <Header />
 
       <main className="flex-grow container mx-auto px-4 py-8">
-        {/* ... [rest of your JSX remains exactly the same] ... */}
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-2">JPG to PDF Converter</h1>
+          <p className="text-foreground/70 mb-8">
+            Convert your JPG, JPEG, or PNG images to PDF with our free online converter. No watermark, high quality output.
+          </p>
+          
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileImage className="h-5 w-5 text-accent" />
+                <span>Upload Images</span>
+              </CardTitle>
+              <CardDescription>
+                Select or drag & drop your image files (JPG, JPEG, PNG)
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div 
+                className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:bg-accent/5 transition-colors"
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <input 
+                  ref={fileInputRef}
+                  type="file" 
+                  multiple 
+                  accept=".jpg,.jpeg,.png"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                    <ImagePlus className="h-6 w-6 text-accent" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Click to upload or drag and drop</p>
+                    <p className="text-sm text-foreground/70">JPG, JPEG, or PNG files</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {previews.length > 0 && (
+            <Card className="mb-8">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <FilePlus className="h-5 w-5 text-accent" />
+                    <span>Image Preview</span>
+                  </CardTitle>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={clearAll} 
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Clear All
+                  </Button>
+                </div>
+                <CardDescription>
+                  {previews.length} image{previews.length > 1 ? 's' : ''} selected
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {previews.map((preview, index) => (
+                    <div key={preview.id} className="relative rounded-lg overflow-hidden border border-border group">
+                      <div style={{ position: "relative", paddingTop: "75%" }}>
+                        <img
+                          src={preview.url}
+                          alt={`Preview ${index + 1}`}
+                          style={{
+                            position: "absolute",
+                            top: "0",
+                            left: "0",
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                            transform: `rotate(${preview.rotation}deg)`,
+                            transition: "transform 0.3s ease",
+                          }}
+                        />
+                      </div>
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => rotateImage(preview.id)}
+                        >
+                          <RotateCcw className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => removeImage(preview.id)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                      <div className="absolute bottom-0 inset-x-0 bg-background/80 backdrop-blur-sm py-1 px-2 text-xs">
+                        Image {index + 1}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter className="flex-col gap-4">
+                {isConverting ? (
+                  <div className="w-full">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span>Converting...</span>
+                      <span>{progress}%</span>
+                    </div>
+                    <div className="h-2 bg-accent/20 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-accent transition-all duration-300" 
+                        style={{ width: `${progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ) : (
+                  <Button 
+                    className="w-full" 
+                    onClick={convertToPdf}
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Convert to PDF
+                  </Button>
+                )}
+              </CardFooter>
+            </Card>
+          )}
+          
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-accent" />
+                <span>How to Convert JPG to PDF</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ol className="list-decimal list-inside space-y-3 ml-2">
+                <li className="text-foreground/80">
+                  <span className="font-medium text-foreground">Upload Images:</span> Click the upload area or drag and drop your JPG, JPEG, or PNG files.
+                </li>
+                <li className="text-foreground/80">
+                  <span className="font-medium text-foreground">Arrange & Rotate:</span> Preview your images, rotate if needed, and arrange them in the desired order.
+                </li>
+                <li className="text-foreground/80">
+                  <span className="font-medium text-foreground">Convert:</span> Click the "Convert to PDF" button to create your PDF document.
+                </li>
+                <li className="text-foreground/80">
+                  <span className="font-medium text-foreground">Download:</span> Your PDF will be generated and automatically downloaded to your device.
+                </li>
+              </ol>
+            </CardContent>
+            <CardFooter>
+              <div className="text-sm text-foreground/70">
+                <div className="flex items-center gap-1 mb-1">
+                  <Check className="h-4 w-4 text-green-500" />
+                  <span>Free to use - No registration required</span>
+                </div>
+                <div className="flex items-center gap-1 mb-1">
+                  <Check className="h-4 w-4 text-green-500" />
+                  <span>No watermarks on converted PDF files</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Check className="h-4 w-4 text-green-500" />
+                  <span>Files converted locally - your data never leaves your device</span>
+                </div>
+              </div>
+            </CardFooter>
+          </Card>
+        </div>
       </main>
       
       <Footer />
