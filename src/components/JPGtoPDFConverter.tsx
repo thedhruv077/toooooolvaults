@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Helmet } from "react-helmet-async";
-import { ThemeToggle } from "./ui/theme-toggle";
 
 // Correct import for jsPDF v3
 import { jsPDF } from "jspdf";
@@ -136,17 +134,25 @@ const JPGtoPDFConverter: React.FC = () => {
 
     try {
       const doc = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 10;
       
       for (let i = 0; i < files.length; i++) {
         const preview = previews[i];
         
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        
         await new Promise<void>((resolve, reject) => {
-          const img = document.createElement('img');
           img.onload = () => {
             try {
               const canvas = document.createElement("canvas");
               const ctx = canvas.getContext("2d");
-              if (!ctx) throw new Error("Could not get canvas context");
+              if (!ctx) {
+                reject(new Error("Could not get canvas context"));
+                return;
+              }
               
               if (preview.rotation % 180 === 90) {
                 canvas.width = img.height;
@@ -167,23 +173,18 @@ const JPGtoPDFConverter: React.FC = () => {
               
               if (i > 0) doc.addPage();
               
-              const pageWidth = doc.internal.pageSize.getWidth();
-              const pageHeight = doc.internal.pageSize.getHeight();
-              
-              const margin = 10;
               let imgWidth = pageWidth - 2 * margin;
-              let imgHeight = (img.height * imgWidth) / img.width;
+              let imgHeight = (canvas.height * imgWidth) / canvas.width;
               
               if (imgHeight > pageHeight - 2 * margin) {
                 imgHeight = pageHeight - 2 * margin;
-                imgWidth = (img.width * imgHeight) / img.height;
+                imgWidth = (canvas.width * imgHeight) / canvas.height;
               }
               
               const x = (pageWidth - imgWidth) / 2;
               const y = (pageHeight - imgHeight) / 2;
               
               doc.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
-
               resolve();
             } catch (error) {
               console.error("Image processing error:", error);
@@ -192,11 +193,11 @@ const JPGtoPDFConverter: React.FC = () => {
           };
 
           img.onerror = () => {
+            console.error(`Failed to load image: ${files[i].name}`);
             reject(new Error(`Failed to load image: ${files[i].name}`));
           };
 
           img.src = preview.url;
-          img.crossOrigin = "Anonymous";
         });
 
         setProgress(Math.round(((i + 1) / files.length) * 100));
@@ -216,6 +217,7 @@ const JPGtoPDFConverter: React.FC = () => {
       });
     } finally {
       setIsConverting(false);
+      setProgress(0);
     }
   };
 
