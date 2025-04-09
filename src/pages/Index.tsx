@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
-// Tool type definition
 interface Tool {
   name: string;
   description: string;
@@ -31,7 +30,6 @@ interface Tool {
   badge?: string;
 }
 
-// Define all tools
 const tools: Tool[] = [
   {
     name: "Percentage Calculator",
@@ -97,10 +95,16 @@ const tools: Tool[] = [
     route: "/utilities/invoice",
     icon: <FileImage className="w-5 h-5 text-accent" />,
     category: "utility"
+  },
+  {
+    name: "JPG to PDF Converter",
+    description: "Convert JPG, JPEG, and PNG images to PDF",
+    route: "/utilities/jpg-to-pdf",
+    icon: <FileImage className="w-5 h-5 text-accent" />,
+    category: "converter"
   }
 ];
 
-// Filter tools by category
 const financialTools = tools.filter(tool => tool.category === 'financial');
 const utilityTools = tools.filter(tool => tool.category === 'utility');
 const converterTools = tools.filter(tool => tool.category === 'converter');
@@ -126,7 +130,6 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
         
-        {/* Tools Section */}
         <section className="py-16 px-4">
           <div className="container mx-auto">
             <h2 className="text-3xl font-bold text-center mb-6 text-glass">
@@ -137,10 +140,8 @@ const Index = () => {
               calculations, generate useful resources, and improve productivity.
             </p>
 
-            {/* Toolbox Grid Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
               
-              {/* Financial Tools Toolbox */}
               <div className="glass-panel glass-panel-dark rounded-xl overflow-hidden">
                 <div className="bg-accent/10 p-4 border-b border-border flex items-center justify-between">
                   <h3 className="text-xl font-semibold flex items-center gap-2">
@@ -181,7 +182,6 @@ const Index = () => {
                 </div>
               </div>
               
-              {/* Utility Tools Toolbox */}
               <div className="glass-panel glass-panel-dark rounded-xl overflow-hidden">
                 <div className="bg-accent/10 p-4 border-b border-border flex items-center justify-between">
                   <h3 className="text-xl font-semibold flex items-center gap-2">
@@ -222,7 +222,6 @@ const Index = () => {
                 </div>
               </div>
               
-              {/* Converter Tools Toolbox */}
               <div className="glass-panel glass-panel-dark rounded-xl overflow-hidden">
                 <div className="bg-accent/10 p-4 border-b border-border flex items-center justify-between">
                   <h3 className="text-xl font-semibold flex items-center gap-2">
@@ -264,7 +263,6 @@ const Index = () => {
               </div>
             </div>
             
-            {/* About and Contact Section */}
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 mx-auto max-w-4xl">
               <div className="glass-panel glass-panel-dark rounded-xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center mb-3">
