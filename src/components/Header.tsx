@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ui/theme-toggle";
@@ -55,7 +54,7 @@ const Header = () => {
               <div className="absolute inset-0 bg-blue-500/10 blur-2xl rounded-full animate-pulse-slow opacity-70"></div>
               <span className="relative text-foreground font-medium flex items-center z-10">
                 <Sparkles className="w-5 h-5 mr-1 text-blue-500 animate-pulse-slow" />
-                <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent font-bold tracking-tight">[𝙩𝘰𝘰Ꙇ𝙫𝕒𝙪𝙡𝙩𝚜]</span>
+                <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent font-bold tracking-tight">[𝙩𝙤𝙤Ꙇ𝙫𝕒𝙪𝙡𝙩𝚜]</span>
               </span>
             </Link>
             <ThemeToggle className="ml-2" />

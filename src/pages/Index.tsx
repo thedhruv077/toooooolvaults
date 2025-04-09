@@ -232,7 +232,7 @@ const Index = () => {
                     {converterTools.length} tools
                   </span>
                 </div>
-                <div className="p-4 max-h-96 overflow-y-auto">
+                <div className="p-4">
                   <ul className="space-y-3">
                     {converterTools.map((tool, index) => (
                       <li key={index}>
