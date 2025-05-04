@@ -32,7 +32,13 @@ Allow: /calculators/percentage
 Allow: /calculators/emi
 Allow: /calculators/gst
 Allow: /calculators/area
+Allow: /calculators/age
+Allow: /calculators/date-difference
 Allow: /utilities/qr-code
 Allow: /utilities/password
 Allow: /utilities/invoice
+Allow: /utilities/jpg-to-pdf
+Allow: /utilities/pdf-to-jpg
+Allow: /utilities/pdf-compressor
+Allow: /utilities/powerpoint-to-pdf
 Allow: /seo-tools

@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -138,69 +139,75 @@ const JPGtoPDFConverter: React.FC = () => {
       const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 10;
       
-      for (let i = 0; i < files.length; i++) {
-        const preview = previews[i];
+      for (let i = 0; i < previews.length; i++) {
+        try {
+          const preview = previews[i];
         
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        
-        await new Promise<void>((resolve, reject) => {
-          img.onload = () => {
-            try {
-              const canvas = document.createElement("canvas");
-              const ctx = canvas.getContext("2d");
-              if (!ctx) {
-                reject(new Error("Could not get canvas context"));
-                return;
+          const img = new Image();
+          img.crossOrigin = "Anonymous";
+          
+          await new Promise<void>((resolve, reject) => {
+            img.onload = () => {
+              try {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                if (!ctx) {
+                  reject(new Error("Could not get canvas context"));
+                  return;
+                }
+                
+                if (preview.rotation % 180 === 90) {
+                  canvas.width = img.height;
+                  canvas.height = img.width;
+                } else {
+                  canvas.width = img.width;
+                  canvas.height = img.height;
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((preview.rotation * Math.PI) / 180);
+                ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                ctx.restore();
+
+                const imgData = canvas.toDataURL("image/jpeg", 0.95);
+                
+                if (i > 0) doc.addPage();
+                
+                let imgWidth = pageWidth - 2 * margin;
+                let imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                if (imgHeight > pageHeight - 2 * margin) {
+                  imgHeight = pageHeight - 2 * margin;
+                  imgWidth = (canvas.width * imgHeight) / canvas.height;
+                }
+                
+                const x = (pageWidth - imgWidth) / 2;
+                const y = (pageHeight - imgHeight) / 2;
+                
+                doc.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
+                resolve();
+              } catch (error) {
+                console.error("Image processing error:", error);
+                reject(new Error(`Failed to process image: ${files[i].name}`));
               }
-              
-              if (preview.rotation % 180 === 90) {
-                canvas.width = img.height;
-                canvas.height = img.width;
-              } else {
-                canvas.width = img.width;
-                canvas.height = img.height;
-              }
+            };
 
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
-              ctx.save();
-              ctx.translate(canvas.width / 2, canvas.height / 2);
-              ctx.rotate((preview.rotation * Math.PI) / 180);
-              ctx.drawImage(img, -img.width / 2, -img.height / 2);
-              ctx.restore();
+            img.onerror = () => {
+              console.error(`Failed to load image: ${files[i].name}`);
+              reject(new Error(`Failed to load image: ${files[i].name}`));
+            };
 
-              const imgData = canvas.toDataURL("image/jpeg", 0.95);
-              
-              if (i > 0) doc.addPage();
-              
-              let imgWidth = pageWidth - 2 * margin;
-              let imgHeight = (canvas.height * imgWidth) / canvas.width;
-              
-              if (imgHeight > pageHeight - 2 * margin) {
-                imgHeight = pageHeight - 2 * margin;
-                imgWidth = (canvas.width * imgHeight) / canvas.height;
-              }
-              
-              const x = (pageWidth - imgWidth) / 2;
-              const y = (pageHeight - imgHeight) / 2;
-              
-              doc.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
-              resolve();
-            } catch (error) {
-              console.error("Image processing error:", error);
-              reject(new Error(`Failed to process image: ${files[i].name}`));
-            }
-          };
+            img.src = preview.url;
+          });
 
-          img.onerror = () => {
-            console.error(`Failed to load image: ${files[i].name}`);
-            reject(new Error(`Failed to load image: ${files[i].name}`));
-          };
-
-          img.src = preview.url;
-        });
-
-        setProgress(Math.round(((i + 1) / files.length) * 100));
+          setProgress(Math.round(((i + 1) / files.length) * 100));
+        } catch (imageError) {
+          console.error(`Error processing image ${i}:`, imageError);
+          // Continue with other images
+          continue;
+        }
       }
       
       doc.save('converted-images.pdf');
@@ -255,35 +262,39 @@ const JPGtoPDFConverter: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-950 to-slate-900">
       <Helmet>
-        <title>JPG to PDF Converter | Free Online Tool | Tool Vault</title>
-        <meta name="description" content="Convert your JPG, JPEG, or PNG images to PDF online for free. No watermark, high quality, and easy to use." />
-        <meta name="keywords" content="jpg to pdf, image to pdf, convert jpg to pdf, free pdf converter, png to pdf, jpeg to pdf, online converter" />
+        <title>JPG to PDF Converter | Free Online Image to PDF Tool | Tool Vault</title>
+        <meta name="description" content="Convert your JPG, JPEG, or PNG images to PDF online for free. Combine multiple images into one PDF document. No registration, no watermarks." />
+        <meta name="keywords" content="jpg to pdf, jpeg to pdf, png to pdf, image to pdf, combine images, photo to pdf, convert jpg to pdf, free pdf converter, online pdf creator" />
+        <meta property="og:title" content="JPG to PDF Converter | Free Online Tool" />
+        <meta property="og:description" content="Convert your images to PDF online for free. No registration or watermarks." />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://toolvault.com/utilities/jpg-to-pdf" />
       </Helmet>
       
       <Header />
 
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">JPG to PDF Converter</h1>
-          <p className="text-foreground/70 mb-8">
-            Convert your JPG, JPEG, or PNG images to PDF with our free online converter. No watermark, high quality output.
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">JPG to PDF Converter</h1>
+          <p className="text-gray-300 mb-8 max-w-2xl">
+            Convert your JPG, JPEG, or PNG images to PDF with our free online converter. Combine multiple images into a single document with no watermarks.
           </p>
           
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileImage className="h-5 w-5 text-accent" />
+          <Card className="mb-8 shadow-lg overflow-hidden border border-slate-700/80 backdrop-blur-sm bg-slate-800/50">
+            <CardHeader className="bg-slate-700/50 border-b border-slate-600/50">
+              <CardTitle className="flex items-center gap-2 text-white">
+                <FileImage className="h-5 w-5 text-blue-400" />
                 <span>Upload Images</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-300">
                 Select or drag & drop your image files (JPG, JPEG, PNG)
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <div 
-                className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:bg-accent/5 transition-colors"
+                className="border-2 border-dashed border-blue-400/30 rounded-lg p-8 text-center cursor-pointer hover:bg-slate-700/20 transition-colors bg-slate-800/50"
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
@@ -297,12 +308,12 @@ const JPGtoPDFConverter: React.FC = () => {
                   onChange={handleFileChange}
                 />
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
-                    <ImagePlus className="h-6 w-6 text-accent" />
+                  <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center">
+                    <ImagePlus className="h-8 w-8 text-blue-400" />
                   </div>
                   <div>
-                    <p className="font-medium">Click to upload or drag and drop</p>
-                    <p className="text-sm text-foreground/70">JPG, JPEG, or PNG files</p>
+                    <p className="font-medium text-white">Click to upload or drag and drop</p>
+                    <p className="text-sm text-gray-400">JPG, JPEG, or PNG files</p>
                   </div>
                 </div>
               </div>
@@ -310,31 +321,31 @@ const JPGtoPDFConverter: React.FC = () => {
           </Card>
           
           {previews.length > 0 && (
-            <Card className="mb-8">
-              <CardHeader>
+            <Card className="mb-8 shadow-lg overflow-hidden border border-slate-700/80 backdrop-blur-sm bg-slate-800/50">
+              <CardHeader className="bg-slate-700/50 border-b border-slate-600/50">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <FilePlus className="h-5 w-5 text-accent" />
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <FilePlus className="h-5 w-5 text-blue-400" />
                     <span>Image Preview</span>
                   </CardTitle>
                   <Button 
                     variant="outline" 
                     size="sm" 
                     onClick={clearAll} 
-                    className="text-destructive hover:text-destructive"
+                    className="text-red-400 hover:text-red-400 hover:bg-red-500/10 border-red-400/30"
                   >
                     <Trash2 className="h-4 w-4 mr-1" />
                     Clear All
                   </Button>
                 </div>
-                <CardDescription>
+                <CardDescription className="text-gray-300">
                   {previews.length} image{previews.length > 1 ? 's' : ''} selected
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {previews.map((preview, index) => (
-                    <div key={preview.id} className="relative rounded-lg overflow-hidden border border-border group">
+                    <div key={preview.id} className="relative rounded-lg overflow-hidden border border-slate-600/50 group bg-slate-800/50">
                       <div style={{ position: "relative", paddingTop: "75%" }}>
                         <img
                           src={preview.url}
@@ -355,10 +366,10 @@ const JPGtoPDFConverter: React.FC = () => {
                         <Button
                           variant="secondary"
                           size="icon"
-                          className="h-7 w-7"
+                          className="h-7 w-7 bg-white/20 hover:bg-white/30"
                           onClick={() => rotateImage(preview.id)}
                         >
-                          <RotateCcw className="h-3.5 w-3.5" />
+                          <RotateCcw className="h-3.5 w-3.5 text-white" />
                         </Button>
                         <Button
                           variant="destructive"
@@ -369,30 +380,31 @@ const JPGtoPDFConverter: React.FC = () => {
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
-                      <div className="absolute bottom-0 inset-x-0 bg-background/80 backdrop-blur-sm py-1 px-2 text-xs">
+                      <div className="absolute bottom-0 inset-x-0 bg-black/70 backdrop-blur-sm py-1 px-2 text-xs text-white">
                         Image {index + 1}
                       </div>
                     </div>
                   ))}
                 </div>
               </CardContent>
-              <CardFooter className="flex-col gap-4">
+              <CardFooter className="flex-col gap-4 bg-slate-800/30 border-t border-slate-600/50 p-6">
                 {isConverting ? (
                   <div className="w-full">
-                    <div className="mb-2 flex items-center justify-between">
+                    <div className="mb-2 flex items-center justify-between text-white">
                       <span>Converting...</span>
                       <span>{progress}%</span>
                     </div>
-                    <div className="h-2 bg-accent/20 rounded-full overflow-hidden">
+                    <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-accent transition-all duration-300" 
+                        className="h-full bg-blue-500 transition-all duration-300" 
                         style={{ width: `${progress}%` }}
                       ></div>
                     </div>
                   </div>
                 ) : (
                   <Button 
-                    className="w-full" 
+                    className="w-full gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:opacity-90 text-white" 
+                    size="lg"
                     onClick={convertToPdf}
                   >
                     <Download className="mr-2 h-4 w-4" />
@@ -403,46 +415,82 @@ const JPGtoPDFConverter: React.FC = () => {
             </Card>
           )}
           
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-accent" />
+          <Card className="shadow-lg overflow-hidden border border-slate-700/80 backdrop-blur-sm bg-slate-800/50">
+            <CardHeader className="bg-slate-700/50 border-b border-slate-600/50">
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Zap className="h-5 w-5 text-blue-400" />
                 <span>How to Convert JPG to PDF</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ol className="list-decimal list-inside space-y-3 ml-2">
-                <li className="text-foreground/80">
-                  <span className="font-medium text-foreground">Upload Images:</span> Click the upload area or drag and drop your JPG, JPEG, or PNG files.
+            <CardContent className="p-6">
+              <ol className="list-decimal list-inside space-y-3 ml-2 text-gray-300">
+                <li>
+                  <span className="font-medium text-white">Upload Images:</span> Click the upload area or drag and drop your JPG, JPEG, or PNG files.
                 </li>
-                <li className="text-foreground/80">
-                  <span className="font-medium text-foreground">Arrange & Rotate:</span> Preview your images, rotate if needed, and arrange them in the desired order.
+                <li>
+                  <span className="font-medium text-white">Arrange & Rotate:</span> Preview your images, rotate if needed, and arrange them in the desired order.
                 </li>
-                <li className="text-foreground/80">
-                  <span className="font-medium text-foreground">Convert:</span> Click the "Convert to PDF" button to create your PDF document.
+                <li>
+                  <span className="font-medium text-white">Convert:</span> Click the "Convert to PDF" button to create your PDF document.
                 </li>
-                <li className="text-foreground/80">
-                  <span className="font-medium text-foreground">Download:</span> Your PDF will be generated and automatically downloaded to your device.
+                <li>
+                  <span className="font-medium text-white">Download:</span> Your PDF will be generated and automatically downloaded to your device.
                 </li>
               </ol>
             </CardContent>
-            <CardFooter>
-              <div className="text-sm text-foreground/70">
-                <div className="flex items-center gap-1 mb-1">
-                  <Check className="h-4 w-4 text-green-500" />
+            <CardFooter className="p-6 bg-slate-900/40 border-t border-slate-600/50">
+              <div className="text-sm text-gray-300 space-y-2">
+                <div className="flex items-center gap-1">
+                  <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
                   <span>Free to use - No registration required</span>
                 </div>
-                <div className="flex items-center gap-1 mb-1">
-                  <Check className="h-4 w-4 text-green-500" />
+                <div className="flex items-center gap-1">
+                  <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
                   <span>No watermarks on converted PDF files</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Check className="h-4 w-4 text-green-500" />
+                  <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
                   <span>Files converted locally - your data never leaves your device</span>
                 </div>
               </div>
             </CardFooter>
           </Card>
+
+          <div className="mt-12 bg-slate-800/30 p-6 rounded-xl border border-slate-700/50">
+            <h2 className="text-xl font-semibold mb-4 text-white">Frequently Asked Questions</h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-medium text-white mb-2">What image formats can I convert to PDF?</h3>
+                <p className="text-gray-300">Our converter supports JPG (JPEG) and PNG image formats. You can upload multiple images in these formats to combine them into a single PDF.</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium text-white mb-2">Is there a limit to how many images I can convert?</h3>
+                <p className="text-gray-300">While there is no strict limit on the number of images, we recommend keeping it under 50 images per PDF for optimal performance. Very large collections of high-resolution images may cause browser performance issues.</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium text-white mb-2">What happens to my images after conversion?</h3>
+                <p className="text-gray-300">Your images are processed entirely within your browser and are never uploaded to our servers. Once you close the page or clear your browser cache, all temporary image data is removed.</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium text-white mb-2">Can I change the order of images in the PDF?</h3>
+                <p className="text-gray-300">Currently, the images are arranged in the PDF in the order they were uploaded. For specific ordering, you should upload your images in the desired sequence.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 bg-slate-800/30 p-6 rounded-xl border border-slate-700/50">
+            <h2 className="text-xl font-semibold mb-4 text-white">Benefits of Converting JPG to PDF</h2>
+            <div className="space-y-3 text-gray-300">
+              <p>Converting your JPG images to PDF format offers several advantages:</p>
+              <ul className="list-disc list-inside space-y-2 ml-2">
+                <li><span className="font-medium text-white">Document Organization:</span> Combine multiple images into a single, easy-to-manage PDF file.</li>
+                <li><span className="font-medium text-white">Professional Sharing:</span> PDF files maintain their format across all devices and platforms, making them ideal for professional sharing.</li>
+                <li><span className="font-medium text-white">Smaller File Size:</span> Converting multiple images to a PDF can result in a smaller overall file size compared to the original images.</li>
+                <li><span className="font-medium text-white">Easy Printing:</span> PDFs are optimized for printing, ensuring your images print exactly as they appear on screen.</li>
+                <li><span className="font-medium text-white">Security:</span> PDF format offers more security options than standard image formats.</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </main>
       

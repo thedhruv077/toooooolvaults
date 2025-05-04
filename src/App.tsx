@@ -24,6 +24,8 @@ import RealEstateCalculator from "./components/RealEstateCalculator";
 import RealEstateAreaCalculator from "./components/RealEstateAreaCalculator";
 import JPGtoPDFConverter from "./components/JPGtoPDFConverter";
 import PDFToJPGConverter from "./components/PDFToJPGConverter";
+import PDFCompressor from "./components/PDFCompressor";
+import PowerPointToPDFConverter from "./components/PowerPointToPDFConverter";
 import AgeCalculator from "./components/AgeCalculator";
 import DateDifferenceCalculator from "./components/DateDifferenceCalculator";
 
@@ -64,6 +66,8 @@ const App = () => (
             <Route path="/utilities/invoice" element={<InvoiceGenerator />} />
             <Route path="/utilities/jpg-to-pdf" element={<JPGtoPDFConverter />} />
             <Route path="/utilities/pdf-to-jpg" element={<PDFToJPGConverter />} />
+            <Route path="/utilities/pdf-compressor" element={<PDFCompressor />} />
+            <Route path="/utilities/powerpoint-to-pdf" element={<PowerPointToPDFConverter />} />
             <Route path="/seo-tools" element={<SEOTools />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
