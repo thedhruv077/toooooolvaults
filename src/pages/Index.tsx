@@ -76,9 +76,17 @@ const tools: Tool[] = [
     category: "financial"
   },
   {
-    name: "Date Calculator",
-    description: "Calculate age and difference between dates",
-    route: "/calculators/date",
+    name: "Age Calculator",
+    description: "Calculate your exact age from birth date",
+    route: "/calculators/age",
+    icon: <CalendarDays className="w-5 h-5 text-accent" />,
+    category: "financial",
+    badge: "New"
+  },
+  {
+    name: "Date Difference Calculator",
+    description: "Calculate difference between any two dates",
+    route: "/calculators/date-difference",
     icon: <CalendarDays className="w-5 h-5 text-accent" />,
     category: "financial",
     badge: "New"
