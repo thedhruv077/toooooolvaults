@@ -2,17 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Helmet } from "react-helmet-async";
-import { differenceInYears, differenceInMonths, differenceInDays, format, parse, isValid } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { differenceInYears, differenceInMonths, differenceInDays } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
 
 type DateDiff = {
   years: number;
@@ -23,12 +18,10 @@ type DateDiff = {
 
 const AgeCalculator = () => {
   // Age Calculator
-  const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
   const [birthMonth, setBirthMonth] = useState<number | null>(null);
   const [birthYear, setBirthYear] = useState<number | null>(null);
   const [birthDay, setBirthDay] = useState<number | null>(null);
   const [age, setAge] = useState<DateDiff | null>(null);
-  const [useCalendar, setUseCalendar] = useState<boolean>(true);
 
   // Generate options for days, months, and years
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
@@ -49,11 +42,10 @@ const AgeCalculator = () => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 121 }, (_, i) => currentYear - i);
 
-  const calculateAgeFromParts = () => {
-    if (!birthYear || !birthMonth || !birthDay) return;
+  const calculateAge = () => {
+    if (!birthYear || birthMonth === null || !birthDay) return;
     
     const birthDateObj = new Date(birthYear, birthMonth, birthDay);
-    if (!isValid(birthDateObj)) return;
     
     const today = new Date();
     const years = differenceInYears(today, birthDateObj);
@@ -71,40 +63,6 @@ const AgeCalculator = () => {
       totalDays
     });
   };
-
-  const calculateAgeFromCalendar = () => {
-    if (!birthDate) return;
-
-    const today = new Date();
-    const years = differenceInYears(today, birthDate);
-    const months = differenceInMonths(today, birthDate) % 12;
-    const days = differenceInDays(
-      today,
-      new Date(today.getFullYear(), today.getMonth(), birthDate.getDate())
-    );
-    const totalDays = differenceInDays(today, birthDate);
-
-    setAge({
-      years,
-      months,
-      days,
-      totalDays
-    });
-  };
-
-  // Handle birthdate selection from manual dropdown
-  useEffect(() => {
-    if (birthYear && birthMonth !== null && birthDay) {
-      calculateAgeFromParts();
-    }
-  }, [birthYear, birthMonth, birthDay]);
-
-  // Handle birthdate selection from calendar
-  useEffect(() => {
-    if (birthDate && useCalendar) {
-      calculateAgeFromCalendar();
-    }
-  }, [birthDate, useCalendar]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -130,107 +88,54 @@ const AgeCalculator = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <Button 
-                    variant={useCalendar ? "default" : "outline"} 
-                    size="sm"
-                    onClick={() => setUseCalendar(true)}
-                    className="text-xs"
-                  >
-                    Calendar View
-                  </Button>
-                  <Button 
-                    variant={!useCalendar ? "default" : "outline"} 
-                    size="sm"
-                    onClick={() => setUseCalendar(false)}
-                    className="text-xs"
-                  >
-                    Select Date Parts
-                  </Button>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="birthDay">Day</Label>
+                  <Select value={birthDay?.toString()} onValueChange={(value) => setBirthDay(parseInt(value))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select day" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {days.map((day) => (
+                        <SelectItem key={day} value={day.toString()}>
+                          {day}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                {useCalendar ? (
-                  <div className="space-y-2">
-                    <Label htmlFor="birthdate">Birth Date</Label>
-                    <div className="flex items-center space-x-4">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !birthDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {birthDate ? format(birthDate, "PPP") : <span>Select date of birth</span>}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={birthDate}
-                            onSelect={setBirthDate}
-                            disabled={(date) => date > new Date()}
-                            initialFocus
-                            className={cn("p-3 pointer-events-auto")}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="birthDay">Day</Label>
-                      <Select value={birthDay?.toString()} onValueChange={(value) => setBirthDay(parseInt(value))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select day" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {days.map((day) => (
-                            <SelectItem key={day} value={day.toString()}>
-                              {day}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                <div>
+                  <Label htmlFor="birthMonth">Month</Label>
+                  <Select value={birthMonth?.toString()} onValueChange={(value) => setBirthMonth(parseInt(value))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {months.map((month) => (
+                        <SelectItem key={month.value} value={month.value.toString()}>
+                          {month.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                    <div>
-                      <Label htmlFor="birthMonth">Month</Label>
-                      <Select value={birthMonth?.toString()} onValueChange={(value) => setBirthMonth(parseInt(value))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select month" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {months.map((month) => (
-                            <SelectItem key={month.value} value={month.value.toString()}>
-                              {month.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="birthYear">Year</Label>
-                      <Select value={birthYear?.toString()} onValueChange={(value) => setBirthYear(parseInt(value))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select year" />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-[200px] overflow-y-auto">
-                          {years.map((year) => (
-                            <SelectItem key={year} value={year.toString()}>
-                              {year}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                )}
+                <div>
+                  <Label htmlFor="birthYear">Year</Label>
+                  <Select value={birthYear?.toString()} onValueChange={(value) => setBirthYear(parseInt(value))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select year" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[200px] overflow-y-auto">
+                      {years.map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {age && (
@@ -254,9 +159,9 @@ const AgeCalculator = () => {
           </CardContent>
           <CardFooter>
             <Button 
-              onClick={useCalendar ? calculateAgeFromCalendar : calculateAgeFromParts} 
+              onClick={calculateAge} 
               className="w-full" 
-              disabled={useCalendar ? !birthDate : (!birthYear || birthMonth === null || !birthDay)}
+              disabled={!birthYear || birthMonth === null || !birthDay}
             >
               Calculate Age
             </Button>
@@ -269,14 +174,9 @@ const AgeCalculator = () => {
             <p>
               The Age Calculator tool lets you find your exact age from your date of birth in years, months, days, and total days.
             </p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>
-                <strong>Calendar View:</strong> Select your date of birth using an interactive calendar interface.
-              </li>
-              <li>
-                <strong>Date Parts Selection:</strong> Alternatively, select the day, month, and year individually from dropdown menus.
-              </li>
-            </ul>
+            <p>
+              Simply select the day, month, and year of your birth from the dropdown menus and click "Calculate Age" to see your exact age.
+            </p>
             <p>
               All calculations are performed instantly in your browser with no data sent to any server, ensuring your privacy is maintained.
             </p>

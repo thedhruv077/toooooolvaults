@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ui/theme-toggle";
@@ -98,9 +99,14 @@ const Header = () => {
                     <CheckCircle2 className="w-4 h-4 mr-2 text-blue-500" />
                     <span>Real Estate Area Calculator</span>
                   </Link>
-                  <Link to="/calculators/date" className="flex items-center px-3 py-2 rounded-lg text-sm hover:bg-blue-500/10 transition-colors">
+                  <Link to="/calculators/age" className="flex items-center px-3 py-2 rounded-lg text-sm hover:bg-blue-500/10 transition-colors">
                     <CheckCircle2 className="w-4 h-4 mr-2 text-blue-500" />
-                    <span>Date Calculator</span>
+                    <span>Age Calculator</span>
+                    <span className="ml-auto text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded-full">New</span>
+                  </Link>
+                  <Link to="/calculators/date-difference" className="flex items-center px-3 py-2 rounded-lg text-sm hover:bg-blue-500/10 transition-colors">
+                    <CheckCircle2 className="w-4 h-4 mr-2 text-blue-500" />
+                    <span>Date Difference Calculator</span>
                     <span className="ml-auto text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded-full">New</span>
                   </Link>
                 </div>
@@ -225,9 +231,14 @@ const Header = () => {
                         <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
                         Real Estate Area
                       </Link>
-                      <Link to="/calculators/date" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                      <Link to="/calculators/age" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
                         <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
-                        Date Calculator
+                        Age Calculator
+                        <span className="ml-2 text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded-full">New</span>
+                      </Link>
+                      <Link to="/calculators/date-difference" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
+                        Date Difference
                         <span className="ml-2 text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded-full">New</span>
                       </Link>
                     </motion.div>
