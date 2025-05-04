@@ -1,3 +1,4 @@
+
 import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -17,7 +18,8 @@ import {
   CreditCard,
   Receipt,
   AreaChart,
-  FileImage
+  FileImage,
+  CalendarDays
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
@@ -64,14 +66,20 @@ const tools: Tool[] = [
     description: "Calculate returns on systematic investment plans",
     route: "/calculators/sip",
     icon: <BarChart3 className="w-5 h-5 text-accent" />,
-    category: "financial",
-    badge: "New"
+    category: "financial"
   },
   {
     name: "Real Estate Calculator",
     description: "Calculate mortgage EMIs and property investment returns",
     route: "/calculators/real-estate",
     icon: <Home className="w-5 h-5 text-accent" />,
+    category: "financial"
+  },
+  {
+    name: "Date Calculator",
+    description: "Calculate age and difference between dates",
+    route: "/calculators/date",
+    icon: <CalendarDays className="w-5 h-5 text-accent" />,
     category: "financial",
     badge: "New"
   },

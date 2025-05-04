@@ -24,6 +24,7 @@ import RealEstateCalculator from "./components/RealEstateCalculator";
 import RealEstateAreaCalculator from "./components/RealEstateAreaCalculator";
 import JPGtoPDFConverter from "./components/JPGtoPDFConverter";
 import PDFToJPGConverter from "./components/PDFToJPGConverter";
+import DateCalculator from "./components/DateCalculator";
 
 // ScrollToTop component to reset scroll position on route change
 const ScrollToTop = () => {
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/calculators/sip" element={<SIPCalculator />} />
             <Route path="/calculators/real-estate" element={<RealEstateCalculator />} />
             <Route path="/calculators/real-estate-area" element={<RealEstateAreaCalculator />} />
+            <Route path="/calculators/date" element={<DateCalculator />} />
             <Route path="/utilities/qr-code" element={<QRCodeGenerator />} />
             <Route path="/utilities/password" element={<PasswordGenerator />} />
             <Route path="/utilities/invoice" element={<InvoiceGenerator />} />

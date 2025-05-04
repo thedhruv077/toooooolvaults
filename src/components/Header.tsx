@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ui/theme-toggle";
-import { Menu, X, Calculator, FileUp, Grid, Sparkles, Zap, CheckCircle2, BookOpen, FileImage, File, ChevronDown } from "lucide-react";
+import { Menu, X, Calculator, FileUp, Grid, Sparkles, Zap, CheckCircle2, BookOpen, FileImage, File, ChevronDown, CalendarDays } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "./ui/button";
 import { AnimatePresence, motion } from "framer-motion";
@@ -97,6 +97,11 @@ const Header = () => {
                   <Link to="/calculators/real-estate-area" className="flex items-center px-3 py-2 rounded-lg text-sm hover:bg-blue-500/10 transition-colors">
                     <CheckCircle2 className="w-4 h-4 mr-2 text-blue-500" />
                     <span>Real Estate Area Calculator</span>
+                  </Link>
+                  <Link to="/calculators/date" className="flex items-center px-3 py-2 rounded-lg text-sm hover:bg-blue-500/10 transition-colors">
+                    <CheckCircle2 className="w-4 h-4 mr-2 text-blue-500" />
+                    <span>Date Calculator</span>
+                    <span className="ml-auto text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded-full">New</span>
                   </Link>
                 </div>
               </div>
@@ -219,6 +224,11 @@ const Header = () => {
                       <Link to="/calculators/real-estate-area" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
                         <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
                         Real Estate Area
+                      </Link>
+                      <Link to="/calculators/date" className="block py-1.5 text-sm hover:text-blue-500 transition-colors flex items-center">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-2"></span>
+                        Date Calculator
+                        <span className="ml-2 text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded-full">New</span>
                       </Link>
                     </motion.div>
                   )}
