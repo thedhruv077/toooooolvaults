@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Helmet } from "react-helmet-async";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import * as pdfjs from 'pdfjs-dist';
 
 // Set the worker source (required for PDF.js)
@@ -225,7 +226,7 @@ const PDFToJPGConverter = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-950 to-slate-900">
+    <div className="min-h-screen flex flex-col dark:bg-gradient-to-b dark:from-slate-950 dark:to-slate-900 bg-white">
       <Helmet>
         <title>PDF to JPG Converter | Free Online PDF to Image Tool | Tool Vault</title>
         <meta name="description" content="Convert PDF files to high-quality JPG images online for free. Extract pages as separate images with our fast, secure converter. No watermark, no registration." />
@@ -239,19 +240,22 @@ const PDFToJPGConverter = () => {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">PDF to JPG Converter</h1>
-          <p className="text-gray-300 max-w-2xl mx-auto">
+          <div className="flex items-center justify-center mb-4">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">PDF to JPG Converter</h1>
+            <ThemeToggle className="ml-4" />
+          </div>
+          <p className="dark:text-gray-300 text-gray-700 max-w-2xl mx-auto">
             Convert your PDF documents to high-quality JPG images quickly and easily. Extract all pages as separate images.
           </p>
         </div>
 
-        <Card className="shadow-lg overflow-hidden border border-slate-700/80 backdrop-blur-sm bg-slate-800/50">
-          <div className="bg-slate-700/50 p-6 border-b border-slate-600/50">
+        <Card className="shadow-lg overflow-hidden border dark:border-slate-700/80 backdrop-blur-sm dark:bg-slate-800/50 bg-white">
+          <div className="dark:bg-slate-700/50 bg-gray-50 p-6 border-b dark:border-slate-600/50 border-gray-100">
             <div className="flex items-center gap-3">
               <File className="w-6 h-6 text-blue-400" />
-              <h2 className="text-2xl font-semibold text-white">PDF to JPG Converter</h2>
+              <h2 className="text-2xl font-semibold dark:text-white text-slate-900">PDF to JPG Converter</h2>
             </div>
-            <p className="text-gray-300 mt-1">
+            <p className="dark:text-gray-300 text-gray-700 mt-1">
               Upload your PDF and convert each page to a high-quality JPG image
             </p>
           </div>
@@ -259,7 +263,7 @@ const PDFToJPGConverter = () => {
           <div className="p-6 space-y-6">
             {!file ? (
               <div 
-                className="border-2 border-dashed border-blue-400/30 rounded-xl p-10 text-center hover:border-blue-400 transition-all duration-300 cursor-pointer bg-slate-800/50"
+                className="border-2 border-dashed border-blue-400/30 rounded-xl p-10 text-center hover:border-blue-400 transition-all duration-300 cursor-pointer dark:bg-slate-800/50 bg-gray-50"
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
@@ -276,8 +280,8 @@ const PDFToJPGConverter = () => {
                     <File className="w-10 h-10 text-blue-400" />
                   </div>
                 </div>
-                <h3 className="text-xl font-medium mb-3 text-white">Drag & Drop PDF File Here</h3>
-                <p className="text-gray-300 mb-5 max-w-md mx-auto">Select a PDF file from your device or drag it directly into this area</p>
+                <h3 className="text-xl font-medium mb-3 dark:text-white text-slate-900">Drag & Drop PDF File Here</h3>
+                <p className="dark:text-gray-300 text-gray-700 mb-5 max-w-md mx-auto">Select a PDF file from your device or drag it directly into this area</p>
                 <Button variant="outline" size="lg" className="gap-2 border-blue-400 text-blue-400 hover:bg-blue-500 hover:text-white">
                   <Upload className="w-4 h-4" /> Browse Files
                 </Button>
@@ -285,19 +289,19 @@ const PDFToJPGConverter = () => {
             ) : (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-white">Selected File</h3>
+                  <h3 className="text-lg font-medium dark:text-white text-slate-900">Selected File</h3>
                   <Button variant="outline" size="sm" onClick={clearFile} className="text-red-400 hover:bg-red-500/10">
                     <Trash2 className="w-4 h-4 mr-2" /> Remove File
                   </Button>
                 </div>
                 
-                <div className="bg-slate-700/30 rounded-lg overflow-hidden p-4 flex items-center space-x-4 border border-slate-600/50">
+                <div className="dark:bg-slate-700/30 bg-gray-50 rounded-lg overflow-hidden p-4 flex items-center space-x-4 border dark:border-slate-600/50 border-gray-200">
                   <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
                     <File className="w-6 h-6 text-blue-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-white font-medium truncate">{file.name}</h4>
-                    <p className="text-gray-400 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                    <h4 className="dark:text-white text-slate-900 font-medium truncate">{file.name}</h4>
+                    <p className="dark:text-gray-400 text-gray-500 text-sm">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                   </div>
                 </div>
               </div>
@@ -309,22 +313,22 @@ const PDFToJPGConverter = () => {
                   <div className="animate-pulse">
                     <FileImage className="w-5 h-5 text-blue-400" />
                   </div>
-                  <p className="font-medium text-white">Creating your JPG images...</p>
+                  <p className="font-medium dark:text-white text-slate-900">Creating your JPG images...</p>
                 </div>
-                <div className="h-2 w-full bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-2 w-full dark:bg-slate-700 bg-gray-200 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-in-out"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
-                <p className="text-right text-xs text-gray-400">{Math.round(progress)}%</p>
+                <p className="text-right text-xs dark:text-gray-400 text-gray-500">{Math.round(progress)}%</p>
               </div>
             )}
 
             {showPreview && convertedPages.length > 0 && (
-              <div className="space-y-4 bg-slate-900/40 p-4 rounded-lg border border-slate-700/50">
+              <div className="space-y-4 dark:bg-slate-900/40 bg-gray-50 p-4 rounded-lg border dark:border-slate-700/50 border-gray-200">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-white">Converted Images</h3>
+                  <h3 className="text-lg font-medium dark:text-white text-slate-900">Converted Images</h3>
                   <Button
                     variant="outline"
                     size="sm"
@@ -337,7 +341,7 @@ const PDFToJPGConverter = () => {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {convertedPages.map((page, index) => (
-                    <div key={index} className="group relative border border-slate-600/50 rounded-lg overflow-hidden bg-slate-800/50">
+                    <div key={index} className="group relative border dark:border-slate-600/50 border-gray-200 rounded-lg overflow-hidden dark:bg-slate-800/50 bg-white">
                       <div className="aspect-square overflow-hidden flex items-center justify-center">
                         <img src={page} alt={`Page ${index + 1}`} className="object-contain w-full h-full" />
                       </div>
@@ -363,7 +367,7 @@ const PDFToJPGConverter = () => {
             <canvas ref={canvasRef} style={{ display: 'none' }} />
           </div>
           
-          <div className="border-t border-slate-600/50 p-6 bg-slate-800/30">
+          <div className="border-t dark:border-slate-600/50 border-gray-100 p-6 dark:bg-slate-800/30 bg-gray-50">
             <Button 
               onClick={convertToJPG} 
               disabled={isConverting || !file}
@@ -377,35 +381,35 @@ const PDFToJPGConverter = () => {
         </Card>
         
         <div className="mt-16 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-semibold text-center mb-8 text-white">Why Use Our PDF to JPG Converter?</h2>
+          <h2 className="text-2xl font-semibold text-center mb-8 dark:text-white text-slate-900">Why Use Our PDF to JPG Converter?</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
+            <div className="dark:bg-slate-800/50 bg-white border dark:border-slate-700/50 border-gray-200 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
               <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
                 <Check className="w-6 h-6 text-blue-400" />
               </div>
-              <h3 className="text-lg font-medium mb-2 text-white">Free & Easy</h3>
-              <p className="text-gray-300">No signup required. Just upload and convert your PDF instantly.</p>
+              <h3 className="text-lg font-medium mb-2 dark:text-white text-slate-900">Free & Easy</h3>
+              <p className="dark:text-gray-300 text-gray-700">No signup required. Just upload and convert your PDF instantly.</p>
             </div>
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
+            <div className="dark:bg-slate-800/50 bg-white border dark:border-slate-700/50 border-gray-200 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
               <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
                 <Image className="w-6 h-6 text-blue-400" />
               </div>
-              <h3 className="text-lg font-medium mb-2 text-white">High Quality</h3>
-              <p className="text-gray-300">Get high-resolution JPG images that preserve the details of your PDF documents.</p>
+              <h3 className="text-lg font-medium mb-2 dark:text-white text-slate-900">High Quality</h3>
+              <p className="dark:text-gray-300 text-gray-700">Get high-resolution JPG images that preserve the details of your PDF documents.</p>
             </div>
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
+            <div className="dark:bg-slate-800/50 bg-white border dark:border-slate-700/50 border-gray-200 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all">
               <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
                 <AlertCircle className="w-6 h-6 text-blue-400" />
               </div>
-              <h3 className="text-lg font-medium mb-2 text-white">Privacy First</h3>
-              <p className="text-gray-300">Your files are processed locally. We never store or share your documents.</p>
+              <h3 className="text-lg font-medium mb-2 dark:text-white text-slate-900">Privacy First</h3>
+              <p className="dark:text-gray-300 text-gray-700">Your files are processed locally. We never store or share your documents.</p>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 bg-slate-800/30 p-6 rounded-xl border border-slate-700/50">
-          <h2 className="text-xl font-semibold mb-4 text-white">How to Convert PDF to JPG</h2>
-          <div className="space-y-4 text-gray-300">
+        <div className="mt-12 dark:bg-slate-800/30 bg-gray-50 p-6 rounded-xl border dark:border-slate-700/50 border-gray-200">
+          <h2 className="text-xl font-semibold mb-4 dark:text-white text-slate-900">How to Convert PDF to JPG</h2>
+          <div className="space-y-4 dark:text-gray-300 text-gray-700">
             <p>Converting PDF documents to JPG images is simple with our tool:</p>
             <ol className="list-decimal pl-5 space-y-2">
               <li><strong>Upload:</strong> Select a PDF file by clicking the upload area or dragging and dropping it.</li>
@@ -417,24 +421,24 @@ const PDFToJPGConverter = () => {
           </div>
         </div>
 
-        <div className="mt-12 bg-slate-800/30 p-6 rounded-xl border border-slate-700/50">
-          <h2 className="text-xl font-semibold mb-4 text-white">FAQ</h2>
+        <div className="mt-12 dark:bg-slate-800/30 bg-gray-50 p-6 rounded-xl border dark:border-slate-700/50 border-gray-200">
+          <h2 className="text-xl font-semibold mb-4 dark:text-white text-slate-900">FAQ</h2>
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-medium text-white mb-2">What file formats does this tool support?</h3>
-              <p className="text-gray-300">Our tool supports PDF files (.pdf) as input and converts them to JPG image format.</p>
+              <h3 className="text-lg font-medium dark:text-white text-slate-900 mb-2">What file formats does this tool support?</h3>
+              <p className="dark:text-gray-300 text-gray-700">Our tool supports PDF files (.pdf) as input and converts them to JPG image format.</p>
             </div>
             <div>
-              <h3 className="text-lg font-medium text-white mb-2">Is there a limit to the file size I can convert?</h3>
-              <p className="text-gray-300">Since conversion happens locally in your browser, the file size limit depends on your device's memory. We recommend files under 100MB for optimal performance.</p>
+              <h3 className="text-lg font-medium dark:text-white text-slate-900 mb-2">Is there a limit to the file size I can convert?</h3>
+              <p className="dark:text-gray-300 text-gray-700">Since conversion happens locally in your browser, the file size limit depends on your device's memory. We recommend files under 100MB for optimal performance.</p>
             </div>
             <div>
-              <h3 className="text-lg font-medium text-white mb-2">What image quality can I expect?</h3>
-              <p className="text-gray-300">Our converter produces high-resolution JPG images that maintain the visual quality of your original PDF. The images are rendered at 2x scale for maximum clarity.</p>
+              <h3 className="text-lg font-medium dark:text-white text-slate-900 mb-2">What image quality can I expect?</h3>
+              <p className="dark:text-gray-300 text-gray-700">Our converter produces high-resolution JPG images that maintain the visual quality of your original PDF. The images are rendered at 2x scale for maximum clarity.</p>
             </div>
             <div>
-              <h3 className="text-lg font-medium text-white mb-2">Is this service really free?</h3>
-              <p className="text-gray-300">Yes, our PDF to JPG converter is completely free to use with no watermarks on the converted images.</p>
+              <h3 className="text-lg font-medium dark:text-white text-slate-900 mb-2">Is this service really free?</h3>
+              <p className="dark:text-gray-300 text-gray-700">Yes, our PDF to JPG converter is completely free to use with no watermarks on the converted images.</p>
             </div>
           </div>
         </div>
